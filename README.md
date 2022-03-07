@@ -32,14 +32,14 @@ The guide is primary designed to run Fedora Server as a hypervisor with [Cockpit
 
 Follow the guides inside the ```Docs``` folder or use the links below for a specific topic:
 
-- [Host System Installation](Docs/0%20-%20Installation.md)
-- [Configuring the Bridge Network](Docs/1%20-%20Network.md)
-- [Enabling PCI-e Passthrough](Docs/2%20-%20PCI-e%20Passthrough.md)
-- [Virtualization Hooks](Docs/3%20-%20Hooks.md)
-- [Managing Virtual Machines](Docs/4%20-20Management.md)
-- [XML Configurations](Docs/5%20-%20XML%20Configurations.md)
-  - [Linux Virtualization](Docs/5.1%20-%20Linux.md)
-  - [Windows Virtualization](Docs/5.2%20-%20Windows.md)
-  - [MacOS Virtualization](Docs/5.3%20-%20MacOS.md)
-  - [Android Virtualization](Docs/5.4%20-%20Android.md)
-  - [Chrome OS Virtualization](Docs/5.5%20-%20Chrome%20OS.md)
+- **[Host System Installation](Docs/0%20-%20Installation.md)**
+- **[Configuring the Bridge Network](Docs/1%20-%20Bridge%20Network.md)**
+- **[Enabling PCI-e Passthrough](Docs/2%20-%20PCI-e%20Passthrough.md)**
+- **[Virtualization Hooks](Docs/3%20-%20Virtualization%20Hooks.md)**
+- **[Managing Virtual Machines](Docs/4%20-%20Management.md)**
+- **[XML Configurations](Docs/5%20-%20XML%20Configurations.md)**
+  - **[Linux Virtualization](Docs/5.1%20-%20Linux.md)**
+  - **[Windows Virtualization](Docs/5.2%20-%20Windows.md)**
+  - **[MacOS Virtualization](Docs/5.3%20-%20MacOS.md)**
+  - **[Android Virtualization](Docs/5.4%20-%20Android.md)**
+  - **[Chrome OS Virtualization](Docs/5.5%20-%20Chrome%20OS.md)**
