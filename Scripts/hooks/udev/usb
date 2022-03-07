@@ -1,0 +1,96 @@
+#!/bin/bash
+
+# Stop on errors
+# set -e
+
+# Pass only USB devices
+if [ "${SUBSYSTEM}" != "usb" ] || [ "${DEVTYPE}" != "usb_device" ]; then
+  exit 0
+fi
+
+# Check for required USB information
+if [ -z "${BUSNUM}" ] || [ -z "${DEVNUM}" ] || [ -z "${PRODUCT}" ]; then
+  exit 0
+fi
+
+# Extract USB ID reference
+[[ "${PRODUCT:3:1}" == "/" ]] && PRODUCT="0${PRODUCT}"
+ID=$(echo ${PRODUCT/\//:} | cut -c1-9)
+
+# Determine libvirt command
+if [ "${ACTION}" == "add" ]; then
+  COMMAND="attach-device"
+elif [ "${ACTION}" == "remove" ]; then
+  COMMAND="detach-device"
+else
+  exit 0
+fi
+
+# Domain can be passed from script variables
+# If not present, try to get the first one from active VMs with udev watch enabled
+if [ -z "${DOMAIN}" ]; then
+  for file in $(ls /tmp/vfio-*-udev-watch); do
+    DOMAIN=$(echo "${file/\/tmp\/vfio-/}" | sed "s/-udev-watch//")
+  done
+fi
+
+# Determine config file for domain
+CONFIG="/tmp/vfio-${DOMAIN}-udev-watch"
+
+# Check exists domain and udev watch rules
+if [ -z "${DOMAIN}" ] || [ ! -f "${CONFIG}" ]; then
+  exit 0
+fi
+
+# Check if domain is running
+if [ "$(virsh domstate "${DOMAIN}")" != "running" ]; then
+  exit 0
+fi
+
+# Validate device from VM udev watch config
+VALID="false"
+while IFS= read -r verification; do
+
+  # Skip if all
+  if [ "${verification}" == "all" ]; then
+    VALID="true"
+    break
+  fi
+
+  # Valid matching format: BUS:001
+  if [ "${verification}" == "BUS:${BUSNUM}" ]; then
+    VALID="true"
+    break
+  fi
+
+  # Valid matching format: DEV:002:001
+  if [ "${verification}" == "DEV:${BUSNUM}:${DEVNUM}" ]; then
+    VALID="true"
+    break
+  fi
+
+  # Valid matching format: ID:1d6b:0003
+  if [ "${verification}" == "ID:${ID}" ]; then
+    VALID="true"
+    break
+  fi
+
+done < "${CONFIG}"
+
+# Final check if is valid
+if [ "${VALID}" != "true" ]; then
+  exit 0
+fi
+
+# Print command debug info
+echo "${DOMAIN} ${COMMAND} ${BUSNUM}:${DEVNUM} ${ID}"
+
+# Run command on libvirt
+virsh "${COMMAND}" "${DOMAIN}" --live /dev/stdin <<END
+<hostdev mode="subsystem" type="usb" managed="yes">
+  <source startupPolicy="optional">
+    <vendor id="0x${ID:0:4}"/>
+    <product id="0x${ID:5:4}"/>
+  </source>
+</hostdev>
+END

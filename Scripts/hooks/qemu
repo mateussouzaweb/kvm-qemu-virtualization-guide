@@ -1,0 +1,310 @@
+#!/bin/bash
+
+# Stop on error
+# set -e
+
+# Execution variables
+OBJECT="$1"
+OPERATION="$2"
+ACTION="$3"
+
+VMF="/tmp/vfio-${OBJECT}"
+XML_DUMP="$(</dev/stdin)"
+OPTIONS=$(grep -oPm1 "(?<=<description>)[^<]+" <<< "$XML_DUMP")
+
+#################################
+### ==== Display Manager ==== ###
+#################################
+
+# Stop the given display manager on host, if available
+function stop_display_manager {
+
+  config="${VMF}-display-manager"
+
+  # Detect the running display manager
+  managers=("sddm" "gdm" "lightdm" "lxdm" "xdm" "mdm" "display-manager")
+  for manager in managers; do
+
+    if command -v systemctl; then
+      if systemctl is-active --quiet "$manager.service"; then
+        echo "$manager" >> "$config"
+        systemctl stop "$manager.service"
+      fi
+      while systemctl is-active --quiet "$manager.service"; do
+        sleep "5"
+      done
+      continue
+    fi
+
+  done
+
+}
+
+# Restore the host display manager
+function restore_display_manager {
+
+  config="${VMF}-display-manager"
+
+  # Restore the previously detected display manager
+  while read -r manager; do
+    if command -v systemctl; then
+      systemctl start "$manager.service"
+    fi
+  done < "$config"
+
+  # Clean display manager config
+  if test -e "$config"; then
+    rm -f "$config"
+  fi
+
+}
+
+#################################
+### ======= VTConsole ======= ###
+#################################
+
+# Unbind consoles on host
+function unbind_consoles {
+
+  config="${VMF}-bound-consoles"
+
+  # Unbind consoles
+  for (( i = 0; i < 16; i++)); do
+    if test -x "/sys/class/vtconsole/vtcon${i}"; then
+      value=$(cat "/sys/class/vtconsole/vtcon${i}/name")
+      if [ "$(echo "$value" | grep -c "frame buffer")" = "1" ]; then
+        echo "0" > "/sys/class/vtconsole/vtcon${i}/bind"
+        echo "$i" >> "$config"
+      fi
+    fi
+  done
+
+}
+
+# Rebind previous unbound consoles on host
+function rebind_consoles {
+
+  config="${VMF}-bound-consoles"
+
+  # Rebind previously detected consoles
+  while read -r number; do
+    if test -x "/sys/class/vtconsole/vtcon${number}"; then
+      value=$(cat "/sys/class/vtconsole/vtcon${number}/name")
+      if [ "$(echo "$value" | grep -c "frame buffer")" = "1" ]; then
+        echo "1" > "/sys/class/vtconsole/vtcon${number}/bind"
+      fi
+    fi
+  done < "$config"
+
+  # Clean bound console config
+  if test -e "$config"; then
+    rm -f "$config"
+  fi
+
+}
+
+#################################
+### ====== Framebuffer ====== ###
+#################################
+
+# Unbind framebuffer on host
+function unbind_framebuffer {
+
+  config="${VMF}-bound-framebuffer"
+
+  # Unbind framebuffer
+  if lsmod | grep -E "nvidia|amdgpu" &> /dev/null; then
+    echo "1" > "$config"
+    echo "efi-framebuffer.0" > /sys/bus/platform/drivers/efi-framebuffer/unbind
+  fi
+
+}
+
+# Rebind framebuffer on host
+function rebind_framebuffer {
+
+  config="${VMF}-bound-framebuffer"
+
+  # Restore framebuffer
+  if test -e "$config"; then
+    echo "efi-framebuffer.0" > /sys/bus/platform/drivers/efi-framebuffer/bind
+  fi
+
+  # Clean framebuffer config
+  if test -e "$config"; then
+    rm -f "$config"
+  fi
+
+}
+
+##################################
+### == CPU Scaling Governor == ###
+##################################
+
+# Upgrade CPU scaling governor for more performance
+function upgrade_cpu_scaling_governor {
+
+  config="${VMF}-scaling-governor"
+
+  # Set new scaling governor
+  for index in /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor; do
+    cat "$index" >> "$config"
+    echo "performance" > "$index"
+  done
+
+}
+
+# Restore CPU scaling governor
+function restore_cpu_scaling_governor {
+
+  config="${VMF}-scaling-governor"
+  index=0
+
+  # Restore scaling governor
+  while read -r scaling; do
+    echo "$scaling" > "/sys/devices/system/cpu/cpu${index}/cpufreq/scaling_governor"
+    ((index=index+1))
+  done < "$config"
+
+  # Clean scaling governor config
+  if test -e "$config"; then
+    rm -f "$config"
+  fi
+
+}
+
+##################################
+### ======= CPU Pinning ======= ##
+##################################
+
+# Set CPU pinning by allowing the usage of some specific cores on host
+function set_system_cpu_pinning {
+
+  if command -v systemctl; then
+    systemctl set-property --runtime -- user.slice AllowedCPUs="$1"
+    systemctl set-property --runtime -- system.slice AllowedCPUs="$1"
+    systemctl set-property --runtime -- init.scope AllowedCPUs="$1"
+  fi
+
+}
+
+##################################
+### ======= PCI Devices ======= ##
+##################################
+
+# Set the reset method on given pci device
+function set_pci_reset_method {
+  echo "$2" > "/sys/bus/pci/devices/$1/reset_method"
+}
+
+##################################
+### ======= USB Devices ======= ##
+##################################
+
+# Start watching and attaching USB devices to this VM
+function start_udev_watch_usb_devices {
+  echo "$1" >> "${VMF}-udev-watch"
+}
+
+# Stop watching USB devices to attach to this VM
+function stop_udev_watch_usb_devices {
+
+  config="${VMF}-udev-watch"
+
+  # Clean udev watch USB config
+  if test -e "$config"; then
+    rm "$config"
+  fi
+
+}
+
+##################################
+### ======= QEMU Hooks ======= ###
+##################################
+
+# On prepare begin qemu hook
+function on_prepare_begin {
+
+  for i in "$@"; do
+    case $i in
+      # Enable main GPU passthrough
+      --main-gpu-passthrough)
+        stop_display_manager
+        unbind_consoles
+        unbind_framebuffer
+        shift
+        ;;
+      # Force GPU PCI reset with device specific method
+      --gpu-reset=*)
+        device="${i#*=}"
+        set_pci_reset_method "$device" "device_specific"
+        shift
+        ;;
+      # Enable CPU scaling governor for more performance
+      --scale-cpu)
+        upgrade_cpu_scaling_governor
+        shift
+        ;;
+      # Enable CPU pinning by allowing host use only specific cores
+      --cpu-host-allow=*)
+        allow="${i#*=}"
+        set_system_cpu_pinning "$allow"
+        shift
+        ;;
+      # Enable live USB passthrough
+      --usb-passthrough=*)
+        device="${i#*=}"
+        start_udev_watch_usb_devices "$device"
+        shift
+        ;;
+      # Unknown or ignored
+      *)
+        ;;
+    esac
+  done
+
+}
+
+# On release end qemu hook
+function on_release_end {
+
+  for i in "$@"; do
+    case $i in
+      # Disable main GPU passthrough
+      --main-gpu-passthrough)
+        restore_display_manager
+        rebind_consoles
+        rebind_framebuffer
+        shift
+        ;;
+      # Restore CPU scaling governor
+      --scale-cpu)
+        restore_cpu_scaling_governor
+        shift
+        ;;
+      # Restore CPU core pinning on system
+      --cpu-host-restore=*)
+        restore="${i#*=}"
+        set_system_cpu_pinning "$restore"
+        shift
+        ;;
+      # Disable live USB passthrough
+      --usb-passthrough=*)
+        stop_udev_watch_usb_devices
+        shift
+        ;;
+      # Unknown or ignored
+      *)
+        ;;
+    esac
+  done
+
+}
+
+##################################
+### ======== Execution ======= ###
+##################################
+
+if command -v "on_${OPERATION}_${ACTION}"; then
+  eval "on_${OPERATION}_${ACTION}" "$OPTIONS"
+fi
