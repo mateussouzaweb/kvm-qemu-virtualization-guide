@@ -190,7 +190,7 @@ On Windows, you also will need to put an additional CDROM device for VirtIO pack
 </devices>
 ```
 
-After the OS has been installed, remember to remove the ``<source>`` on the CDROM device to keep it empty or remove the full disk.
+After the OS has been installed, remember to remove the ``<source>`` on the CDROM device or remove the full disk entry.
 
 ## Physical Disks
 
