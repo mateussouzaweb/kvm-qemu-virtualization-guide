@@ -36,25 +36,7 @@ echo "`grep -aoib video ${NAME}.rom | \
   xargs -I OFF dd if=${NAME}.rom of=${NAME}-P.rom bs=OFF skip=1
 ```
 
-When configuring the GPU on the VM, just remember to set the patched ROM file.
-
-**AMD only**: Some AMD graphic cards have vendor reset bug. If you are lucky like me, you need to install the vendor reset package to fix it:
-
-```bash
-# Update and instal kernel packages
-dnf distro-sync
-dnf install -y dkms kernel-devel kernel-headers
-
-# Install module
-git clone https://github.com/gnif/vendor-reset.git
-cd vendor-reset
-dkms install .
-
-# Load module on system boot
-echo 'vendor-reset' >> /etc/modules-load.d/vendor-reset.conf
-```
-
-That is all, just remember the name of the ROM file when creating or configuring the virtual machine.
+That is all, just remember the name of the ROM file when creating or configuring the GPU device into the virtual machine.
 
 ## ISO Management
 

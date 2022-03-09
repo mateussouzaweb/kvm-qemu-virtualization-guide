@@ -62,6 +62,8 @@ done;
 
 For IOMMU groups output, you should have your graphics card in a separate group. This will probably be ok with your main GPU, but for secondary GPUs (if your motherboard supports it), you may need to change the ACS implementation to allow more groups when your motherboard does not do that for you - the process is described below.
 
+Also, if you are using an AMD GPU, chances are that your device has the vendor reset bug. See the related section below to learn how to fix that.
+
 This is everything you need to allow PCI-e Passthrough. You now should be able to create VMs and attach PCI-e devices to it.
 
 Next step: **[Setting up Virtualization Hooks](3%20-%20Virtualization%20Hooks.md)**
@@ -100,3 +102,27 @@ reboot
 ```
 
 Now, check the IOMMU groups again and see if that works. If everything is ok, your next step is: **[Setting up Virtualization Hooks](3%20-%20Virtualization%20Hooks.md)**
+
+----
+
+## Vendor Reset for AMD GPUs
+
+When working with PCI-e passthrough, some AMD graphic cards have the vendor reset bug, resulting in complete black screen or even system freeze. If you are lucky like me, you need to install the vendor reset package to fix this issue.
+
+The steps are pretty simple, just run the following commands to install the package:
+
+```bash
+# Update and instal kernel packages
+dnf distro-sync
+dnf install -y dkms kernel-devel kernel-headers
+
+# Install module
+git clone https://github.com/gnif/vendor-reset.git
+cd vendor-reset
+dkms install .
+
+# Load module on system boot
+echo 'vendor-reset' >> /etc/modules-load.d/vendor-reset.conf
+```
+
+You can continue this guide. The next step is: **[Setting up Virtualization Hooks](3%20-%20Virtualization%20Hooks.md)**
