@@ -271,7 +271,6 @@ If you are having problems with the black screen in your VM, use the VNC display
   <graphics type="vnc" port="-1" autoport="yes" listen="0.0.0.0">
     <listen type="address" address="0.0.0.0"/>
   </graphics>
-  <audio id="1" type="none"/>
   <video>
     <model type="bochs" vram="16384" heads="1" primary="yes"/>
     <address type="pci" domain="0x0000" bus="0x00" slot="0x01" function="0x0"/>
