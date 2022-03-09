@@ -176,7 +176,6 @@ Basic commands:
 
 ```bash
 virsh list --all # List all VMs
-
 virsh edit ${NAME} # Edit VM XML
 virsh start ${NAME} # Start the VM
 virsh console ${NAME} # Enters in VM console

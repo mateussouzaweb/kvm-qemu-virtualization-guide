@@ -206,6 +206,8 @@ You can add a physical disks into VMs. This is very useful if you have and disk 
 </devices>
 ```
 
+**TIP:** the same entry format can be used to attach LVM partitions.
+
 ## GPU Passthrough and VGA Bios
 
 **IMPORTANT**: To see boot menu, you must use the console entry on Cockpit or with the command ``virsh console ${NAME}``.
