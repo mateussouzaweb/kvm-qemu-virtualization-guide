@@ -10,7 +10,7 @@ The guide is primary designed to run Fedora Server as a hypervisor with [Cockpit
 
 ## What to Expect
 
-- Easy guide.
+- Easy guide if you already have KVM / QEMU knowledge.
 - Virtualization that just works.
 - Isolated and secure host system to just run VMs.
 - Best practices for maximum performance in VMs.
