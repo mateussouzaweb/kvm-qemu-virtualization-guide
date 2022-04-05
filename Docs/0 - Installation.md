@@ -23,7 +23,8 @@ dnf install -y vim wget \
     curl openssl \
     zip htop \
     git git-core \
-    terminus-fonts-console
+    terminus-fonts-console \
+    python3 python3-pip
 ```
 
 Now, install virtualization packages:
