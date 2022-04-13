@@ -74,7 +74,7 @@ Once creating the VM, just remember the name of the ISO file.
 
 ## Disk Management
 
-Every virtual machine will need an exclusive disk to run. Usually, ``.qcow2`` or ``.raw`` disk images are used on this subject, but we will use a different approach targeting best performance. That way, the recommended mode of creating VMs disk to achieve maximum performance is via LVM partitions inside the host or with directly attached disk. If you don't have an extra high-speed disk like SSD or NVME disk to directly attach to the VM, use the command below to create a new partition exclusively to that VM inside the host disk:
+Every virtual machine will need an exclusive disk to run. Usually, ``.qcow2`` or ``.raw`` disk images are used on this subject, but we will use a different approach with directly attached disk or LVM partitions targeting best performance. If you don't have an extra high-speed disk like SSD or NVME disk to directly attach to the VM, use the command below to create a new partition exclusively to that VM inside the host disk:
 
 ```bash
 lvcreate -n ${NAME} -L 100G ${VOLUME_GROUP}
@@ -126,7 +126,7 @@ virt-install \
   --serial type=pty,target.model.name=isa-serial,target.port=0,target.type=isa-serial \
   --console type=pty,target.type=serial,target.port=0 \
   --channel unix,target_type=virtio,name=org.qemu.guest_agent.0 \
-  --disk format=raw,path=${DISK} \
+  --disk format=raw,cache=writeback,io=io_uring,discard=unmap,path=${DISK} \
   --disk device=cdrom,bus=sata,source.file=/var/lib/libvirt/images/${CDROM} \
   --os-variant ${VARIANT} \
   --name ${NAME} \

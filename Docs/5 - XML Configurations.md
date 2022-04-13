@@ -199,7 +199,7 @@ You can add a physical disks into VMs. This is very useful if you have and disk 
 ```xml
 <devices>
   <disk type="block" device="disk">
-    <driver name="qemu" type="raw" cache="none" io="native"/>
+    <driver name="qemu" type="raw" cache="writeback" io="io_uring" discard="unmap"/>
     <source dev="/dev/sda"/>
     <target dev="sdb" bus="virtio"/>
   </disk>
