@@ -41,6 +41,17 @@ nmcli connection up ${BRIDGE_NAME}
 nmcli connection show ${BRIDGE_NAME}
 ```
 
+If your motherboard also has WiFi and you want to completely disable it, just run the command below to do it. By disabling WiFi (a service not used in our case), you can avoid some bugs along the way reducing the need of system maintenance:
+
+```bash
+# Disable radio
+nmcli radio wifi off
+
+# Stop service
+systemctl disable wpa_supplicant
+systemctl stop wpa_supplicant
+```
+
 Very good! You network is ready now.
 
 ----
