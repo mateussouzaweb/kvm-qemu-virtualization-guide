@@ -50,7 +50,7 @@ mkdir -p /var/lib/libvirt/images/
 cd /var/lib/libvirt/images/
 
 # Now download the ISO you want
-wget https://releases.ubuntu.com/20.04/ubuntu-20.04.3-desktop-amd64.iso
+wget http://releases.ubuntu.com/jammy/ubuntu-22.04-desktop-amd64.iso
 
 # VirtIO drivers for Windows
 wget https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/latest-virtio/virtio-win.iso
@@ -99,9 +99,9 @@ To create a VM directly from CLI, use the following command. This process is sli
 
 ```bash
 # Edit variables
-CDROM="ubuntu-21.10.iso"
+CDROM="ubuntu-22.04.iso"
 DISK="/dev/hypervisor/ubuntu"
-VARIANT="ubuntu21.10"
+VARIANT="ubuntu22.04"
 NAME="ubuntu"
 
 # Generate basic XML config
