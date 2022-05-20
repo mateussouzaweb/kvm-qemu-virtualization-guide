@@ -76,10 +76,10 @@ Some motherboards have a crappy IOMMU implementation, resulting in issues to pas
 
 ```bash
 #
-# For kernel 5.16.9
+# For kernel 5.17.6
 # Check other versions at https://github.com/some-natalie/fedora-acs-override/actions
 #
-LINK="https://github.com/some-natalie/fedora-acs-override/suites/5354626282/artifacts/167744633"
+LINK="https://github.com/some-natalie/fedora-acs-override/suites/6503934557/artifacts/241734277"
 
 curl -o kernel-acs-override.zip -L ${LINK}
 unzip kernel-acs-override.zip -d kernel-acs-override
