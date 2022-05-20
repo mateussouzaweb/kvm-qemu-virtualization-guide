@@ -23,6 +23,7 @@ Replace ``$OPTIONS`` with the appropriated parameters for your case:
 - Enable support for host CPU model inside VMs: ``kvm.ignore_msrs=1 kvm.report_ignored_msrs=0``
 - Disable fallback video output: ``video=vesafb:off video=efifb:off``
 - Make VFIO loads first: ``rd.driver.pre=vfio-pci``
+- Disable nouveau for Nvidia: ``nouveau.modeset=0``
 
 Save the file once done. \
 Now, enable the VFIO module on system load with the following command:
