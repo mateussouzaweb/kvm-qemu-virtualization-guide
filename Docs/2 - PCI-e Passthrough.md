@@ -85,7 +85,7 @@ LINK="https://github.com/some-natalie/fedora-acs-override/suites/6503934557/arti
 curl -o kernel-acs-override.zip -L ${LINK}
 unzip kernel-acs-override.zip -d kernel-acs-override
 cd kernel-acs-override
-dnf install *.rpm
+dnf install --allowerasing *.rpm
 ```
 
 Edit the grub config and add the extra flag ``pcie_acs_override=downstream,multifunction`` on the parameters like you did before:
