@@ -7,7 +7,7 @@ First, make sure ``IOMMU`` and ``SVM`` (AMD) / ``VD-t`` (Intel) is enabled in yo
 Now, we will change the boot params of the host to enable the support for PCI-e Passthrough on the system:
 
 ```bash
-vim /etc/sysconfig/grub
+vim /etc/default/grub
 ```
 
 ```bash
@@ -91,7 +91,7 @@ dnf install --allowerasing *.rpm
 Edit the grub config and add the extra flag ``pcie_acs_override=downstream,multifunction`` on the parameters like you did before:
 
 ```bash
-vim /etc/sysconfig/grub
+vim /etc/default/grub
 ```
 
 To finish, rebuild boot details and restart:
