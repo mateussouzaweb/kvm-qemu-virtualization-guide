@@ -21,9 +21,10 @@ Replace ``$OPTIONS`` with the appropriated parameters for your case:
 - Enable AMD IOMMU: ``amd_iommu=on iommu=pt``
 - Enable important features on AMD: ``kvm_amd.npt=1 kvm_amd.avic=1 kvm_amd.nested=1 kvm_amd.sev=1``
 - Enable support for host CPU model inside VMs: ``kvm.ignore_msrs=1 kvm.report_ignored_msrs=0``
-- Disable fallback video output: ``video=vesafb:off video=efifb:off``
 - Make VFIO loads first: ``rd.driver.pre=vfio-pci``
-- Disable nouveau for Nvidia: ``nouveau.modeset=0``
+- Disable fallback video output: ``video=vesafb:off video=efifb:off``
+- Disable nouveau for Nvidia GPUs: ``nouveau.modeset=0``
+- Disable ASPM for AMD GPUs: ``amdgpu.aspm=0``
 
 Save the file once done. \
 Now, enable the VFIO module on system load with the following command:
