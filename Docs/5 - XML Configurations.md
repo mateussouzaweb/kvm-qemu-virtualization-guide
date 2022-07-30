@@ -221,14 +221,14 @@ Once you have the ROM file configured on the hypervisor system (if necessary), e
     <source>
       <address domain="0x0000" bus="0x09" slot="0x00" function="0x0"/>
     </source>
-    <rom file="/usr/share/vgabios/GP104-P.rom"/>
+    <rom file="/var/lib/libvirt/vbios/GP104-P.rom"/>
     <address type="pci" domain="0x0000" bus="0x07" slot="0x00" function="0x0"/>
   </hostdev>
   <hostdev mode="subsystem" type="pci" managed="yes">
     <source>
       <address domain="0x0000" bus="0x09" slot="0x00" function="0x1"/>
     </source>
-    <rom file="/usr/share/vgabios/GP104-P.rom"/>
+    <rom file="/var/lib/libvirt/vbios/GP104-P.rom"/>
     <address type="pci" domain="0x0000" bus="0x07" slot="0x00" function="0x1"/>
   </hostdev>
 
@@ -237,14 +237,14 @@ Once you have the ROM file configured on the hypervisor system (if necessary), e
     <source>
       <address domain="0x0000" bus="0x08" slot="0x00" function="0x0"/>
     </source>
-    <rom file="/usr/share/vgabios/NAVI14.rom"/>
+    <rom file="/var/lib/libvirt/vbios/NAVI14.rom"/>
     <address type="pci" domain="0x0000" bus="0x07" slot="0x00" function="0x0"/>
   </hostdev>
   <hostdev mode="subsystem" type="pci" managed="yes">
     <source>
       <address domain="0x0000" bus="0x08" slot="0x00" function="0x1"/>
     </source>
-    <rom file="/usr/share/vgabios/NAVI14.rom"/>
+    <rom file="/var/lib/libvirt/vbios/NAVI14.rom"/>
     <address type="pci" domain="0x0000" bus="0x07" slot="0x00" function="0x1"/>
   </hostdev>
 </devices>

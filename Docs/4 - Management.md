@@ -4,7 +4,7 @@ Before creating and configuring the first virtual machine, it's important to lea
 
 ## VGA BIOS Management
 
-**INFO:** Every GPU BIOS must be located at ``/usr/share/vgabios/``.
+**INFO:** Every GPU BIOS must be located at ``/var/lib/libvirt/vbios/``.
 
 To avoid issues with GPU cards inside VMs, we recommend extracting the GPU ROM BIOS. If you know that your GPU card doesn't need it, just skip this process, otherwise, you need to run this just once.
 
@@ -20,12 +20,16 @@ After extracting, login on the main host and run the command below to copy the R
 
 ```bash
 # Create folder if not exists
-mkdir -p /usr/share/vgabios/
+mkdir -p /var/lib/libvirt/vbios/
 
 # Copy ROM file from where you saved it
 cd /mnt/files/
-cp GP104.rom /usr/share/vgabios/ # Nvidia GPU
-cp NAVI14.rom /usr/share/vgabios/ # AMD GPU
+cp GP104.rom /var/lib/libvirt/vbios/ # Nvidia GPU
+cp NAVI14.rom /var/lib/libvirt/vbios/ # AMD GPU
+
+# Fix permissions on ROMs
+chmod -R 660 /var/lib/libvirt/vbios/*
+/sbin/restorecon -R -vF /var/lib/libvirt
 ```
 
 **NVIDIA only**: If you need to patch the GPU BIOS in order to avoid ``code 43`` issue, use the following command to create a patched ROM version of our GPU BIOS:
