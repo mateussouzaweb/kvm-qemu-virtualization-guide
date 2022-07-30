@@ -29,6 +29,7 @@ cp NAVI14.rom /var/lib/libvirt/vbios/ # AMD GPU
 
 # Fix permissions on ROMs
 chmod -R 660 /var/lib/libvirt/vbios/*
+chown -R qemu:qemu /var/lib/libvirt/vbios/
 /sbin/restorecon -R -vF /var/lib/libvirt
 ```
 
