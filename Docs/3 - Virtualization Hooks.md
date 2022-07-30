@@ -36,7 +36,7 @@ USB:
 Use the process below to create and install the QEMU hooks (you can study the code to learn more if you are a programmer or sysadmin):
 
 ```bash
-REPOSITORY="https://github.com/mateussouzaweb/kvm-qemu-virtualization-guide/Scripts/hooks"
+REPOSITORY="https://mateussouzaweb.github.io/kvm-qemu-virtualization-guide/Scripts/hooks"
 DESTINATION="/etc/libvirt/hooks"
 
 mkdir -p ${DESTINATION} ${DESTINATION}/udev
