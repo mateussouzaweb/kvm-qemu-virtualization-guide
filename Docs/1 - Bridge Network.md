@@ -12,6 +12,9 @@ Run the following commands to create the bridge network with the host adapter, d
 # See current network details
 nmcli
 
+# Delete libvirt auto create bridge if available
+# nmcli connection delete virbr0
+
 # Define variables
 # Use the current network details to fill these variables
 BRIDGE_NAME="br0"
