@@ -74,22 +74,17 @@ Next step: **[Setting up Virtualization Hooks](3%20-%20Virtualization%20Hooks.md
 
 ## ACS Patch to Fix IOMMU Groups
 
-Some motherboards have a crappy IOMMU implementation, resulting in issues to passthrough PCI-e devices because they are attached to the same group as other devices. If you have such issue with your motherboard, fortunately there is a kernel patch (ACS override patch) that can solve these issues with a bit of security breach. You can install it following the commands below:
+Some motherboards have a crappy IOMMU implementation, resulting in issues to passthrough PCI-e devices because they are attached to the same group as other devices. If you have such issue with your motherboard, fortunately there is a kernel patch (ACS override patch) that can solve these issues with a bit of security breach. 
+
+First, go to <https://github.com/some-natalie/fedora-acs-override/actions> and download the latest kernel version available (you must log in on GitHub first to download files). After completing the download, if necessary, transfer the file to the server and run the following commands to install it:
 
 ```bash
-#
-# For kernel 5.17.6
-# Check other versions at https://github.com/some-natalie/fedora-acs-override/actions
-#
-LINK="https://github.com/some-natalie/fedora-acs-override/suites/6503934557/artifacts/241734277"
-
-curl -o kernel-acs-override.zip -L ${LINK}
-unzip kernel-acs-override.zip -d kernel-acs-override
+unzip kernel-${VERSION}-acs-override-rpms.zip -d kernel-acs-override
 cd kernel-acs-override
 dnf install --allowerasing *.rpm
 ```
 
-Edit the grub config and add the extra flag ``pcie_acs_override=downstream,multifunction`` on the parameters like you did before:
+Now, edit the grub config and add the extra flag ``pcie_acs_override=downstream,multifunction`` on the parameters like you did before:
 
 ```bash
 vim /etc/default/grub
