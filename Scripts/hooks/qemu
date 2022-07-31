@@ -113,7 +113,7 @@ function unbind_framebuffer {
   config="${VMF}-bound-framebuffer"
 
   # Unbind framebuffer
-  if lsmod | grep -E "nvidia|amdgpu" &> /dev/null; then
+  if [ -s /proc/fb ] && [ lsmod | grep -E "nvidia|amdgpu" &> /dev/null ]; then
     echo "1" > "$config"
     echo "efi-framebuffer.0" > /sys/bus/platform/drivers/efi-framebuffer/unbind
   fi
