@@ -45,17 +45,6 @@ dnf install -y \
 systemctl enable libvirtd --now
 ```
 
-We also install the nightly builds of OVMF. The recent build of OVMF has an issue with BIOS and we want to avoid these issues with VMs until a new release is available:
-
-```bash
-# Add repository
-dnf install dnf-plugins-core
-dnf config-manager --add-repo http://www.kraxel.org/repos/firmware.repo
-
-# Install package
-dnf install -y edk2.git-ovmf-x64
-```
-
 Reboot and you are done:
 
 ```bash
