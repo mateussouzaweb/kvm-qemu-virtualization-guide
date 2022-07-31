@@ -9,8 +9,8 @@ OPERATION="$2"
 ACTION="$3"
 
 VMF="/tmp/vfio-${OBJECT}"
-XML_DUMP="$(</dev/stdin)"
-OPTIONS=$(grep -oPm1 "(?<=<description>)[^<]+" <<< "$XML_DUMP")
+XML="/etc/libvirt/qemu/${OBJECT}.xml"
+OPTIONS=$(grep -oPm1 "(?<=<description>)[^<]+" "${XML}")
 
 #################################
 ### ==== Display Manager ==== ###
