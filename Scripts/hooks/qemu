@@ -7,9 +7,15 @@
 OBJECT="$1"
 OPERATION="$2"
 ACTION="$3"
+XML="/etc/libvirt/qemu/${OBJECT}.xml"
+
+# Check if file exists
+# We check this to avoid qemu hooks on other objects that are not VMs
+if [ ! -f "$XML" ]; then
+  exit 0
+fi
 
 VMF="/tmp/vfio-${OBJECT}"
-XML="/etc/libvirt/qemu/${OBJECT}.xml"
 OPTIONS=$(grep -oPm1 "(?<=<description>)[^<]+" "${XML}")
 
 #################################
