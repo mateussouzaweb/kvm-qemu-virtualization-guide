@@ -348,6 +348,19 @@ For other devices like USB drivers, gamepads, headphones, and many more that are
 
 Please keep in mind that you must only plug in the device after VM has been started to trigger the hook. If the device should start connected on the VM, then you must setup it XML like described before (USB mouse and keyboard on Windows and MacOS VMs need this).
 
+Also, it is important to notice that some USB devices can present detection and power issues because of the way they operate inside the host - this is special true for USB Bluetooth devices in motherboards. In such cases, you may need to change the QEMU USB device mapping format by adding the following XML tag:
+
+```xml
+<!-- Make sure domain contains the XML namespace for QEMU -->
+<domain xmlns:qemu="http://libvirt.org/schemas/domain/qemu/1.0">
+
+  <!-- Append this entry -->
+  <qemu:capabilities>
+    <qemu:del capability="usb-host.hostdevice"/>
+  </qemu:capabilities>
+</domain>
+```
+
 ## Bridge Network
 
 Use the following model to setup an extra bridge network if necessary:
