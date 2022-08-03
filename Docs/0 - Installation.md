@@ -6,9 +6,9 @@ Other distributions always resulted in problems for me or got a process more com
 
 ## How to Install
 
-Simply install the operational system in your machine if it has not been done yet.
+First, install the operational system in your machine if it has not been done yet.
 
-I do recommend installing with **root** user only because this will prevent any access level issue that you can have. If you choose to have another user, remember to use ``sudo`` (or ``sudo su``) on the commands of this process.
+If you are not using the **root** user, remember to use ``sudo`` (or ``sudo su``) on the commands of this process and after each reboot.
 
 If you have another machine and can connect to it via SSH, that would be great too, copy and paste are much faster than manual typing these commands.
 
@@ -43,6 +43,21 @@ dnf install -y \
 
 # Enable the service
 systemctl enable libvirtd --now
+```
+
+For setups with other users that are not the **root** user, you also need to make sure users always connect to QEMU system URI because only this endpoint has access to the host resources. For each user that will run VMs, run the following commands:
+
+```bash
+# Update with correct username
+USERNAME="mateussouzaweb"
+
+# Apply group permissions to the user
+usermod -a -G libvirt,kvm ${USERNAME}
+
+# Create config directory and append configuration
+DESTINATION="/home/${USERNAME}/.config/libvirt"
+mkdir -p ${DESTINATION}
+echo 'uri_default = "qemu:///system"' >> "${DESTINATION}/libvirt.conf"
 ```
 
 Reboot and you are done:
