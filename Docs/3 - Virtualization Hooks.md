@@ -18,8 +18,7 @@ The current list of available feature options is:
 
 GPU:
 
-- ``--main-gpu-passthrough``: Enables **single GPU passthrough** support in KVM/QEMU virtual machines, by automatically attach/detach the GPU from the host and dynamically attach it to the VM and vice versa (please notice that this is required only if your setup contains only one GPU. This also will end the current host display session, requiring login again after VM has been stopped).
-- ``--gpu-reset=$ID``: Define the reset method of the referenced PCI device to *device_specific*. This is required if you have an AMD GPU with vendor reset bug on kernel 5.15+.
+- ``--gpu-passthrough=$ID,$VGA,$AUDIO``: Enables **GPU passthrough** support in KVM/QEMU virtual machines, by automatically attach/detach the GPU from the host and dynamically attach it to the VM and vice versa. This is all in one solution that works for **single GPU passthrough setups** or more. To passthrough the main GPU that is being used at your system, set ID as ``main``, otherwise you can set any ID for identification for example: ``nvidia``, ``amd``, ``secondary``... Please notice that if you set ID as ``main``, the hook will end the current host display session to free the GPU and you will be required to login again after VM has been stopped.
 
 CPU:
 

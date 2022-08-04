@@ -51,6 +51,11 @@ function restore_display_manager {
 
   config="${VMF}-display-manager"
 
+  # Check if file exists
+  if ! test -e "$config"; then
+    return
+  fi
+
   # Restore the previously detected display manager
   while read -r manager; do
     if command -v systemctl; then
@@ -59,9 +64,7 @@ function restore_display_manager {
   done < "$config"
 
   # Clean display manager config
-  if test -e "$config"; then
-    rm -f "$config"
-  fi
+  rm -f "$config"
 
 }
 
@@ -92,6 +95,11 @@ function rebind_consoles {
 
   config="${VMF}-bound-consoles"
 
+  # Check if file exists
+  if ! test -e "$config"; then
+    return
+  fi
+
   # Rebind previously detected consoles
   while read -r number; do
     if test -x "/sys/class/vtconsole/vtcon${number}"; then
@@ -103,10 +111,8 @@ function rebind_consoles {
   done < "$config"
 
   # Clean bound console config
-  if test -e "$config"; then
-    rm -f "$config"
-  fi
-
+  rm -f "$config"
+  
 }
 
 #################################
@@ -131,15 +137,102 @@ function rebind_framebuffer {
 
   config="${VMF}-bound-framebuffer"
 
-  # Restore framebuffer
-  if test -e "$config"; then
-    echo "efi-framebuffer.0" > /sys/bus/platform/drivers/efi-framebuffer/bind
+  # Check if file exists
+  if ! test -e "$config"; then
+    return
   fi
 
+  # Restore framebuffer
+  echo "efi-framebuffer.0" > /sys/bus/platform/drivers/efi-framebuffer/bind
+  
   # Clean framebuffer config
-  if test -e "$config"; then
-    rm -f "$config"
+  rm -f "$config"
+  
+}
+
+##################################
+## ======= GPU Devices ======= ###
+##################################
+
+# Release GPU to be used by VFIO
+function release_gpu {
+
+  # Special case for main GPU
+  [ "$1" == "main" ] && stop_display_manager
+  [ "$1" == "main" ] && unbind_consoles
+  [ "$1" == "main" ] && unbind_framebuffer
+  
+  # Extract data
+  vga="/sys/bus/pci/devices/${2}"
+  audio="/sys/bus/pci/devices/${3}"
+  driver=$(basename $(readlink "${vga}/driver"))
+  mixer=$(basename $(readlink "${audio}/driver"))
+  port=$(basename $(dirname $(readlink "${vga}")))
+  
+  # Set config info
+  echo "$port" > "${VMF}-${1}-gpu-port"
+  echo "$driver" > "${VMF}-${1}-gpu-driver"
+  echo "$mixer" > "${VMF}-${1}-gpu-mixer"
+
+  # Fix AMD GPU reset method
+  if [ "$driver" == "amdgpu" ]; then
+    echo "device_specific" > "${vga}/reset_method"
+    echo "device_specific" > "${audio}/reset_method"
   fi
+  
+  # Unbind vga and audio from host
+  [ ! -z "$driver" ] && echo "$2" > "/sys/bus/pci/drivers/${driver}/unbind"
+  [ ! -z "$mixer" ] && echo "$3" > "/sys/bus/pci/drivers/${mixer}/unbind"
+
+  virsh nodedev-detach "pci_${2//:/_}"
+  virsh nodedev-detach "pci_${3//:/_}"
+
+  # Bind to VFIO
+  #echo "$2" > /sys/bus/pci/drivers/vfio-pci/bind
+  #echo "$3" > /sys/bus/pci/drivers/vfio-pci/bind 
+  
+}
+
+# Restore GPU to the system
+function restore_gpu {
+
+  # Extract data
+  vga="/sys/bus/pci/devices/${2}"
+  audio="/sys/bus/pci/devices/${3}"
+  driver=$(cat ${VMF}-${1}-gpu-driver)
+  mixer=$(cat ${VMF}-${1}-gpu-mixer)
+  port=$(cat ${VMF}-${1}-gpu-port)
+
+  # Unbind vga and audio from VFIO
+  virsh nodedev-reattach "pci_${2//:/_}"
+  virsh nodedev-reattach "pci_${3//:/_}"
+
+  # Remove devices so can be detected again
+  echo "1" > "${vga}/remove"
+  echo "1" > "${audio}/remove"
+  sleep "0.1"
+
+  # Rescan such devices only
+  echo "1" > "/sys/bus/pci/devices/${port}/rescan"
+  sleep "0.1"
+
+  # Check for drivers
+  if [ ! -z "$driver" ] && [ ! -d "${vga}/driver" ]; then
+    echo "$2" > "/sys/bus/pci/drivers/${driver}/bind"
+  fi
+  if [ ! -z "$mixer" ] && [ ! -d "${audio}/driver" ]; then
+    echo "$3" > "/sys/bus/pci/drivers/${mixer}/bind"
+  fi
+
+  # Clean GPU config
+  rm -f "${VMF}-${1}-gpu-port"
+  rm -f "${VMF}-${1}-gpu-driver"
+  rm -f "${VMF}-${1}-gpu-mixer"
+
+  # Special case for main GPU
+  [ "$1" == "main" ] && restore_display_manager
+  [ "$1" == "main" ] && rebind_consoles
+  [ "$1" == "main" ] && rebind_framebuffer
 
 }
 
@@ -164,18 +257,22 @@ function upgrade_cpu_scaling_governor {
 function restore_cpu_scaling_governor {
 
   config="${VMF}-scaling-governor"
-  index=0
+  
+  # Check if file exists
+  if ! test -e "$config"; then
+    return
+  fi
+
 
   # Restore scaling governor
+  index=0
   while read -r scaling; do
     echo "$scaling" > "/sys/devices/system/cpu/cpu${index}/cpufreq/scaling_governor"
     ((index=index+1))
   done < "$config"
 
   # Clean scaling governor config
-  if test -e "$config"; then
-    rm -f "$config"
-  fi
+  rm -f "$config"
 
 }
 
@@ -195,15 +292,6 @@ function set_system_cpu_pinning {
 }
 
 ##################################
-### ======= PCI Devices ======= ##
-##################################
-
-# Set the reset method on given pci device
-function set_pci_reset_method {
-  echo "$2" > "/sys/bus/pci/devices/$1/reset_method"
-}
-
-##################################
 ### ======= USB Devices ======= ##
 ##################################
 
@@ -217,10 +305,13 @@ function stop_udev_watch_usb_devices {
 
   config="${VMF}-udev-watch"
 
-  # Clean udev watch USB config
-  if test -e "$config"; then
-    rm "$config"
+  # Check if file exists
+  if ! test -e "$config"; then
+    return
   fi
+
+  # Clean udev watch USB config
+  rm "$config"
 
 }
 
@@ -233,17 +324,10 @@ function on_prepare_begin {
 
   for i in "$@"; do
     case $i in
-      # Enable main GPU passthrough
-      --main-gpu-passthrough)
-        stop_display_manager
-        unbind_consoles
-        unbind_framebuffer
-        shift
-        ;;
-      # Force GPU PCI reset with device specific method
-      --gpu-reset=*)
-        device="${i#*=}"
-        set_pci_reset_method "$device" "device_specific"
+      # Enable live GPU passthrough
+      --gpu-passthrough=*)
+        info=($(echo "${i#*=}" | tr ',' ' '))
+        release_gpu "${info[@]}"
         shift
         ;;
       # Enable CPU scaling governor for more performance
@@ -276,11 +360,10 @@ function on_release_end {
 
   for i in "$@"; do
     case $i in
-      # Disable main GPU passthrough
-      --main-gpu-passthrough)
-        restore_display_manager
-        rebind_consoles
-        rebind_framebuffer
+      # Disable live GPU passthrough
+      --gpu-passthrough=*)
+        info=($(echo "${i#*=}" | tr ',' ' '))
+        restore_gpu "${info[@]}"
         shift
         ;;
       # Restore CPU scaling governor
