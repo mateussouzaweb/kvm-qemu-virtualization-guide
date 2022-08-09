@@ -27,15 +27,15 @@ else
 fi
 
 # Domain can be passed from script variables
-# If not present, try to get the first one from active VMs with udev watch enabled
+# If not present, try to get the first one from active VMs with USB watch enabled
 if [ -z "${DOMAIN}" ]; then
-  for file in $(ls /tmp/vfio-*-udev-watch); do
-    DOMAIN=$(echo "${file/\/tmp\/vfio-/}" | sed "s/-udev-watch//")
+  for file in $(ls /tmp/vfio-*-usb-watch); do
+    DOMAIN=$(echo "${file/\/tmp\/vfio-/}" | sed "s/-usb-watch//")
   done
 fi
 
 # Determine config file for domain
-CONFIG="/tmp/vfio-${DOMAIN}-udev-watch"
+CONFIG="/tmp/vfio-${DOMAIN}-usb-watch"
 
 # Check exists domain and udev watch rules
 if [ -z "${DOMAIN}" ] || [ ! -f "${CONFIG}" ]; then

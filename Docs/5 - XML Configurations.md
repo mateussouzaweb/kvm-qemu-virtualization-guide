@@ -54,7 +54,7 @@ For a desktop VM you could use an 8-core setup like below (notice that ``cpuset`
 </cpu>
 ```
 
-In the case of a server VM, you could use a 4-core setup with the following syntax to isolate its cores from the desktop VM:
+In the case of running a server VM in parallel, you could use a 4-core setup with the following syntax to isolate its cores from the desktop VM:
 
 ```xml
 <vcpu cpuset="2,3,10,11">4</vcpu>
@@ -71,16 +71,10 @@ In the case of a server VM, you could use a 4-core setup with the following synt
 </cpu>
 ```
 
-You can also increase the performance of CPU by setting the performance mode on host. To enable it, just declare scale CPU hook:
+Notice that the cores 0, 1, 8 and 9 (the first 4 threads) were not declared on such XMLs because they will be reserved to the host. We also should declare such cores as preserved to fully isolate CPUs from the host. We also should scale CPU to performance mode on host to increase responsiveness on running VMs:
 
 ```xml
-<description>--scale-cpu</description>
-```
-
-You also can configure CPU pinning to fully isolate CPUs and increase performance on VM. On the case below, we are allowing the host to use only the first 4 threads when VM starts and then restore all 16 threads to the host when the VM stops:
-
-```xml
-<description>--cpu-host-allow=0,1,8,9 --cpu-host-restore=0-15</description>
+<description>--scale-cpu --preserve-cpu=0,1,8,9</description>
 ```
 
 ## Linux Enhancements
@@ -250,16 +244,14 @@ Once you have the ROM file configured on the hypervisor system (if necessary), e
 </devices>
 ```
 
-If you have only one GPU, don`t forget to declare the main GPU passthrough hook option:
+Since we are attaching the GPU to the VM, we must set the hook option with such reference:
 
 ```xml
-<description>--main-gpu-passthrough</description>
-```
+<!-- If you have only one GPU or is attaching the main GPU -->
+<description>--gpu-passthrough=main,09:00.0,09:00.1</description>
 
-And if you are running an AMD GPU, we recommend set the GPU reset on such device:
-
-```xml
-<description>--gpu-reset=0000:08:00.0</description>
+<!-- If you are attaching other GPU -->
+<description>--gpu-passthrough=secondary,08:00.0,08:00.1</description>
 ```
 
 This was everything that I need to make my GPUs works. In my experience, I don't need to remove the VNC display after OS installation, it will work as a boot display only to manage the boot options.

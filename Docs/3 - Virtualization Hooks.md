@@ -23,8 +23,7 @@ GPU:
 CPU:
 
 - ``--scale-cpu``: Sets the CPU scaling governor as *performance* mode on the host system to increase performance of running virtual machines. Restore on VM shutdown.
-- ``--cpu-host-allow=$CORES``: Set CPU pinning when the VM is being started. You should set only the host allowed CPU cores (cores not used by the VM).
-- ``--cpu-host-restore=$CORES``: Restore CPU pinning on VM shutdown. In most of the use cases, all system CPU cores should be restored.
+- ``--preserve-cpu=$CORES``: Set the cores on the CPU to be preserved to the host, while dedicating others cores to VMs. This is the same as setting the CPU pinning when the VM is being started and restore CPU pinning on VM shutdown.
 
 USB:
 
