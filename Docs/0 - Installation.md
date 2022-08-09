@@ -36,13 +36,26 @@ dnf install -y \
     libvirt \
     virt-install \
     libguestfs-tools \
+    cockpit \
     cockpit-machines
 
 # Make sure permissions are correct
 /sbin/restorecon -R -vF /var/lib/libvirt
 
 # Enable the service
-systemctl enable libvirtd --now
+systemctl enable --now libvirtd 
+systemctl enable --now cockpit.socket
+
+# Enable firewall
+firewall-cmd --add-service=cockpit
+firewall-cmd --add-service=cockpit --permanent
+```
+
+If you are using a full-fledged desktop, also install the GUI software:
+
+```bash
+# Desktop mode ONLY
+dnf install -y libgovirt virt-viewer virt-manager
 ```
 
 For setups with other users that are not the **root** user, you also need to make sure users always connect to QEMU system URI because only this endpoint has access to the host resources. For each user that will run VMs, run the following commands:
@@ -68,7 +81,7 @@ reboot
 
 Congratulations!
 
-You can now access the web UI of Cockpit with another machine for remote management with the address format ``https://$IP:9090/``.
+You can now access the web UI of Cockpit with another machine for remote management with the address format ``https://$IP:9090/``. For the desktop mode, you can also use the Virt Manager application to manage VMs.
 
 After this process, you should have the necessary packages to run basic virtualization and we can proceed to tweak the system for full and greater virtualization!
 

@@ -1,10 +1,10 @@
 # KVM / QEMU Virtualization Guide
 
-This guide is based on my own experience and hacks on running virtual machines. You already may have knowledge on this topic, so I will try to keep things simple and go direct to the point.
+This guide is based on my own experience and hacks on running virtual machines. You already may have knowledge on this topic, so I will try to keep things simple and get directly to the point.
 
-Our object is just one: have a **full working virtualization platform with QEMU using KVM as hypervisor** and run Linux, MacOS, Windows OS and any other operational system inside virtual machines with great performance, even for gaming!
+Our object is just one: have a **full working virtualization platform with QEMU using KVM as hypervisor** to run Linux, MacOS, Windows OS and any other operational system inside virtual machines with great performance, even for gaming! 
 
-The guide is primary designed to run Fedora Server as a hypervisor with [Cockpit](https://cockpit-project.org/) as graphical user interface. The idea is that we just run VMs on top of it while keeping the host OS safe and untouched. That approach has the advantage of always having a working host system and prevents us breaking the entire system while running updates, installing broken packages or messing up with the configuration... you get the ideia.
+Finally, and most important, the guide is primarily designed to run Fedora Server as a hypervisor with [Cockpit](https://cockpit-project.org/) as graphical user interface but I am also including instructions to run on Fedora Workstation if you want a full desktop graphical interface experience on the hypervisor.
 
 ----
 
