@@ -434,5 +434,3 @@ I will update this configuration guide once I learn more relevant details in the
 - **[Linux Virtualization](5.1%20-%20Linux.md)**
 - **[Windows Virtualization](5.2%20-%20Windows.md)**
 - **[MacOS Virtualization](5.3%20-%20MacOS.md)**
-- **[Android Virtualization](5.4%20-%20Android.md)**
-- **[Chrome OS Virtualization](5.5%20-%20Chrome%20OS.md)**

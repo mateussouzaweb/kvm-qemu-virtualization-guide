@@ -41,5 +41,3 @@ Follow the guides inside the ```Docs``` folder or use the links below for a spec
   - **[Linux Virtualization](Docs/5.1%20-%20Linux.md)**
   - **[Windows Virtualization](Docs/5.2%20-%20Windows.md)**
   - **[MacOS Virtualization](Docs/5.3%20-%20MacOS.md)**
-  - **[Android Virtualization](Docs/5.4%20-%20Android.md)**
-  - **[Chrome OS Virtualization](Docs/5.5%20-%20Chrome%20OS.md)**
