@@ -36,7 +36,6 @@ function stop_display_manager {
       while systemctl is-active --quiet "$manager.service"; do
         sleep "5"
       done
-      continue
     fi
 
   done
@@ -278,7 +277,7 @@ function on_prepare_begin {
         shift
         ;;
       # Enable CPU pinning by allowing host use only specific cores
-      --preserve-cpu=*)
+      --preserve-cores=*)
         cores="${i#*=}"
         preserve_cpu_cores "$cores"
         shift
@@ -314,7 +313,7 @@ function on_release_end {
         shift
         ;;
       # Restore CPU core pinning on system
-      --preserve-cpu=*)
+      --preserve-cores=*)
         cores="${i#*=}"
         restore_cpu_cores "$cores"
         shift

@@ -1,0 +1,21 @@
+#!/bin/bash
+
+for group in `find /sys/kernel/iommu_groups/* -maxdepth 0 -type d | sort -V`; do
+  for device in ${group}/devices/*; do
+    
+    # Device info 
+    info=$(lspci -nns ${device##*/})
+    group=${group##*/}
+    echo "Group ${group} - ${info}"
+
+    # Print additional USB details
+    for usb in ${device}/usb*; do
+      if [ -d "${usb}" ] && [[ ! "${usb}" =~ "/usbmon" ]]; then
+        lsusb -s "$(cat ${usb}/busnum):" | while read line; do
+          echo "Group ${group} - ${info%% *} USB ${line}"
+        done
+      fi
+    done
+
+  done
+done

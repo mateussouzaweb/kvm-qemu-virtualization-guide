@@ -4,12 +4,11 @@ This guide is based on my own experience and hacks on running virtual machines. 
 
 Our object is just one: have a **full working virtualization platform with QEMU using KVM as hypervisor** to run Linux, MacOS, Windows OS and any other operational system inside virtual machines with great performance, even for gaming! 
 
-Finally, and most important, the guide is primarily designed to run Fedora Server as a hypervisor with [Cockpit](https://cockpit-project.org/) as graphical user interface but I am also including instructions to run on Fedora Workstation if you want a full desktop graphical interface experience on the hypervisor.
-
 ----
 
 ## What to Expect
 
+- Virtualization solution with Fedora as hypervisor.
 - Easy guide if you already have KVM / QEMU knowledge.
 - Virtualization that just works.
 - Isolated and secure host system to just run VMs.
@@ -18,10 +17,10 @@ Finally, and most important, the guide is primarily designed to run Fedora Serve
 - Single GPU passthrough support (very easy to activate/deactivate).
 - PCI passthrough ON DEMAND without need to pre-allocate devices on VFIO (or blacklist drivers on the OS).
 - Audio and USB device passthrough.
-- Live USB passthrough to supported VMs.
+- Live USB passthrough on supported VMs.
 - CPU isolation and pinning support.
 - Bridge network to keep every VMs available on the local network.
-- Nested virtualization support for development environments.
+- Nested virtualization for development environments.
 - VM creation and management from CLI.
 - Support for BOOT interface via CLI (to select the startup disk for example).
 - More!

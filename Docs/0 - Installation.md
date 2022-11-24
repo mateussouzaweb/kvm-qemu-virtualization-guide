@@ -1,18 +1,17 @@
 # Host System Installation
 
-Based on my own experience, after many tries in various distros, Fedora Server is the most stable distribution with blinding edge features where things simply just work. The nature of its terminal only environment also make easier to passthrough devices while avoid common issues.
+To start, we need an operational system for the host that will be our hypervisor. After many tries in various distros, Fedora Server and Fedora Workstation was the most stable distribution with blinding edge features where things simply just work, so to start, I strongly recommend using Fedora as the hypervisor. Other distributions are great, but always resulted in problems for me or got a process more complicated and since we are focusing here on a concrete and working solution, Fedora was obviously the alternative.
 
-Other distributions always resulted in problems for me or got a process more complicated. Some don't have some packages yet by default and many other issues... I decided to focus on Fedora Server because of the need of a safe environment (I don`t want to start from scratch every time that a package break my host system), but that should work on Fedora Workstation as well. Give it a try! You can download the ISO at <https://getfedora.org/server/download/>
+I also decided to focus on Fedora Server first because the nature of its terminal only environment makes it easier to passthrough devices to VMs and avoid common issues available in full desktop environments. The guide should work on Fedora Workstation as well and relevant information will be available when necessary. 
 
-## How to Install
+First, install the operational system in your machine if it has not been done yet. You can download the ISO at <https://getfedora.org> if you decide to use Fedora. To guide you in this process, here a few general recommendations:
 
-First, install the operational system in your machine if it has not been done yet.
+- If you are not using the **root** user, remember to use ``sudo`` (or ``sudo su``) on the commands of this process and after each reboot.
+- If you have another machine and can connect to it via SSH, that would be great too, copying and pasting are much faster than manual typing these commands.
 
-If you are not using the **root** user, remember to use ``sudo`` (or ``sudo su``) on the commands of this process and after each reboot.
+## Installing Virtualization Support
 
-If you have another machine and can connect to it via SSH, that would be great too, copy and paste are much faster than manual typing these commands.
-
-After the OS is installed, run the following commands to update the system and install basic packages:
+After the OS is installed, run the following commands to update the system and install basic packages used in common scenarios:
 
 ```bash
 # Update system packages
@@ -21,13 +20,13 @@ dnf update -y
 # Install the basic packages
 dnf install -y vim wget \
     curl openssl \
-    zip htop \
+    zip htop lm_sensors \
     git git-core \
     terminus-fonts-console \
     python3 python3-pip
 ```
 
-Now, install virtualization packages:
+Now, install the virtualization packages:
 
 ```bash
 # Virtualization packages
@@ -81,9 +80,9 @@ reboot
 
 Congratulations!
 
-You can now access the web UI of Cockpit with another machine for remote management with the address format ``https://$IP:9090/``. For the desktop mode, you can also use the Virt Manager application to manage VMs.
+You now have the necessary packages to run basic virtualization. You also can access the web UI of Cockpit with another machine for remote management with the address ``https://$IP:9090/``. For the desktop mode, you can also use the Virt Manager application to manage VMs.
 
-After this process, you should have the necessary packages to run basic virtualization and we can proceed to tweak the system for full and greater virtualization!
+We now can proceed to tweak the system for full and greater virtualization!
 
 ----
 
