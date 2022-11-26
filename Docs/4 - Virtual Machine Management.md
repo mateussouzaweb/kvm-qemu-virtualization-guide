@@ -69,7 +69,7 @@ cp /mnt/files/NAVI22.rom /var/lib/libvirt/vbios/
 # Fix permissions on ROM files
 chmod -R 660 /var/lib/libvirt/vbios/*
 chown -R qemu:qemu /var/lib/libvirt/vbios
-/sbin/restorecon -R -vF /var/lib/libvirt/vbios
+restorecon -R -vF /var/lib/libvirt/vbios
 ```
 
 **NVIDIA only**: If you need to patch the GPU BIOS in order to avoid ``code 43`` issue, use the following command to create a patched ROM version of your GPU BIOS:
@@ -103,7 +103,7 @@ wget https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/latest-vir
 # Fix permissions on ISO files
 chmod -R 660 /var/lib/libvirt/images/*
 chown -R qemu:qemu /var/lib/libvirt/images
-/sbin/restorecon -R -vF /var/lib/libvirt/images
+restorecon -R -vF /var/lib/libvirt/images
 ```
 
 ## Disk Management
@@ -123,7 +123,7 @@ qemu-img create -f qcow2 /var/lib/libvirt/images/${NAME}.qcow2 100G
 # Fix permissions on virtual disk files
 chmod -R 660 /var/lib/libvirt/images/*
 chown -R qemu:qemu /var/lib/libvirt/images
-/sbin/restorecon -R -vF /var/lib/libvirt/images
+restorecon -R -vF /var/lib/libvirt/images
 ```
 
 You don't need to format the disk or partition, just pass it to the VM and run the installation process. To have the best performance and flexibility, you should have high-speed disks like SSD or NVME disk to directly attach to the VM but LVM partitions as just as good and I recommend this method in every situation. 

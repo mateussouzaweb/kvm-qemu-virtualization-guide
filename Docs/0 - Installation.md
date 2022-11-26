@@ -39,7 +39,7 @@ dnf install -y \
     cockpit-machines
 
 # Make sure permissions are correct
-/sbin/restorecon -R -vF /var/lib/libvirt
+restorecon -R -vF /var/lib/libvirt
 
 # Enable the service
 systemctl enable --now libvirtd 

@@ -90,8 +90,8 @@ rm -f BaseSystem.dmg BaseSystem.chunklist
 # Fix permissions
 chmod -R 660 /var/lib/libvirt/images/*
 chown -R qemu:qemu /var/lib/libvirt/images
-/sbin/restorecon -R -vF /var/lib/libvirt/images
-/sbin/restorecon -R -vF /usr/share/OVMF
+restorecon -R -vF /var/lib/libvirt/images
+restorecon -R -vF /usr/share/OVMF
 ```
 
 Now, download the sample XML configuration and tweak to run on your system devices:

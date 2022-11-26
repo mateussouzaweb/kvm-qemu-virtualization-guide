@@ -43,7 +43,7 @@ curl -L ${REPOSITORY}/udev/usb --output ${DESTINATION}/udev/usb
 
 chmod +x ${DESTINATION}/qemu
 chmod +x ${DESTINATION}/udev/usb
-/sbin/restorecon -R -vF ${DESTINATION}
+restorecon -R -vF ${DESTINATION}
 ```
 
 We also need to attach USB rules to passthrough USB devices:
