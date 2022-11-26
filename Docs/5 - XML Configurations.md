@@ -1,10 +1,14 @@
 # KVM / QEMU XML Configuration Tips
 
-This is an extensive list of relevant configurations that you can do in your VM. It's a must read if you want setup hooks and configure your VM to work well. Please remember that they are just samples, you must replace the hardware parts to match yours and to match the specs of your VM.
+This is an extensive list of relevant configurations that you can do in your VM. It's a must read if you want to setup hooks and configure your VM to work well. Please remember that they are just samples, you must replace the hardware parts to match yours and to match the specs of your VM.
 
-Just as a reminder, you can edit the VM configurations for an already created VM using the following command:
+Just as a reminder, you can edit the XML file or the VM configurations for an already created VM using the following commands:
 
 ```bash
+# XML configuration
+vim ${NAME}.xml
+
+# Already created VM
 virsh edit ${NAME}
 ```
 
@@ -54,7 +58,7 @@ For a desktop VM you could use an 8-core setup like below (notice that ``cpuset`
 </cpu>
 ```
 
-In the case of running a server VM in parallel, you could use a 4-core setup with the following syntax to isolate its cores from the desktop VM:
+In the case of running a another VM in parallel, you could use a 4-core setup with the following syntax to isolate its cores from the desktop VM:
 
 ```xml
 <vcpu cpuset="2,3,10,11">4</vcpu>
@@ -71,10 +75,10 @@ In the case of running a server VM in parallel, you could use a 4-core setup wit
 </cpu>
 ```
 
-Notice that the cores 0, 1, 8 and 9 (the first 4 threads) were not declared on such XMLs because they will be reserved to the host. We also should declare such cores as preserved to fully isolate CPUs from the host. We also should scale CPU to performance mode on host to increase responsiveness on running VMs:
+Notice that the cores 0, 1, 8 and 9 (the first 4 threads) were not declared on such XMLs because they will be reserved to the host. We also should use the virtualization hooks declare such cores as preserved to fully isolate CPUs from the host and scale CPU to performance mode on host to increase responsiveness on running VMs:
 
 ```xml
-<description>--scale-cpu --preserve-cpu=0,1,8,9</description>
+<description>--scale-cpu --preserve-cores=0,1,8,9</description>
 ```
 
 ## Linux Enhancements
@@ -85,15 +89,15 @@ These features are also configured to bypass Nvidia graphics card issues. It's r
 <features>
   <acpi/>
   <apic/>
+  <hyperv>
+    <relaxed state="on"/>
+    <vapic state="on"/>
+    <spinlocks state="on" retries="8191"/>
+    <vendor_id state="on" value="1234567890ab"/>
+  </hyperv>
   <kvm>
     <hidden state="on"/>
   </kvm>
-  <hyperv>
-    <relaxed state="on"/>
-    <spinlocks retries="8191" state="on"/>
-    <vapic state="on"/>
-    <vendor_id state="on" value="1234567890ab"/>
-  </hyperv>
   <vmport state="off"/>
   <ioapic driver="kvm"/>
 </features>
@@ -108,20 +112,21 @@ If the VM is running Windows, you can add some configurations to save CPU usage 
   <acpi/>
   <apic/>
   <pae/>
+  <hyperv>
+    <relaxed state="on"/>
+    <reset state="on"/>
+    <synic state="on"/>
+    <spinlocks state="on" retries="8191"/>
+    <stimer state="on"/>
+    <vapic state="on"/>
+    <vendor_id state="on" value="1234567890ab"/>
+    <vpindex state="on"/>
+  </hyperv>
   <kvm>
     <hidden state="on"/>
   </kvm>
-  <hyperv>
-    <relaxed state="on"/>
-    <vapic state="on"/>
-    <spinlocks state="on" retries="8191"/>
-    <vpindex state="on"/>
-    <synic state="on"/>
-    <stimer state="on"/>
-    <reset state="on"/>
-  </hyperv>
-  <vmport state="off"/>
   <ioapic driver="kvm"/>
+  <vmport state="off"/>
 </features>
 <clock offset="localtime">
   <timer name="rtc" tickpolicy="catchup"/>
@@ -151,12 +156,12 @@ Just tells what to do when events are triggered and declare suspend rules. Add i
 <on_reboot>restart</on_reboot>
 <on_crash>destroy</on_crash>
 <pm>
-  <suspend-to-mem enabled='no'/>
-  <suspend-to-disk enabled='no'/>
+  <suspend-to-mem enabled="no"/>
+  <suspend-to-disk enabled="no"/>
 </pm>
 ```
 
-## CDROM device for ISO
+## CDROM Device from ISO
 
 You can manually attach ISO as CDROM device to run installations. This also can be used in the future if you want to reinstall a distro or try something else:
 
@@ -184,13 +189,14 @@ On Windows, you also will need to put an additional CDROM device for VirtIO pack
 </devices>
 ```
 
-After the OS has been installed, remember to remove the ``<source>`` on the CDROM device or remove the full disk entry.
+After the OS has been installed, remember to remove the ``<source>`` on the CDROM device or just remove the full ``<disk>`` entry.
 
-## Physical Disks
+## Physical Disks and LVM Partitions
 
-You can add a physical disks into VMs. This is very useful if you have and disk with Ext-FAT or NTFS format. First, make sure that the target disk is unused elsewhere since a physical disk can be used only in one VM:
+You can add a physical disk or LVM partitions into VMs. First, make sure that the target device is not used elsewhere since a physical disk or LVM partition can be used only in one running VM:
 
 ```xml
+<!-- Physical Disk -->
 <devices>
   <disk type="block" device="disk">
     <driver name="qemu" type="raw" cache="writeback" io="io_uring" discard="unmap"/>
@@ -198,65 +204,77 @@ You can add a physical disks into VMs. This is very useful if you have and disk 
     <target dev="sdb" bus="virtio"/>
   </disk>
 </devices>
+
+<!-- LVM Partition -->
+<devices>
+  <disk type="block" device="disk">
+    <driver name="qemu" type="raw" cache="writeback" io="io_uring" discard="unmap"/>
+    <source dev="/dev/hypervisor/files"/>
+    <target dev="sdb" bus="virtio"/>
+  </disk>
+</devices>
 ```
 
-**TIP:** the same entry format can be used to attach LVM partitions.
+## Virtual Disks
+
+You can add RAW or QCOW2 virtual disks into VMs. First, make sure that the target virtual disk is unused elsewhere since a disk can be used only in one running VM:
+
+```xml
+<!-- RAW -->
+<devices>
+  <disk type="file" device="disk">
+    <driver name="qemu" type="raw" cache="writeback" io="io_uring" discard="unmap"/>
+    <source file="/var/lib/libvirt/images/${NAME}.raw"/>
+    <target dev="sdb" bus="virtio"/>
+  </disk>
+</devices>
+
+<!-- QCOW2 -->
+<devices>
+  <disk type="file" device="disk">
+    <driver name="qemu" type="qcow2" cache="writeback" io="io_uring" discard="unmap"/>
+    <source file="/var/lib/libvirt/images/${NAME}.qcow2"/>
+    <target dev="sdb" bus="virtio"/>
+  </disk>
+</devices>
+```
 
 ## GPU Passthrough and VGA Bios
 
-**IMPORTANT**: To see boot menu, you must use the console entry on Cockpit or with the command ``virsh console ${NAME}``.
-
-Once you have the ROM file configured on the hypervisor system (if necessary), edit the VM config and place the following settings to passthrough the GPU:
+Once you have the ROM file configured on the hypervisor system, edit the VM config and place the following settings to passthrough the GPU to the VM:
 
 ```xml
 <devices>
-  <!-- Nvidia GPU -->
   <hostdev mode="subsystem" type="pci" managed="yes">
     <source>
-      <address domain="0x0000" bus="0x09" slot="0x00" function="0x0"/>
+      <address domain="0x0000" bus="0x0c" slot="0x00" function="0x0"/>
     </source>
-    <rom file="/var/lib/libvirt/vbios/GP104-P.rom"/>
+    <rom file="/var/lib/libvirt/vbios/NAVI22.rom"/>
     <address type="pci" domain="0x0000" bus="0x07" slot="0x00" function="0x0"/>
   </hostdev>
   <hostdev mode="subsystem" type="pci" managed="yes">
     <source>
-      <address domain="0x0000" bus="0x09" slot="0x00" function="0x1"/>
+      <address domain="0x0000" bus="0x0c" slot="0x00" function="0x1"/>
     </source>
-    <rom file="/var/lib/libvirt/vbios/GP104-P.rom"/>
-    <address type="pci" domain="0x0000" bus="0x07" slot="0x00" function="0x1"/>
-  </hostdev>
-
-  <!-- AMD GPU -->
-  <hostdev mode="subsystem" type="pci" managed="yes">
-    <source>
-      <address domain="0x0000" bus="0x08" slot="0x00" function="0x0"/>
-    </source>
-    <rom file="/var/lib/libvirt/vbios/NAVI14.rom"/>
-    <address type="pci" domain="0x0000" bus="0x07" slot="0x00" function="0x0"/>
-  </hostdev>
-  <hostdev mode="subsystem" type="pci" managed="yes">
-    <source>
-      <address domain="0x0000" bus="0x08" slot="0x00" function="0x1"/>
-    </source>
-    <rom file="/var/lib/libvirt/vbios/NAVI14.rom"/>
+    <rom file="/var/lib/libvirt/vbios/NAVI22.rom"/>
     <address type="pci" domain="0x0000" bus="0x07" slot="0x00" function="0x1"/>
   </hostdev>
 </devices>
 ```
 
-Since we are attaching the GPU to the VM, we must set the hook option with such reference:
+Since we are attaching the GPU to the VM, we must set the virtualization hook options with such reference:
 
 ```xml
 <!-- If you have only one GPU or is attaching the main GPU -->
-<description>--gpu-passthrough=main,09:00.0,09:00.1</description>
+<description>--gpu-passthrough=main,0c:00.0,0c:00.1</description>
 
-<!-- If you are attaching other GPU -->
+<!-- If you are attaching other secondary GPU -->
 <description>--gpu-passthrough=secondary,08:00.0,08:00.1</description>
 ```
 
-This was everything that I need to make my GPUs works. In my experience, I don't need to remove the VNC display after OS installation, it will work as a boot display only to manage the boot options.
+This is everything that I need to make my GPUs work. In my experience, you usually don't need to remove the VNC display after OS installation, it will work as a boot display only to manage the boot options. 
 
-If you are having problems with the black screen in your VM, use the VNC display to check what is the issue. You can attach a VNC display if necessary with the following XML:
+If you are having problems with the black screen in your VM, use the VNC display to check what the issue is. You can attach a VNC display, if necessary, with the following XML:
 
 ```xml
 <devices>
@@ -270,7 +288,7 @@ If you are having problems with the black screen in your VM, use the VNC display
 </devices>
 ```
 
-In the case of problems, you should remove the VNC display once the GPU driver has been installed on VM because it may prevent the GPU passthrough to run properly. Don't forget also to remove any line related to ``<graphics>``, ``<video>`` and other unnecessary devices from your VM config in the XML (SPLICE or VNC related). This step can solve a lot of your problems!
+In the case of problems, you should remove the VNC display once the GPU driver has been installed on VM because it may prevent the GPU passthrough from running properly. Don't forget also to remove any line related to ``<graphics>``, ``<video>`` and other unnecessary devices from your VM config in the XML (SPLICE or VNC related). This step can solve a lot of your problems!
 
 ## Audio Passthrough
 
@@ -289,20 +307,20 @@ This will attach the system onboard audio PCI device directly to the VM, so micr
 
 I do not recommend attaching audio with audio drivers from Linux, but you can try if you want.
 
-## Extended Mouse and Keyboard support
+## Extended Mouse and Keyboard Support
 
 Make sure your VM contains the following lines to extend the support for mouse and keyboard:
 
 ```xml
 <devices>
-  <input type='mouse' bus='virtio'>
-    <address type='pci' domain='0x0000' bus='0x00' slot='0x0e' function='0x0'/>
+  <input type="mouse" bus="virtio">
+    <address type="pci" domain="0x0000" bus="0x00" slot="0x0e" function="0x0"/>
   </input>
-  <input type='keyboard' bus='virtio'>
-    <address type='pci' domain='0x0000' bus='0x00' slot='0x0f' function='0x0'/>
+  <input type="keyboard" bus="virtio">
+    <address type="pci" domain="0x0000" bus="0x00" slot="0x0f" function="0x0"/>
   </input>
-  <input type='mouse' bus='ps2'/>
-  <input type='keyboard' bus='ps2'/>
+  <input type="mouse" bus="ps2"/>
+  <input type="keyboard" bus="ps2"/>
 </devices>
 ```
 
@@ -319,7 +337,19 @@ Also, when using mouse and keyboard, make sure to remove the ``tablet`` input in
 
 ## USB Devices
 
-You should passthrough USB devices like mouse and keyboard to direct VM access if they are ALWAYS connected to the host and will be connected to this specific VM when it starts. Use ``lsusb`` to know the vendor and product IDs then fill the XML like below:
+The best way to use USB devices inside VMs is by passing the entire USB Controller via its PCI-e interface. If you can use this method, that is everything that you need to do in order to passthrough any USB device to the VM:
+
+```xml
+<devices>
+  <hostdev mode="subsystem" type="pci" managed="yes">
+    <source>
+      <address domain="0x0000" bus="0x08" slot="0x00" function="0x1"/>
+    </source>
+  </hostdev>
+<devices>
+```
+
+For others cases, you should configure USB devices like mouse and keyboard to direct VM access if they are ALWAYS connected to the host and will be connected to this specific VM when it starts. If you want to pass only specific USB devices, use ``lsusb`` to know the vendor and product IDs of these devices then fill the XML like below:
 
 ```xml
 <devices>
@@ -332,13 +362,13 @@ You should passthrough USB devices like mouse and keyboard to direct VM access i
 </devices>
 ```
 
-For other devices like USB drivers, gamepads, headphones, and many more that are often connected to the host or can be switched between VMs, I recommend setting it to be plugged in live with the hook option. That way, any USB device attached to any USB port will be automatically redirected to the VM:
+For other devices like USB drivers, gamepads, headphones, and many more that are often connected to the host or can be switched between VMs, I recommend setting it to be plugged in live with the virtualization hook option. That way, any USB device attached to any USB port will be automatically redirected to the VM:
 
 ```xml
 <description>--usb-passthrough=all</description>
 ```
 
-Please keep in mind that you must only plug in the device after VM has been started to trigger the hook. If the device should start connected on the VM, then you must setup it XML like described before (USB mouse and keyboard on Windows and MacOS VMs need this).
+Please keep in mind that the virtualization hook method may not work in some specific machines and you must only plug in the device after VM has been started to trigger the hook. If the device should start connected on the VM, then you must setup its XML like described before (USB mouse and keyboard on Windows and MacOS VMs need this).
 
 Also, it is important to notice that some USB devices can present detection and power issues because of the way they operate inside the host - this is special true for USB Bluetooth devices in motherboards. In such cases, you may need to change the QEMU USB device mapping format by adding the following XML tag:
 
@@ -347,21 +377,22 @@ Also, it is important to notice that some USB devices can present detection and 
 <domain xmlns:qemu="http://libvirt.org/schemas/domain/qemu/1.0">
 
   <!-- Append this entry -->
-  <qemu:capabilities>
-    <qemu:del capability="usb-host.hostdevice"/>
-  </qemu:capabilities>
+  <qemu:commandline>
+    <qemu:arg value="-device"/>
+    <qemu:arg value="usb-host,hostbus=1,hostaddr=3,bus=usb.0,port=3"/>
+  </qemu:commandline>
 </domain>
 ```
 
 ## Bridge Network
 
-Use the following model to setup an extra bridge network if necessary:
+Use the following model to setup the bridge network if necessary:
 
 ```xml
 <devices>
   <interface type="bridge">
     <mac address="52:54:00:72:58:ce"/>
-    <source bridge="br0"/>
+    <source bridge="virbr0"/>
     <model type="virtio"/>
     <address type="pci" domain="0x0000" bus="0x01" slot="0x00" function="0x0"/>
   </interface>
@@ -382,7 +413,7 @@ On MacOs, the recommended model type is ``vmxnet3``:
 
 ## QEMU Guest Agent
 
-The QEMU guest agent add many cool features to the VM, including more precise VM statistics and better VM control. Use the following configuration inside the VM settings to enable the guest agent:
+The QEMU guest agent adds many cool features to the VM, including more precise VM statistics and better VM control. Use the following configuration inside the VM settings to enable the guest agent:
 
 ```xml
 <devices>
@@ -400,17 +431,17 @@ After VM is running, you must install the QEMU guest agent to increase performan
 You can make the command ``virsh console`` result in directly access to the serial console inside virtual machines. First, make sure the serial console is configured:
 
 ```xml
-<serial type='pty'>
-  <target type='isa-serial' port='0'>
-    <model name='isa-serial'/>
+<serial type="pty">
+  <target type="isa-serial" port="0">
+    <model name="isa-serial"/>
   </target>
 </serial>
-<console type='pty'>
-  <target type='serial' port='0'/>
+<console type="pty">
+  <target type="serial" port="0"/>
 </console>
 ```
 
-To enable such feature, you need to enable the serial service **INSIDE** the VM (not in the host) once the VM has been installed. For example:
+To enable such a feature on the VM, you need to enable the serial service **INSIDE** the VM (not in the host) once the VM has been installed. For example:
 
 ```bash
 sudo systemctl enable --now serial-getty@ttyS0.service
@@ -427,7 +458,7 @@ Done!
 
 ----
 
-If you come from the previous topic, set the relevant XML details for you VM and continue the VM creation.
+If you come from the previous topic, set the relevant XML details for your VM and continue the VM creation.
 
 I will update this configuration guide once I learn more relevant details in the future. If you are targeting one specific type of virtual machine, I created a few topics on that to write my observations:
 
