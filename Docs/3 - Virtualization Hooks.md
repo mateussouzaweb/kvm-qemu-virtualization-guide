@@ -40,6 +40,10 @@ DESTINATION="/etc/libvirt/hooks"
 mkdir -p ${DESTINATION} ${DESTINATION}/udev
 curl -L ${REPOSITORY}/qemu --output ${DESTINATION}/qemu
 curl -L ${REPOSITORY}/udev/usb --output ${DESTINATION}/udev/usb
+
+chmod +x ${DESTINATION}/qemu
+chmod +x ${DESTINATION}/udev/usb
+/sbin/restorecon -R -vF ${DESTINATION}
 ```
 
 We also need to attach USB rules to passthrough USB devices:
@@ -53,6 +57,14 @@ udevadm control --reload-rules
 ```
 
 Done! Configure the VM with the desired options and you are good to go.
+
+## Debugging
+
+If you are interested in knowing what is going on when these hooks are executed, just watch for the logs. This also can be useful to detect issues with your setup:
+
+```bash
+tail -f /var/log/libvirt/qemu/hooks.log
+```
 
 ----
 
