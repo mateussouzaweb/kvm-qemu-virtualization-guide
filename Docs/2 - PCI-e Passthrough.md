@@ -115,8 +115,8 @@ dnf distro-sync
 dnf install -y dkms kernel-devel kernel-headers
 
 # Install module
-git clone https://github.com/gnif/vendor-reset.git
-cd vendor-reset
+git clone https://github.com/gnif/vendor-reset.git /usr/share/vendor-reset;
+cd /usr/share/vendor-reset
 dkms install .
 
 # Load module on system boot
