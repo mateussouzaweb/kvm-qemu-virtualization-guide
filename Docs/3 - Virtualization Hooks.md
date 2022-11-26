@@ -68,4 +68,4 @@ tail -f /var/log/libvirt/qemu/hooks.log
 
 ----
 
-Next step: **[Managing Virtual Machines](4%20-%20Management.md)**
+Next step: **[Managing Virtual Machines](4%20-%20Virtual%20Machine%20Management.md)**

@@ -35,7 +35,7 @@ Follow the guides inside the ```Docs``` folder or use the links below for a spec
 - **[Configuring the Bridge Network](Docs/1%20-%20Bridge%20Network.md)**
 - **[Enabling PCI-e Passthrough](Docs/2%20-%20PCI-e%20Passthrough.md)**
 - **[Virtualization Hooks](Docs/3%20-%20Virtualization%20Hooks.md)**
-- **[Managing Virtual Machines](Docs/4%20-%20Management.md)**
+- **[Managing Virtual Machines](Docs/4%20-%20Virtual%20Machine%20Management.md)**
 - **[XML Configurations](Docs/5%20-%20XML%20Configurations.md)**
   - **[Linux Virtualization](Docs/5.1%20-%20Linux.md)**
   - **[Windows Virtualization](Docs/5.2%20-%20Windows.md)**
