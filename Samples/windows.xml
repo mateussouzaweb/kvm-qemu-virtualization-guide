@@ -1,27 +1,9 @@
-<!--
-
-- 4 core, 8 threads CPU with scaling and pinning
-- 12 GB ram
-- 3 disks being 2 LVM partitions and one directly attached disk
-- Nvidia GPU with main GPU passthrough
-- USB mouse and keyboard attached at start
-- Live USB passthrough for any other USB device
-- Bridge network
-- Onboard audio and TPM passthrough
-
--->
 <domain type='kvm'>
   <name>windows</name>
-  <uuid>e0e64960-77bf-4424-9d6e-0d5b75635c18</uuid>
-
-  <!-- Hooks -->
-  <description>--scale-cpu --preserve-cpu=0,1,8,9 --gpu-passthrough=main,09:00.0,09:00.1</description>
-
-  <!-- Memory -->
+  <uuid>4560b891-caeb-42f9-ad33-9f9b39a60aed</uuid>
+  <description>--scale-cpu --preserve-cores=0,1,8,9 --gpu-passthrough=main,0c:00.0,0c:00.1</description>
   <memory unit='KiB'>12582912</memory>
   <currentMemory unit='KiB'>12582912</currentMemory>
-
-  <!-- CPU -->
   <vcpu placement='static' cpuset='4-7,12-15'>8</vcpu>
   <cputune>
     <vcpupin vcpu='0' cpuset='4'/>
@@ -33,13 +15,6 @@
     <vcpupin vcpu='6' cpuset='14'/>
     <vcpupin vcpu='7' cpuset='15'/>
   </cputune>
-  <cpu mode='host-passthrough' check='none' migratable='on'>
-    <topology sockets='1' dies='1' cores='4' threads='2'/>
-    <cache mode='passthrough'/>
-    <feature policy='require' name='topoext'/>
-  </cpu>
-
-  <!-- OS -->
   <os>
     <type arch='x86_64' machine='pc-q35-7.0'>hvm</type>
     <loader readonly='yes' type='rom'>/usr/share/edk2/ovmf/OVMF_CODE.fd</loader>
@@ -47,36 +22,37 @@
     <boot dev='cdrom'/>
     <bootmenu enable='yes'/>
   </os>
-
-  <!-- Enhancements for Windows -->
   <features>
     <acpi/>
     <apic/>
     <pae/>
-    <kvm>
-      <hidden state="on"/>
-    </kvm>
-    <hyperv>
-      <relaxed state="on"/>
-      <reset state="on"/>
-      <synic state="on"/>
-      <spinlocks state="on" retries="8191"/>
-      <stimer state="on"/>
-      <vapic state="on"/>
+    <hyperv mode='custom'>
+      <relaxed state='on'/>
+      <vapic state='on'/>
+      <spinlocks state='on' retries='8191'/>
+      <vpindex state='on'/>
+      <synic state='on'/>
+      <stimer state='on'/>
+      <reset state='on'/>
       <vendor_id state='on' value='1234567890ab'/>
-      <vpindex state="on"/>
     </hyperv>
-    <vmport state="off"/>
-    <ioapic driver="kvm"/>
+    <kvm>
+      <hidden state='on'/>
+    </kvm>
+    <vmport state='off'/>
+    <ioapic driver='kvm'/>
   </features>
+  <cpu mode='host-passthrough' check='none' migratable='on'>
+    <topology sockets='1' dies='1' cores='4' threads='2'/>
+    <cache mode='passthrough'/>
+    <feature policy='require' name='topoext'/>
+  </cpu>
   <clock offset='localtime'>
     <timer name='rtc' tickpolicy='catchup'/>
     <timer name='pit' tickpolicy='delay'/>
     <timer name='hpet' present='no'/>
     <timer name='hypervclock' present='yes'/>
   </clock>
-
-  <!-- Power events -->
   <on_poweroff>destroy</on_poweroff>
   <on_reboot>restart</on_reboot>
   <on_crash>destroy</on_crash>
@@ -85,9 +61,27 @@
     <suspend-to-disk enabled='no'/>
   </pm>
   <devices>
-
-    <!-- Generic settings -->
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
+    <disk type='block' device='disk'>
+      <driver name='qemu' type='raw' cache='writeback' io='io_uring' discard='unmap'/>
+      <source dev='/dev/data/windows'/>
+      <target dev='sda' bus='virtio'/>
+      <address type='pci' domain='0x0000' bus='0x05' slot='0x00' function='0x0'/>
+    </disk>
+    <disk type='file' device='cdrom'>
+      <driver name='qemu' type='raw' discard='unmap'/>
+      <source file='/var/lib/libvirt/images/windows-11.iso'/>
+      <target dev='sdb' bus='sata'/>
+      <readonly/>
+      <address type='drive' controller='0' bus='0' target='0' unit='1'/>
+    </disk>
+    <disk type='file' device='cdrom'>
+      <driver name='qemu' type='raw' discard='unmap'/>
+      <source file='/var/lib/libvirt/images/virtio-win.iso'/>
+      <target dev='sdc' bus='sata'/>
+      <readonly/>
+      <address type='drive' controller='0' bus='0' target='0' unit='2'/>
+    </disk>
     <controller type='usb' index='0' model='qemu-xhci' ports='15'>
       <address type='pci' domain='0x0000' bus='0x02' slot='0x00' function='0x0'/>
     </controller>
@@ -120,7 +114,7 @@
       <target chassis='5' port='0x14'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x4'/>
     </controller>
-     <controller type='pci' index='6' model='pcie-root-port'>
+    <controller type='pci' index='6' model='pcie-root-port'>
       <model name='pcie-root-port'/>
       <target chassis='6' port='0x15'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x5'/>
@@ -140,9 +134,25 @@
       <target chassis='9' port='0x18'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
     </controller>
+    <controller type='pci' index='10' model='pcie-root-port'>
+      <model name='pcie-root-port'/>
+      <target chassis='10' port='0x8'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x0' multifunction='on'/>
+    </controller>
     <controller type='virtio-serial' index='0'>
       <address type='pci' domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
     </controller>
+    <controller type='pci' index='11' model='pcie-root-port'>
+      <model name='pcie-root-port'/>
+      <target chassis='11' port='0x9'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x1'/>
+    </controller>
+    <interface type='bridge'>
+      <mac address='52:54:00:f3:10:21'/>
+      <source bridge='virbr0'/>
+      <model type='e1000e'/>
+      <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
+    </interface>
     <serial type='pty'>
       <target type='isa-serial' port='0'>
         <model name='isa-serial'/>
@@ -163,107 +173,51 @@
     </input>
     <input type='mouse' bus='ps2'/>
     <input type='keyboard' bus='ps2'/>
-    <audio id='1' type='none'/>
-    <memballoon model='virtio'>
-      <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
-    </memballoon>
-
-    <!-- Disks -->
-    <disk type='block' device='disk'>
-      <driver name='qemu' type='raw' cache='writeback' io='io_uring' discard='unmap'/>
-      <source dev='/dev/hypervisor/windows'/>
-      <target dev='sda' bus='virtio'/>
-      <address type='pci' domain='0x0000' bus='0x05' slot='0x00' function='0x0'/>
-    </disk>
-    <disk type='block' device='disk'>
-      <driver name='qemu' type='raw' cache='writeback' io='io_uring' discard='unmap'/>
-      <source dev='/dev/hypervisor/files'/>
-      <target dev='sdb' bus='virtio'/>
-      <address type='pci' domain='0x0000' bus='0x06' slot='0x00' function='0x0'/>
-    </disk>
-    <disk type='block' device='disk'>
-      <driver name='qemu' type='raw' cache='writeback' io='io_uring' discard='unmap'/>
-      <source dev='/dev/sda'/>
-      <target dev='sdc' bus='virtio'/>
-      <address type='pci' domain='0x0000' bus='0x08' slot='0x00' function='0x0'/>
-    </disk>
-
-    <!-- Bridge network -->
-    <interface type='bridge'>
-      <mac address='52:54:00:f3:20:21'/>
-      <source bridge='virbr0'/>
-      <model type='e1000e'/>
-      <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
-    </interface>
-
-    <!-- TPM device -->
     <tpm model='tpm-tis'>
       <backend type='emulator' version='2.0'/>
     </tpm>
-
-    <!-- Nvidia GPU -->
+    <graphics type='vnc' port='-1' autoport='yes' listen='0.0.0.0'>
+      <listen type='address' address='0.0.0.0'/>
+    </graphics>
+    <audio id='1' type='none'/>
+    <video>
+      <model type='bochs' vram='16384' heads='1' primary='yes'/>
+      <address type='pci' domain='0x0000' bus='0x0a' slot='0x00' function='0x0'/>
+    </video>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x09' slot='0x00' function='0x0'/>
+        <address domain='0x0000' bus='0x0c' slot='0x00' function='0x0'/>
       </source>
-      <rom file='/var/lib/libvirt/vbios/GP104-P.rom'/>
+      <rom file='/var/lib/libvirt/vbios/NAVI22.rom'/>
       <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0' multifunction='on'/>
     </hostdev>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x09' slot='0x00' function='0x1'/>
+        <address domain='0x0000' bus='0x0c' slot='0x00' function='0x1'/>
       </source>
-      <rom file='/var/lib/libvirt/vbios/GP104-P.rom'/>
+      <rom file='/var/lib/libvirt/vbios/NAVI22.rom'/>
       <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x1'/>
     </hostdev>
-
-    <!-- Onboard audio -->
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x0b' slot='0x00' function='0x3'/>
+        <address domain='0x0000' bus='0x02' slot='0x00' function='0x0'/>
+      </source>
+      <address type='pci' domain='0x0000' bus='0x08' slot='0x00' function='0x0'/>
+    </hostdev>
+    <hostdev mode='subsystem' type='pci' managed='yes'>
+      <source>
+        <address domain='0x0000' bus='0x0e' slot='0x00' function='0x3'/>
       </source>
       <address type='pci' domain='0x0000' bus='0x09' slot='0x00' function='0x0'/>
     </hostdev>
-
-    <!-- USB mouse/keyboard -->
-    <hostdev mode='subsystem' type='usb' managed='yes'>
-      <source startupPolicy='optional'>
-        <vendor id='0x046d'/>
-        <product id='0xc52b'/>
+    <hostdev mode='subsystem' type='pci' managed='yes'>
+      <source>
+        <address domain='0x0000' bus='0x0e' slot='0x00' function='0x4'/>
       </source>
-      <address type='usb' bus='0' port='1'/>
+      <address type='pci' domain='0x0000' bus='0x06' slot='0x00' function='0x0'/>
     </hostdev>
-
-    <!-- CDROM - used only at installation -->
-    <!--
-    <disk type="file" device="cdrom">
-      <driver name="qemu" type="raw"/>
-      <source file="/var/lib/libvirt/images/windows-11.iso"/>
-      <target dev="sdc" bus="sata"/>
-      <readonly/>
-    </disk>
-    -->
-
-    <!-- VirtIO - used only at installation -->
-    <!--
-    <disk type="file" device="cdrom">
-      <driver name="qemu" type="raw"/>
-      <source file="/var/lib/libvirt/images/virtio-win.iso"/>
-      <target dev="sdd" bus="sata"/>
-      <readonly/>
-    </disk>
-    -->
-
-    <!-- Virtualized display - used only at installation -->
-    <!--
-    <graphics type="vnc" port="-1" autoport="yes" listen="0.0.0.0">
-      <listen type="address" address="0.0.0.0"/>
-    </graphics>
-    <video>
-      <model type="bochs" vram="16384" heads="1" primary="yes"/>
-      <address type="pci" domain="0x0000" bus="0x00" slot="0x01" function="0x0"/>
-    </video>
-    -->
-
+    <memballoon model='virtio'>
+      <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
+    </memballoon>
   </devices>
 </domain>

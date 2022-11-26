@@ -1,49 +1,20 @@
-<!--
-
-- 4 core, 8 threads CPU with scaling and pinning
-- 12 GB ram
-- 2 disks as LVM partitions
-- AMD GPU passthrough (not the main GPU)
-- USB mouse and keyboard attached at start
-- Live USB passthrough for any other USB device
-- Bridge network
-- Onboard audio and TPM passthrough
-
--->
 <domain type='kvm'>
   <name>ubuntu</name>
-  <uuid>a133c298-21e9-41ec-aa6d-a7b6901704ef</uuid>
-
-  <!-- Hooks -->
-  <description>--scale-cpu --preserve-cpu=0,1,8,9 --gpu-passthrough=main,0a:00.0,0a:00.1 --usb-passthrough=all</description>
-
-  <!-- Memory -->
+  <uuid>40e84600-43c1-4279-b0d2-ecf10415bafe</uuid>
+  <description>--scale-cpu --preserve-cores=0,1,8,9 --gpu-passthrough=main,0c:00.0,0c:00.1</description>
   <memory unit='KiB'>12582912</memory>
   <currentMemory unit='KiB'>12582912</currentMemory>
-
-  <!-- CPU -->
-  <vcpu placement='static' cpuset='2-7,10-15'>12</vcpu>
+  <vcpu placement='static' cpuset='4-7,12-15'>8</vcpu>
   <cputune>
-    <vcpupin vcpu='0' cpuset='2'/>
-    <vcpupin vcpu='1' cpuset='3'/>
-    <vcpupin vcpu='2' cpuset='4'/>
-    <vcpupin vcpu='3' cpuset='5'/>
-    <vcpupin vcpu='4' cpuset='6'/>
-    <vcpupin vcpu='5' cpuset='7'/>
-    <vcpupin vcpu='6' cpuset='10'/>
-    <vcpupin vcpu='7' cpuset='11'/>
-    <vcpupin vcpu='8' cpuset='12'/>
-    <vcpupin vcpu='9' cpuset='13'/>
-    <vcpupin vcpu='10' cpuset='14'/>
-    <vcpupin vcpu='11' cpuset='15'/>
+    <vcpupin vcpu='0' cpuset='4'/>
+    <vcpupin vcpu='1' cpuset='5'/>
+    <vcpupin vcpu='2' cpuset='6'/>
+    <vcpupin vcpu='3' cpuset='7'/>
+    <vcpupin vcpu='4' cpuset='12'/>
+    <vcpupin vcpu='5' cpuset='13'/>
+    <vcpupin vcpu='6' cpuset='14'/>
+    <vcpupin vcpu='7' cpuset='15'/>
   </cputune>
-  <cpu mode='host-passthrough' check='none' migratable='on'>
-    <topology sockets='1' dies='1' cores='6' threads='2'/>
-    <cache mode='passthrough'/>
-    <feature policy='require' name='topoext'/>
-  </cpu>
-
-  <!-- OS -->
   <os>
     <type arch='x86_64' machine='pc-q35-7.0'>hvm</type>
     <loader readonly='yes' type='rom'>/usr/share/edk2/ovmf/OVMF_CODE.fd</loader>
@@ -51,12 +22,10 @@
     <boot dev='cdrom'/>
     <bootmenu enable='yes'/>
   </os>
-
-  <!-- Enhancements for Linux -->
   <features>
     <acpi/>
     <apic/>
-    <hyperv>
+    <hyperv mode='custom'>
       <relaxed state='on'/>
       <vapic state='on'/>
       <spinlocks state='on' retries='8191'/>
@@ -68,13 +37,16 @@
     <vmport state='off'/>
     <ioapic driver='kvm'/>
   </features>
+  <cpu mode='host-passthrough' check='none' migratable='on'>
+    <topology sockets='1' dies='1' cores='4' threads='2'/>
+    <cache mode='passthrough'/>
+    <feature policy='require' name='topoext'/>
+  </cpu>
   <clock offset='utc'>
     <timer name='rtc' tickpolicy='catchup'/>
     <timer name='pit' tickpolicy='delay'/>
     <timer name='hpet' present='no'/>
   </clock>
-
-  <!-- Power events -->
   <on_poweroff>destroy</on_poweroff>
   <on_reboot>restart</on_reboot>
   <on_crash>destroy</on_crash>
@@ -83,9 +55,20 @@
     <suspend-to-disk enabled='no'/>
   </pm>
   <devices>
-
-    <!-- Generic settings -->
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
+    <disk type='block' device='disk'>
+      <driver name='qemu' type='raw' cache='writeback' io='io_uring' discard='unmap'/>
+      <source dev='/dev/hypervisor/ubuntu'/>
+      <target dev='sda' bus='virtio'/>
+      <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
+    </disk>
+    <disk type='file' device='cdrom'>
+      <driver name='qemu' type='raw' discard='unmap'/>
+      <source file='/mnt/iso/ubuntu-22.10.iso'/>
+      <target dev='sdb' bus='sata'/>
+      <readonly/>
+      <address type='drive' controller='0' bus='0' target='0' unit='1'/>
+    </disk>
     <controller type='usb' index='0' model='qemu-xhci' ports='15'>
       <address type='pci' domain='0x0000' bus='0x02' slot='0x00' function='0x0'/>
     </controller>
@@ -146,6 +129,12 @@
     <controller type='virtio-serial' index='0'>
       <address type='pci' domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
     </controller>
+    <interface type='bridge'>
+      <mac address='52:54:00:51:10:2a'/>
+      <source bridge='virbr0'/>
+      <model type='virtio'/>
+      <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
+    </interface>
     <serial type='pty'>
       <target type='isa-serial' port='0'>
         <model name='isa-serial'/>
@@ -166,87 +155,48 @@
     </input>
     <input type='mouse' bus='ps2'/>
     <input type='keyboard' bus='ps2'/>
-    <audio id='1' type='none'/>
-    <memballoon model='virtio'>
-      <address type='pci' domain='0x0000' bus='0x08' slot='0x00' function='0x0'/>
-    </memballoon>
-    <rng model='virtio'>
-      <backend model='random'>/dev/urandom</backend>
-      <address type='pci' domain='0x0000' bus='0x06' slot='0x00' function='0x0'/>
-    </rng>
-
-    <!-- Disk -->
-    <disk type='block' device='disk'>
-      <driver name='qemu' type='raw' cache='writeback' io='io_uring' discard='unmap'/>
-      <source dev='/dev/hypervisor/ubuntu'/>
-      <target dev='sda' bus='virtio'/>
-      <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
-    </disk>
-    <disk type='block' device='disk'>
-      <driver name='qemu' type='raw' cache='writeback' io='io_uring' discard='unmap'/>
-      <source dev='/dev/hypervisor/files'/>
-      <target dev='sdb' bus='virtio'/>
-      <address type='pci' domain='0x0000' bus='0x05' slot='0x00' function='0x0'/>
-    </disk>
-
-    <!-- Bridge network -->
-    <interface type='bridge'>
-      <mac address='52:54:00:51:20:2a'/>
-      <source bridge='virbr0'/>
-      <model type='virtio'/>
-      <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
-    </interface>
-
-    <!-- TPM device -->
     <tpm model='tpm-tis'>
       <backend type='emulator' version='2.0'/>
     </tpm>
-
-    <!-- AMD GPU -->
+    <audio id='1' type='none'/>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x0a' slot='0x00' function='0x0'/>
+        <address domain='0x0000' bus='0x0c' slot='0x00' function='0x0'/>
       </source>
       <rom file='/var/lib/libvirt/vbios/NAVI22.rom'/>
       <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0' multifunction='on'/>
     </hostdev>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x0a' slot='0x00' function='0x1'/>
+        <address domain='0x0000' bus='0x0c' slot='0x00' function='0x1'/>
       </source>
       <rom file='/var/lib/libvirt/vbios/NAVI22.rom'/>
       <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x1'/>
     </hostdev>
-
-    <!-- Onboard audio -->
-    <hostdev mode='subsystem' type='pci' managed='yes'>
-      <source>
-        <address domain='0x0000' bus='0x0b' slot='0x00' function='0x3'/>
-      </source>
-      <address type='pci' domain='0x0000' bus='0x09' slot='0x00' function='0x0'/>
-    </hostdev>
-
-    <!-- USB controllers -->
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
         <address domain='0x0000' bus='0x02' slot='0x00' function='0x0'/>
       </source>
+      <address type='pci' domain='0x0000' bus='0x09' slot='0x00' function='0x0'/>
     </hostdev>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x0a' slot='0x00' function='0x3'/>
+        <address domain='0x0000' bus='0x0e' slot='0x00' function='0x3'/>
       </source>
+      <address type='pci' domain='0x0000' bus='0x0a' slot='0x00' function='0x0'/>
     </hostdev>
-
-    <!-- CDROM - used only at installation -->
-    <!--
-    <disk type="file" device="cdrom">
-      <driver name="qemu" type="raw"/>
-      <source file="/var/lib/libvirt/images/ubuntu.iso"/>
-      <target dev="sdc" bus="sata"/>
-      <readonly/>
-    </disk>
-    -->
-
+    <hostdev mode='subsystem' type='pci' managed='yes'>
+      <source>
+        <address domain='0x0000' bus='0x0e' slot='0x00' function='0x4'/>
+      </source>
+      <address type='pci' domain='0x0000' bus='0x08' slot='0x00' function='0x0'/>
+    </hostdev>
+    <memballoon model='virtio'>
+      <address type='pci' domain='0x0000' bus='0x05' slot='0x00' function='0x0'/>
+    </memballoon>
+    <rng model='virtio'>
+      <backend model='random'>/dev/urandom</backend>
+      <address type='pci' domain='0x0000' bus='0x06' slot='0x00' function='0x0'/>
+    </rng>
   </devices>
 </domain>

@@ -1,26 +1,9 @@
-<!-- 
-  
-- 4 core, 8 threads CPU with scaling and pinning
-- 12 GB ram
-- 3 disks being OpenCore EFI, system as LVM partition and base recovery image to install the OS
-- AMD GPU passthrough
-- USB mouse and keyboard attached at start
-- Bridge network
-- Onboard audio passthrough
-
--->
 <domain type='kvm' xmlns:qemu='http://libvirt.org/schemas/domain/qemu/1.0'>
   <name>macos</name>
-  <uuid>2aca0dd6-cec9-4717-9ab2-0b7b13d111c3</uuid>
-
-  <!-- Hooks -->
-  <description>--scale-cpu --preserve-cpu=0,1,8,9 --gpu-passthrough=secondary,08:00.0,08:00.1</description>
-
-  <!-- Memory -->
+  <uuid>71dc6d4f-1796-4145-9ec0-4872357c39d8</uuid>
+  <description>--scale-cpu --preserve-cores=0,1,8,9 --gpu-passthrough=secondary,08:00.0,08:00.1</description>
   <memory unit='KiB'>12582912</memory>
   <currentMemory unit='KiB'>12582912</currentMemory>
-
-  <!-- CPU -->
   <vcpu placement='static' cpuset='4-7,12-15'>8</vcpu>
   <cputune>
     <vcpupin vcpu='0' cpuset='4'/>
@@ -32,33 +15,27 @@
     <vcpupin vcpu='6' cpuset='14'/>
     <vcpupin vcpu='7' cpuset='15'/>
   </cputune>
+  <os>
+    <type arch='x86_64' machine='pc-q35-4.2'>hvm</type>
+    <loader readonly='yes' type='pflash'>/usr/share/OVMF/MACOS_CODE.fd</loader>
+    <nvram>/usr/share/OVMF/MACOS_VARS.fd</nvram>
+    <bootmenu enable='yes'/>
+  </os>
+  <features>
+    <acpi/>
+    <apic/>
+  </features>
   <cpu mode='host-passthrough' check='none' migratable='on'>
     <topology sockets='1' dies='1' cores='4' threads='2'/>
     <cache mode='passthrough'/>
     <feature policy='require' name='topoext'/>
   </cpu>
-
-  <!-- OS -->
-  <os>
-    <type arch='x86_64' machine='pc-q35-4.2'>hvm</type>
-    <loader readonly='yes' type='pflash'>/var/lib/libvirt/images/macos/OVMF_CODE.fd</loader>
-    <nvram>/var/lib/libvirt/images/macos/OVMF_VARS.fd</nvram>
-    <bootmenu enable='yes'/>
-  </os>
-
-  <!-- Enhancements for MacOS -->
-  <features>
-    <acpi/>
-    <apic/>
-  </features>
   <clock offset='utc'>
     <timer name='rtc' tickpolicy='catchup'/>
     <timer name='pit' tickpolicy='delay'/>
     <timer name='hpet' present='no'/>
     <timer name='tsc' present='yes' mode='native'/>
   </clock>
-
-  <!-- Power events -->
   <on_poweroff>destroy</on_poweroff>
   <on_reboot>restart</on_reboot>
   <on_crash>destroy</on_crash>
@@ -67,9 +44,28 @@
     <suspend-to-disk enabled='no'/>
   </pm>
   <devices>
-
-    <!-- Generic settings -->
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='qcow2' cache='writeback' io='threads'/>
+      <source file='/var/lib/libvirt/images/opencore.qcow2'/>
+      <target dev='sda' bus='virtio'/>
+      <boot order='2'/>
+      <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0'/>
+    </disk>
+    <disk type='block' device='disk'>
+      <driver name='qemu' type='raw' cache='writeback' io='io_uring' discard='unmap'/>
+      <source dev='/dev/data/macos'/>
+      <target dev='sdb' bus='virtio'/>
+      <boot order='1'/>
+      <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
+    </disk>
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='raw' cache='writeback'/>
+      <source file='/var/lib/libvirt/images/macos-monterey.img'/>
+      <target dev='sdc' bus='virtio'/>
+      <boot order='3'/>
+      <address type='pci' domain='0x0000' bus='0x0b' slot='0x00' function='0x0'/>
+    </disk>
     <controller type='sata' index='0'>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x1f' function='0x2'/>
     </controller>
@@ -123,6 +119,11 @@
       <target chassisNr='10'/>
       <address type='pci' domain='0x0000' bus='0x09' slot='0x02' function='0x0'/>
     </controller>
+    <controller type='pci' index='11' model='pcie-root-port'>
+      <model name='pcie-root-port'/>
+      <target chassis='11' port='0x18'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
+    </controller>
     <controller type='virtio-serial' index='0'>
       <address type='pci' domain='0x0000' bus='0x02' slot='0x00' function='0x0'/>
     </controller>
@@ -141,6 +142,12 @@
       <master startport='4'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x07' function='0x2'/>
     </controller>
+    <interface type='bridge'>
+      <mac address='52:54:00:e6:85:40'/>
+      <source bridge='virbr0'/>
+      <model type='vmxnet3'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x0'/>
+    </interface>
     <serial type='pty'>
       <target type='isa-serial' port='0'>
         <model name='isa-serial'/>
@@ -149,7 +156,7 @@
     <console type='pty'>
       <target type='serial' port='0'/>
     </console>
-     <channel type='unix'>
+    <channel type='unix'>
       <target type='virtio' name='org.qemu.guest_agent.0'/>
       <address type='virtio-serial' controller='0' bus='0' port='1'/>
     </channel>
@@ -161,95 +168,49 @@
     </input>
     <input type='mouse' bus='ps2'/>
     <input type='keyboard' bus='ps2'/>
+    <graphics type='vnc' port='-1' autoport='yes' listen='0.0.0.0'>
+      <listen type='address' address='0.0.0.0'/>
+    </graphics>
     <audio id='1' type='none'/>
-    <memballoon model='none'/>
-
-    <!-- Disks -->
-    <disk type='file' device='disk'>
-      <driver name='qemu' type='qcow2' cache='writeback' io='threads'/>
-      <source file='/var/lib/libvirt/images/macos/OpenCore.qcow2'/>
-      <target dev='sda' bus='virtio'/>
-      <boot order='2'/>
-      <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
-    </disk>
-     <disk type='block' device='disk'>
-     <driver name='qemu' type='raw' cache='writeback' io='io_uring' discard='unmap'/>
-      <driver name='qemu' type='raw' cache='none' io='native'/>
-      <source dev='/dev/hypervisor/macos'/>
-      <target dev='sdb' bus='virtio'/>
-      <boot order='1'/>
-      <address type='pci' domain='0x0000' bus='0x05' slot='0x00' function='0x0'/>
-    </disk>
-    <disk type='file' device='disk'>
-      <driver name='qemu' type='raw' cache='writeback'/>
-      <source file='/var/lib/libvirt/images/macos/BaseSystem.img'/>
-      <target dev='sdc' bus='virtio'/>
-      <boot order='3'/>
-      <address type='pci' domain='0x0000' bus='0x06' slot='0x00' function='0x0'/>
-    </disk>
-
-    <!-- Bridge network -->
-    <interface type='bridge'>
-      <mac address='52:54:00:e6:85:40'/>
-      <source bridge='virbr0'/>
-      <model type='vmxnet3'/>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x0'/>
-    </interface>
-
-    <!-- AMD GPU -->
+    <video>
+      <model type='vga' vram='131072' heads='1' primary='yes'/>
+      <address type='pci' domain='0x0000' bus='0x09' slot='0x01' function='0x0'/>
+    </video>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x0a' slot='0x00' function='0x0'/>
+        <address domain='0x0000' bus='0x08' slot='0x00' function='0x0'/>
       </source>
-      <rom file='/var/lib/libvirt/vbios/NAVI22.rom'/>
+      <rom file='/var/lib/libvirt/vbios/NAVI14.rom'/>
       <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0' multifunction='on'/>
     </hostdev>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x0a' slot='0x00' function='0x1'/>
+        <address domain='0x0000' bus='0x08' slot='0x00' function='0x1'/>
       </source>
-      <rom file='/var/lib/libvirt/vbios/NAVI22.rom'/>
+      <rom file='/var/lib/libvirt/vbios/NAVI14.rom'/>
       <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x1'/>
     </hostdev>
-
-    <!-- Virtualized display - used at installation or as main display -->
-    <!--
-    <graphics type='vnc' port='-1' autoport='yes' listen='0.0.0.0'>
-      <listen type='address' address='0.0.0.0'/>
-    </graphics>
-    <video>
-      <model type='vga' vram='131072' heads='1' primary='yes'/>
-    </video>
-    -->
-
-    <!-- Onboard audio -->
-    <hostdev mode='subsystem' type='pci' managed='yes'>
-      <source>
-        <address domain='0x0000' bus='0x0b' slot='0x00' function='0x3'/>
-      </source>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/>
-    </hostdev>
-
-    <!-- USB -->
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
         <address domain='0x0000' bus='0x02' slot='0x00' function='0x0'/>
+      </source>
+      <address type='pci' domain='0x0000' bus='0x05' slot='0x00' function='0x0'/>
+    </hostdev>
+    <hostdev mode='subsystem' type='pci' managed='yes'>
+      <source>
+        <address domain='0x0000' bus='0x0e' slot='0x00' function='0x3'/>
       </source>
       <address type='pci' domain='0x0000' bus='0x06' slot='0x00' function='0x0'/>
     </hostdev>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x0a' slot='0x00' function='0x3'/>
+        <address domain='0x0000' bus='0x0e' slot='0x00' function='0x4'/>
       </source>
-      <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>
     </hostdev>
-
+    <memballoon model='none'/>
   </devices>
-
-  <!-- SELinux relabel -->
   <seclabel type='dynamic' model='selinux' relabel='yes'/>
-
-  <!-- QEMU extra arguments -->
   <qemu:commandline>
     <qemu:arg value='-global'/>
     <qemu:arg value='ICH9-LPC.acpi-pci-hotplug-with-bridge-support=off'/>
@@ -257,7 +218,7 @@
     <qemu:arg value='isa-applesmc,osk=ourhardworkbythesewordsguardedpleasedontsteal(c)AppleComputerInc'/>
     <qemu:arg value='-smbios'/>
     <qemu:arg value='type=2'/>
-    <qemu:arg value="-usb"/>
+    <qemu:arg value='-usb'/>
     <qemu:arg value='-device'/>
     <qemu:arg value='usb-tablet'/>
     <qemu:arg value='-device'/>
@@ -265,5 +226,4 @@
     <qemu:arg value='-cpu'/>
     <qemu:arg value='Cascadelake-Server,kvm=on,vendor=GenuineIntel,+hypervisor,+invtsc,+fma,+avx,+avx2,+aes,+ssse3,+sse4_2,+popcnt,+sse4a,+bmi1,+bmi2,+vmx'/>
   </qemu:commandline>
-
 </domain>
