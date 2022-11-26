@@ -30,3 +30,10 @@ You can virtualize almost any Windows version. These observations are valid for 
 
 - You can check some configurations for Windows machines in the ``Samples/`` folder.
 - These settings are very good for gaming, including gaming with VR headsets.
+
+----
+
+Others tips and tricks:
+
+- **[Linux Virtualization](6%20-%20Linux%20Virtualization.md)**
+- **[MacOS Virtualization](8%20-%20MacOS%20Virtualization.md)**

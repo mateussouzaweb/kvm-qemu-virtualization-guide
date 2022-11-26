@@ -18,3 +18,10 @@ You can virtualize any Linux distribution and everything should work as expected
 - You can check some configurations for Linux machines in the ``Samples/`` folder.
 - Samples include examples for desktop for general purposes, including work.
 - There are also a few examples of Linux server machines.
+
+----
+
+Others tips and tricks:
+
+- **[Windows Virtualization](7%20-%20Windows%20Virtualization.md)**
+- **[MacOS Virtualization](8%20-%20MacOS%20Virtualization.md)**

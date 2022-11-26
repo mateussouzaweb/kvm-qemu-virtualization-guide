@@ -153,3 +153,10 @@ After finishing the necessary modifications, you must go outside of the partitio
 cd ${HOME}
 guestunmount /mnt/opencore
 ```
+
+----
+
+Others tips and tricks:
+
+- **[Linux Virtualization](6%20-%20Linux%20Virtualization.md)**
+- **[Windows Virtualization](7%20-%20Windows%20Virtualization.md)**
