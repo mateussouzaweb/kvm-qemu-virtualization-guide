@@ -119,6 +119,11 @@ qemu-img create -f raw /var/lib/libvirt/images/${NAME}.raw 100G
 
 # QCOW2 disk
 qemu-img create -f qcow2 /var/lib/libvirt/images/${NAME}.qcow2 100G
+
+# Fix permissions on virtual disk files
+chmod -R 660 /var/lib/libvirt/images/*
+chown -R qemu:qemu /var/lib/libvirt/images
+/sbin/restorecon -R -vF /var/lib/libvirt/images
 ```
 
 You don't need to format the disk or partition, just pass it to the VM and run the installation process. To have the best performance and flexibility, you should have high-speed disks like SSD or NVME disk to directly attach to the VM but LVM partitions as just as good and I recommend this method in every situation. 
