@@ -1,111 +1,77 @@
-# Windows Virtualization - Tips and Tricks
-
-Valid for Windows 10 and Windows 11. Besides these few observations, everything else should work as expected.
-
-## Observations
-
-**Installation:**
-
-- Installation process will require a virtualized display graphics.
-- After installing, remember to install VirtIO software.
-
-**Graphics:**
-
-- Use the patched VGA BIOS on Nvidia GPUs.
-- Just install the GPU driver of the manufacturer (AMD/Nvidia) and GPU should work.
-- After the driver has been installed, remove the virtualized display graphics to avoid issues.
-
-**USB:**
-
-- Live USB passthrough does not work on Windows before login. You need to start Windows with an attached USB mouse/keyboard device and then after logging in, every USB device should work as expected.
-
-**Network:**
-
-- Network interface model type must be ``e1000e``.
-- Network is a bit slow compared to non-virtualized environment because of that model type, but nothing too extreme.
-- If you are having issues streaming the VM to any other device, this maybe is not a network issue. Try disable the GPU Scheduler on "Settings" > "Display" > "Graphics" > "Change default graphics settings" first and see if that solves the problem.
-
-**Disk:**
-
-- If you use LVM partition, Windows should recognize such disk and you will not need to load disk drivers on the install process.
-
-## Sample XML
-
-This XML was retrieved from a Windows 11 VM focused on gaming. The performance is very good, but I don't usually play games at maximum settings:
+<!--
 
 - 4 core, 8 threads CPU with scaling and pinning
 - 12 GB ram
-- 3 disks being 2 LVM partitions and one directly attached disk
-- Nvidia GPU with main GPU passthrough
+- 2 disks as LVM partitions
+- AMD GPU passthrough (not the main GPU)
 - USB mouse and keyboard attached at start
 - Live USB passthrough for any other USB device
 - Bridge network
 - Onboard audio and TPM passthrough
 
-```xml
+-->
 <domain type='kvm'>
-  <name>windows</name>
-  <uuid>e0e64960-77bf-4424-9d6e-0d5b75635c18</uuid>
-  <metadata>
-    <libosinfo:libosinfo xmlns:libosinfo="http://libosinfo.org/xmlns/libvirt/domain/1.0">
-      <libosinfo:os id="http://microsoft.com/win/10"/>
-    </libosinfo:libosinfo>
-  </metadata>
+  <name>ubuntu</name>
+  <uuid>a133c298-21e9-41ec-aa6d-a7b6901704ef</uuid>
 
   <!-- Hooks -->
-  <description>--scale-cpu --preserve-cpu=0,1,8,9 --gpu-passthrough=main,09:00.0,09:00.1 --usb-passthrough=all</description>
+  <description>--scale-cpu --preserve-cpu=0,1,8,9 --gpu-passthrough=main,0a:00.0,0a:00.1 --usb-passthrough=all</description>
 
   <!-- Memory -->
   <memory unit='KiB'>12582912</memory>
   <currentMemory unit='KiB'>12582912</currentMemory>
 
   <!-- CPU -->
-  <vcpu placement='static' cpuset='4-7,12-15'>8</vcpu>
+  <vcpu placement='static' cpuset='2-7,10-15'>12</vcpu>
   <cputune>
-    <vcpupin vcpu='0' cpuset='4'/>
-    <vcpupin vcpu='1' cpuset='5'/>
-    <vcpupin vcpu='2' cpuset='6'/>
-    <vcpupin vcpu='3' cpuset='7'/>
-    <vcpupin vcpu='4' cpuset='12'/>
-    <vcpupin vcpu='5' cpuset='13'/>
-    <vcpupin vcpu='6' cpuset='14'/>
-    <vcpupin vcpu='7' cpuset='15'/>
+    <vcpupin vcpu='0' cpuset='2'/>
+    <vcpupin vcpu='1' cpuset='3'/>
+    <vcpupin vcpu='2' cpuset='4'/>
+    <vcpupin vcpu='3' cpuset='5'/>
+    <vcpupin vcpu='4' cpuset='6'/>
+    <vcpupin vcpu='5' cpuset='7'/>
+    <vcpupin vcpu='6' cpuset='10'/>
+    <vcpupin vcpu='7' cpuset='11'/>
+    <vcpupin vcpu='8' cpuset='12'/>
+    <vcpupin vcpu='9' cpuset='13'/>
+    <vcpupin vcpu='10' cpuset='14'/>
+    <vcpupin vcpu='11' cpuset='15'/>
   </cputune>
   <cpu mode='host-passthrough' check='none' migratable='on'>
-    <topology sockets='1' dies='1' cores='4' threads='2'/>
+    <topology sockets='1' dies='1' cores='6' threads='2'/>
     <cache mode='passthrough'/>
     <feature policy='require' name='topoext'/>
   </cpu>
 
   <!-- OS -->
   <os>
-    <type arch='x86_64' machine='pc-q35-6.2'>hvm</type>
+    <type arch='x86_64' machine='pc-q35-7.0'>hvm</type>
     <loader readonly='yes' type='rom'>/usr/share/edk2/ovmf/OVMF_CODE.fd</loader>
     <boot dev='hd'/>
     <boot dev='cdrom'/>
     <bootmenu enable='yes'/>
   </os>
 
-  <!-- Enhancements for Windows -->
+  <!-- Enhancements for Linux -->
   <features>
     <acpi/>
     <apic/>
-    <pae/>
     <hyperv>
       <relaxed state='on'/>
       <vapic state='on'/>
       <spinlocks state='on' retries='8191'/>
-      <vpindex state='on'/>
-      <synic state='on'/>
-      <stimer state='on'/>
-      <reset state='on'/>
+      <vendor_id state='on' value='1234567890ab'/>
     </hyperv>
+    <kvm>
+      <hidden state='on'/>
+    </kvm>
+    <vmport state='off'/>
+    <ioapic driver='kvm'/>
   </features>
-  <clock offset='localtime'>
+  <clock offset='utc'>
     <timer name='rtc' tickpolicy='catchup'/>
     <timer name='pit' tickpolicy='delay'/>
     <timer name='hpet' present='no'/>
-    <timer name='hypervclock' present='yes'/>
   </clock>
 
   <!-- Power events -->
@@ -152,7 +118,7 @@ This XML was retrieved from a Windows 11 VM focused on gaming. The performance i
       <target chassis='5' port='0x14'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x4'/>
     </controller>
-     <controller type='pci' index='6' model='pcie-root-port'>
+    <controller type='pci' index='6' model='pcie-root-port'>
       <model name='pcie-root-port'/>
       <target chassis='6' port='0x15'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x5'/>
@@ -170,7 +136,12 @@ This XML was retrieved from a Windows 11 VM focused on gaming. The performance i
     <controller type='pci' index='9' model='pcie-root-port'>
       <model name='pcie-root-port'/>
       <target chassis='9' port='0x18'/>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0' multifunction='on'/>
+    </controller>
+    <controller type='pci' index='10' model='pcie-root-port'>
+      <model name='pcie-root-port'/>
+      <target chassis='10' port='0x19'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x1'/>
     </controller>
     <controller type='virtio-serial' index='0'>
       <address type='pci' domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
@@ -197,57 +168,53 @@ This XML was retrieved from a Windows 11 VM focused on gaming. The performance i
     <input type='keyboard' bus='ps2'/>
     <audio id='1' type='none'/>
     <memballoon model='virtio'>
-      <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x08' slot='0x00' function='0x0'/>
     </memballoon>
+    <rng model='virtio'>
+      <backend model='random'>/dev/urandom</backend>
+      <address type='pci' domain='0x0000' bus='0x06' slot='0x00' function='0x0'/>
+    </rng>
 
-    <!-- Disks -->
+    <!-- Disk -->
     <disk type='block' device='disk'>
       <driver name='qemu' type='raw' cache='writeback' io='io_uring' discard='unmap'/>
-      <source dev='/dev/hypervisor/windows'/>
+      <source dev='/dev/hypervisor/ubuntu'/>
       <target dev='sda' bus='virtio'/>
-      <address type='pci' domain='0x0000' bus='0x05' slot='0x00' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
     </disk>
     <disk type='block' device='disk'>
       <driver name='qemu' type='raw' cache='writeback' io='io_uring' discard='unmap'/>
       <source dev='/dev/hypervisor/files'/>
       <target dev='sdb' bus='virtio'/>
-      <address type='pci' domain='0x0000' bus='0x06' slot='0x00' function='0x0'/>
-    </disk>
-    <disk type='block' device='disk'>
-      <driver name='qemu' type='raw' cache='writeback' io='io_uring' discard='unmap'/>
-      <source dev='/dev/sda'/>
-      <target dev='sdc' bus='virtio'/>
-      <address type='pci' domain='0x0000' bus='0x08' slot='0x00' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x05' slot='0x00' function='0x0'/>
     </disk>
 
     <!-- Bridge network -->
     <interface type='bridge'>
-      <mac address='52:54:00:f3:20:21'/>
-      <source bridge='br0'/>
-      <model type='e1000e'/>
+      <mac address='52:54:00:51:20:2a'/>
+      <source bridge='virbr0'/>
+      <model type='virtio'/>
       <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
     </interface>
 
     <!-- TPM device -->
     <tpm model='tpm-tis'>
-      <backend type='passthrough'>
-        <device path='/dev/tpm0'/>
-      </backend>
+      <backend type='emulator' version='2.0'/>
     </tpm>
 
-    <!-- Nvidia GPU -->
+    <!-- AMD GPU -->
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x09' slot='0x00' function='0x0'/>
+        <address domain='0x0000' bus='0x0a' slot='0x00' function='0x0'/>
       </source>
-      <rom file='/var/lib/libvirt/vbios/GP104-P.rom'/>
+      <rom file='/var/lib/libvirt/vbios/NAVI22.rom'/>
       <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0' multifunction='on'/>
     </hostdev>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x09' slot='0x00' function='0x1'/>
+        <address domain='0x0000' bus='0x0a' slot='0x00' function='0x1'/>
       </source>
-      <rom file='/var/lib/libvirt/vbios/GP104-P.rom'/>
+      <rom file='/var/lib/libvirt/vbios/NAVI22.rom'/>
       <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x1'/>
     </hostdev>
 
@@ -259,46 +226,27 @@ This XML was retrieved from a Windows 11 VM focused on gaming. The performance i
       <address type='pci' domain='0x0000' bus='0x09' slot='0x00' function='0x0'/>
     </hostdev>
 
-    <!-- USB mouse/keyboard -->
-    <hostdev mode='subsystem' type='usb' managed='yes'>
-      <source startupPolicy='optional'>
-        <vendor id='0x046d'/>
-        <product id='0xc52b'/>
+    <!-- USB controllers -->
+    <hostdev mode='subsystem' type='pci' managed='yes'>
+      <source>
+        <address domain='0x0000' bus='0x02' slot='0x00' function='0x0'/>
       </source>
-      <address type='usb' bus='0' port='1'/>
+    </hostdev>
+    <hostdev mode='subsystem' type='pci' managed='yes'>
+      <source>
+        <address domain='0x0000' bus='0x0a' slot='0x00' function='0x3'/>
+      </source>
     </hostdev>
 
     <!-- CDROM - used only at installation -->
     <!--
     <disk type="file" device="cdrom">
       <driver name="qemu" type="raw"/>
-      <source file="/var/lib/libvirt/images/windows-11.iso"/>
+      <source file="/var/lib/libvirt/images/ubuntu.iso"/>
       <target dev="sdc" bus="sata"/>
       <readonly/>
     </disk>
     -->
 
-    <!-- VirtIO - used only at installation -->
-    <!--
-    <disk type="file" device="cdrom">
-      <driver name="qemu" type="raw"/>
-      <source file="/var/lib/libvirt/images/virtio-win.iso"/>
-      <target dev="sdd" bus="sata"/>
-      <readonly/>
-    </disk>
-    -->
-
-    <!-- Virtualized display - used only at installation -->
-    <!--
-    <graphics type="vnc" port="-1" autoport="yes" listen="0.0.0.0">
-      <listen type="address" address="0.0.0.0"/>
-    </graphics>
-    <video>
-      <model type="bochs" vram="16384" heads="1" primary="yes"/>
-      <address type="pci" domain="0x0000" bus="0x00" slot="0x01" function="0x0"/>
-    </video>
-    -->
-
   </devices>
 </domain>
-```

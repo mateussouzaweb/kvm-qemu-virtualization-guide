@@ -1,65 +1,5 @@
-# MacOS Virtualization - Tips and Tricks
-
-MacOS has a few tricks to make it work. Once running with their limitations, it works great and can be used as a daily machine.
-
-## Observations
-
-**Installation:**
-
-- Like as Linux VMs, installation process does not require a virtualized display graphics if you starts with the correct boot flag for AMD GPUs in OpenCore config.
-- Otherwise, enable the virtualization display graphics and proceed.
-
-**QEMU:**
-
-- Don't forget to include the QEMU XML namespace on top of the file.
-- QEMU command line extra parameters is required to set correct flags.
-
-**OS:**
-
-- Machine type must be ``pc-q35-4.2``, otherwise installation won't work.
-- You must use the custom patched ``OVMF_CODE.fd`` and ``OVMF_VARS-1024x768.fd``.
-
-**CPU:**
-
-- Nested virtualization on AMD CPUs are not possible.
-- If your CPU is a Mac compatible Intel chip, change ``Skylake-Server`` to ``host`` on the XML settings.
-
-**Graphics:**
-
-- GPU passthrough will not work on recent Nvidia graphic cards, forget it and buy a compatible AMD GPU.
-- If you will passthrough any graphic card, just don't forget to remove the default video interface. Also make sure the gfx and audio devices are in the same bus (like ``0x01``) but in different function (``0x00`` and ``0x01``).
-- For AMD GPU, you also need to set ``agdpmod=pikera`` in the ``config.plist`` NVRAM boot-args section - this file is available on the OpenCore EFI partition.
-
-**Network:**
-
-- Network interface model type must be ``vmxnet3``.
-- Make sure the address is in bus ``0x0`` and slot ``0x0y`` (y is numeric).
-- These settings will solve any issues that you can have on the install process, nic built-in, Apple Store and iCloud.
-
-**Audio:**
-
-- If you will passthrough onboard audio, make sure you put it in bus ``0x00`` and slot ``0x0y`` (y is numeric).
-- This is necessary to make AppleALC recognize its audio device.
-
-**USB:**
-
-- Live USB passthrough is not possible. You need to attach the USB device and then restart the VM to work.
-- Attached USB keyboard at start may not work on OpenCore boot menu.
-- USB passthrough of USB 3.X devices may not work on MacOS.
-
-**Boot:**
-
-- If the keyboard does not work on OpenCore boot menu, you can use the Console to select the boot entry. Just enter the Console and press the arrow key to select the disk entry (no need to attach VNC graphics for it).
-- If the default boot entry is on the recovery image, you can change it by selecting the MacOS volume and hitting ``CTRL`` + ``Enter`` to set this as the default boot entry. The change will be reflected in the next boot.
-
-**Post Install:**
-
-- Download the apps: Hackintool, ProperTree and GenSMBIOS to modify OpenCore.
-- Generate a unique SMBIOS and configure it in your EFI/OpenCore partition.
-- Install additional kexts to your hardware if required.
-
-## Sample XML
-
+<!-- 
+  
 - 4 core, 8 threads CPU with scaling and pinning
 - 12 GB ram
 - 3 disks being OpenCore EFI, system as LVM partition and base recovery image to install the OS
@@ -68,7 +8,7 @@ MacOS has a few tricks to make it work. Once running with their limitations, it 
 - Bridge network
 - Onboard audio passthrough
 
-```xml
+-->
 <domain type='kvm' xmlns:qemu='http://libvirt.org/schemas/domain/qemu/1.0'>
   <name>macos</name>
   <uuid>2aca0dd6-cec9-4717-9ab2-0b7b13d111c3</uuid>
@@ -102,7 +42,7 @@ MacOS has a few tricks to make it work. Once running with their limitations, it 
   <os>
     <type arch='x86_64' machine='pc-q35-4.2'>hvm</type>
     <loader readonly='yes' type='pflash'>/var/lib/libvirt/images/macos/OVMF_CODE.fd</loader>
-    <nvram>/var/lib/libvirt/images/macos/OVMF_VARS-1024x768.fd</nvram>
+    <nvram>/var/lib/libvirt/images/macos/OVMF_VARS.fd</nvram>
     <bootmenu enable='yes'/>
   </os>
 
@@ -115,6 +55,7 @@ MacOS has a few tricks to make it work. Once running with their limitations, it 
     <timer name='rtc' tickpolicy='catchup'/>
     <timer name='pit' tickpolicy='delay'/>
     <timer name='hpet' present='no'/>
+    <timer name='tsc' present='yes' mode='native'/>
   </clock>
 
   <!-- Power events -->
@@ -250,7 +191,7 @@ MacOS has a few tricks to make it work. Once running with their limitations, it 
     <!-- Bridge network -->
     <interface type='bridge'>
       <mac address='52:54:00:e6:85:40'/>
-      <source bridge='br0'/>
+      <source bridge='virbr0'/>
       <model type='vmxnet3'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x0'/>
     </interface>
@@ -258,16 +199,16 @@ MacOS has a few tricks to make it work. Once running with their limitations, it 
     <!-- AMD GPU -->
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x08' slot='0x00' function='0x0'/>
+        <address domain='0x0000' bus='0x0a' slot='0x00' function='0x0'/>
       </source>
-      <rom file='/var/lib/libvirt/vbios/NAVI14.rom'/>
+      <rom file='/var/lib/libvirt/vbios/NAVI22.rom'/>
       <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0' multifunction='on'/>
     </hostdev>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x08' slot='0x00' function='0x1'/>
+        <address domain='0x0000' bus='0x0a' slot='0x00' function='0x1'/>
       </source>
-      <rom file='/var/lib/libvirt/vbios/NAVI14.rom'/>
+      <rom file='/var/lib/libvirt/vbios/NAVI22.rom'/>
       <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x1'/>
     </hostdev>
 
@@ -289,13 +230,18 @@ MacOS has a few tricks to make it work. Once running with their limitations, it 
       <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/>
     </hostdev>
 
-    <!-- USB mouse/keyboard -->
-    <hostdev mode='subsystem' type='usb' managed='yes'>
-      <source startupPolicy='optional'>
-        <vendor id='0x046d'/>
-        <product id='0xc52b'/>
+    <!-- USB -->
+    <hostdev mode='subsystem' type='pci' managed='yes'>
+      <source>
+        <address domain='0x0000' bus='0x02' slot='0x00' function='0x0'/>
       </source>
-      <address type='usb' bus='0' port='1'/>
+      <address type='pci' domain='0x0000' bus='0x06' slot='0x00' function='0x0'/>
+    </hostdev>
+    <hostdev mode='subsystem' type='pci' managed='yes'>
+      <source>
+        <address domain='0x0000' bus='0x0a' slot='0x00' function='0x3'/>
+      </source>
+      <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0'/>
     </hostdev>
 
   </devices>
@@ -305,115 +251,19 @@ MacOS has a few tricks to make it work. Once running with their limitations, it 
 
   <!-- QEMU extra arguments -->
   <qemu:commandline>
+    <qemu:arg value='-global'/>
+    <qemu:arg value='ICH9-LPC.acpi-pci-hotplug-with-bridge-support=off'/>
     <qemu:arg value='-device'/>
     <qemu:arg value='isa-applesmc,osk=ourhardworkbythesewordsguardedpleasedontsteal(c)AppleComputerInc'/>
     <qemu:arg value='-smbios'/>
     <qemu:arg value='type=2'/>
+    <qemu:arg value="-usb"/>
     <qemu:arg value='-device'/>
     <qemu:arg value='usb-tablet'/>
     <qemu:arg value='-device'/>
     <qemu:arg value='usb-kbd'/>
     <qemu:arg value='-cpu'/>
-    <qemu:arg value='Skylake-Server,kvm=on,vendor=GenuineIntel,+hypervisor,+invtsc,+fma,+avx,+avx2,+aes,+ssse3,+sse4_2,+popcnt,+sse4a,+bmi1,+bmi2,+vmx'/>
+    <qemu:arg value='Cascadelake-Server,kvm=on,vendor=GenuineIntel,+hypervisor,+invtsc,+fma,+avx,+avx2,+aes,+ssse3,+sse4_2,+popcnt,+sse4a,+bmi1,+bmi2,+vmx'/>
   </qemu:commandline>
 
 </domain>
-```
-
-## Installation
-
-See: <https://github.com/kholia/OSX-KVM>
-
-This guide uses the OSX-KVM project as base system. We grab just the necessary files to run it on QEMU.
-
-Create and go to base VM folder:
-
-```bash
-mkdir -p /var/lib/libvirt/images/macos/
-cd /var/lib/libvirt/images/macos/
-```
-
-Download files and fetch the desired MacOS version:
-
-```bash
-REPOSITORY="https://github.com/kholia/OSX-KVM/raw/master"
-wget -O fetch-macOS-v2.py ${REPOSITORY}/fetch-macOS-v2.py
-wget -O OpenCore.qcow2 ${REPOSITORY}/OpenCore/OpenCore.qcow2
-wget -O OVMF_CODE.fd ${REPOSITORY}/OVMF_CODE.fd
-wget -O OVMF_VARS-1024x768.fd ${REPOSITORY}/OVMF_VARS-1024x768.fd
-
-chmod +x fetch-macOS-v2.py
-./fetch-macOS-v2.py
-```
-
-Convert DMG image to IMG format and remove unnecessary files:
-
-```bash
-qemu-img convert BaseSystem.dmg -O raw BaseSystem.img
-rm -f BaseSystem.dmg BaseSystem.chunklist
-```
-
-Create the VM disk partition (like any other VM):
-
-```bash
-lvcreate -n ${NAME} -L 200G ${VOLUME_GROUP}
-```
-
-Here, you can also tweak the OpenCore partition before starting the VM installation directly from the host (see the guide below). I will do it to enable the AMD GPU support for example, but if you don't know what to do, simply continue this guide and come back later when necessary...
-
-Now, create the machine definitions XML as mentioned above on sample XML. Does not forget to enable the virtualized display graphics if necessary and tweak to run on your system devices:
-
-```bash
-vim macos.xml
-```
-
-Finally define the VM and start it:
-
-```bash
-virsh define macos.xml
-virsh start macos
-```
-
-Done!
-
-----
-
-## Editing OpenCore from the Hypervisor
-
-If you need to mount the OpenCore partition outside the MacOS VM to tweak configurations, use the process as described here but do not forget to unmount the partition after modifications:
-
-```bash
-# Mount the disk
-mkdir -p /mnt/opencore && guestmount \
-  -a /var/lib/libvirt/images/macos/OpenCore.qcow2 \
-  -m /dev/sda1 /mnt/opencore
-
-# Go to partition
-cd /mnt/opencore/EFI
-```
-
-Once inside the partition, you can make the modifications as desired. Here are some examples:
-
-```bash
-# EXAMPLE: update boot-args to add AMD GPU support
-# NOTE: keepsyms is part of boot-args
-sed -i 's/keepsyms=1/keepsyms=1 agdpmod=pikera/' OC/config.plist
-
-# EXAMPLE: allow selecting a default entry with CTRL + Enter
-# vim OC/config.plist
-# Search for AllowSetDefault: set to true
-
-# EXAMPLE: reduce boot timeout
-# vim OC/config.plist
-# Search for Timeout: set to 10
-```
-
-After finishing the necessary modifications, you must go outside of the partition and unmount the disk:
-
-```bash
-# Go to any location
-cd /
-
-# Unmount the disk
-guestunmount /mnt/opencore
-```

@@ -1,6 +1,6 @@
 # KVM / QEMU XML Configuration Tips
 
-This is an extensive list of relevant configurations that you can do in your VM. It's a must read if you want to setup hooks and configure your VM to work well. Please remember that they are just samples, you must replace the hardware parts to match yours and to match the specs of your VM.
+This is an extensive list of relevant configurations that you can do in your VM. It's a must read if you want to setup hooks and configure your VM to work well. Please remember that they are just samples, you must replace the hardware parts to match yours and to match the specs of your VM. You can also check the ``Samples/`` folder to see some final examples.
 
 Just as a reminder, you can edit the XML file or the VM configurations for an already created VM using the following commands:
 
@@ -462,6 +462,6 @@ If you come from the previous topic, set the relevant XML details for your VM an
 
 I will update this configuration guide once I learn more relevant details in the future. If you are targeting one specific type of virtual machine, I created a few topics on that to write my observations:
 
-- **[Linux Virtualization](5.1%20-%20Linux.md)**
-- **[Windows Virtualization](5.2%20-%20Windows.md)**
-- **[MacOS Virtualization](5.3%20-%20MacOS.md)**
+- **[Linux Virtualization](6%20-%20Linux%20Virtualization.md)**
+- **[Windows Virtualization](7%20-%20Windows%20Virtualization.md)**
+- **[MacOS Virtualization](8%20-%20MacOS%20Virtualization.md)**
