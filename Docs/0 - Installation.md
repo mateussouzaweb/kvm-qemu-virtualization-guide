@@ -70,6 +70,7 @@ usermod -a -G libvirt,kvm ${USERNAME}
 DESTINATION="/home/${USERNAME}/.config/libvirt"
 mkdir -p ${DESTINATION}
 echo 'uri_default = "qemu:///system"' >> "${DESTINATION}/libvirt.conf"
+chown -r ${USERNAME}:${USERNAME} ${DESTINATION}
 ```
 
 Reboot and you are done:
