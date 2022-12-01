@@ -70,6 +70,7 @@ virt-host-validate | grep "QEMU"
 # First download the helper command
 REPOSITORY="https://mateussouzaweb.github.io/kvm-qemu-virtualization-guide/Scripts/bin"
 curl -L ${REPOSITORY}/lspci-groups --output /usr/local/bin/lspci-groups
+chmod +x /usr/local/bin/lspci-groups
 
 # Now run it
 lspci-groups
