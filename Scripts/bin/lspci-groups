@@ -2,8 +2,8 @@
 
 for group in `find /sys/kernel/iommu_groups/* -maxdepth 0 -type d | sort -V`; do
   for device in ${group}/devices/*; do
-    
-    # Device info 
+
+    # Device info
     info=$(lspci -nns ${device##*/})
     group=${group##*/}
     echo "Group ${group} - ${info}"

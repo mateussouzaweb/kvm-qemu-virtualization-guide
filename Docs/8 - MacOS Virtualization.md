@@ -22,7 +22,7 @@ MacOS has a few tricks to virtualize. Once running with their limitations, it wo
 **CPU:**
 
 - If you have an AMD CPU, don't worry, it will work.
-- Nested virtualization on AMD CPUs is not possible. This will limit the development environment in some cases. 
+- Nested virtualization on AMD CPUs is not possible. This will limit the development environment in some cases.
 - If your CPU is a Mac compatible Intel chip, change ``Cascadelake-Server`` to ``host`` on the XML settings.
 
 **Graphics:**

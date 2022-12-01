@@ -2,7 +2,7 @@
 
 To start, we need an operational system for the host that will be our hypervisor. After many tries in various distros, Fedora Server and Fedora Workstation was the most stable distribution with blinding edge features where things simply just work, so to start, I strongly recommend using Fedora as the hypervisor. Other distributions are great, but always resulted in problems for me or got a process more complicated and since we are focusing here on a concrete and working solution, Fedora was obviously the alternative.
 
-I also decided to focus on Fedora Server first because the nature of its terminal only environment makes it easier to passthrough devices to VMs and avoid common issues available in full desktop environments. The guide should work on Fedora Workstation as well and relevant information will be available when necessary. 
+I also decided to focus on Fedora Server first because the nature of its terminal only environment makes it easier to passthrough devices to VMs and avoid common issues available in full desktop environments. The guide should work on Fedora Workstation as well and relevant information will be available when necessary.
 
 First, install the operational system in your machine if it has not been done yet. You can download the ISO at <https://getfedora.org> if you decide to use Fedora. To guide you in this process, here a few general recommendations:
 
@@ -42,7 +42,7 @@ dnf install -y \
 restorecon -R -vF /var/lib/libvirt
 
 # Enable the service
-systemctl enable --now libvirtd 
+systemctl enable --now libvirtd
 systemctl enable --now cockpit.socket
 
 # Enable firewall

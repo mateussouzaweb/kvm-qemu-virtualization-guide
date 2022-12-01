@@ -272,7 +272,7 @@ Since we are attaching the GPU to the VM, we must set the virtualization hook op
 <description>--gpu-passthrough=secondary,08:00.0,08:00.1</description>
 ```
 
-This is everything that I need to make my GPUs work. In my experience, you usually don't need to remove the VNC display after OS installation, it will work as a boot display only to manage the boot options. 
+This is everything that I need to make my GPUs work. In my experience, you usually don't need to remove the VNC display after OS installation, it will work as a boot display only to manage the boot options.
 
 If you are having problems with the black screen in your VM, use the VNC display to check what the issue is. You can attach a VNC display, if necessary, with the following XML:
 
