@@ -1,19 +1,23 @@
 <domain type='kvm'>
   <name>ubuntu</name>
   <uuid>40e84600-43c1-4279-b0d2-ecf10415bafe</uuid>
-  <description>--scale-cpu --preserve-cores=0,1,8,9 --gpu-passthrough=main,0c:00.0,0c:00.1</description>
+  <description>--scale-cpu --preserve-cores=0,1,8,9 --gpu-passthrough=main,0a:00.0,0a:00.1 --usb-passthrough=all</description>
   <memory unit='KiB'>12582912</memory>
   <currentMemory unit='KiB'>12582912</currentMemory>
-  <vcpu placement='static' cpuset='4-7,12-15'>8</vcpu>
+  <vcpu placement='static' cpuset='2-7,10-15'>12</vcpu>
   <cputune>
-    <vcpupin vcpu='0' cpuset='4'/>
-    <vcpupin vcpu='1' cpuset='5'/>
-    <vcpupin vcpu='2' cpuset='6'/>
-    <vcpupin vcpu='3' cpuset='7'/>
-    <vcpupin vcpu='4' cpuset='12'/>
-    <vcpupin vcpu='5' cpuset='13'/>
-    <vcpupin vcpu='6' cpuset='14'/>
-    <vcpupin vcpu='7' cpuset='15'/>
+    <vcpupin vcpu='0' cpuset='2'/>
+    <vcpupin vcpu='1' cpuset='3'/>
+    <vcpupin vcpu='2' cpuset='4'/>
+    <vcpupin vcpu='3' cpuset='5'/>
+    <vcpupin vcpu='4' cpuset='6'/>
+    <vcpupin vcpu='5' cpuset='7'/>
+    <vcpupin vcpu='6' cpuset='10'/>
+    <vcpupin vcpu='7' cpuset='11'/>
+    <vcpupin vcpu='8' cpuset='12'/>
+    <vcpupin vcpu='9' cpuset='13'/>
+    <vcpupin vcpu='10' cpuset='14'/>
+    <vcpupin vcpu='11' cpuset='15'/>
   </cputune>
   <os>
     <type arch='x86_64' machine='pc-q35-7.0'>hvm</type>
@@ -38,7 +42,7 @@
     <ioapic driver='kvm'/>
   </features>
   <cpu mode='host-passthrough' check='none' migratable='on'>
-    <topology sockets='1' dies='1' cores='4' threads='2'/>
+    <topology sockets='1' dies='1' cores='6' threads='2'/>
     <cache mode='passthrough'/>
     <feature policy='require' name='topoext'/>
   </cpu>
@@ -58,13 +62,13 @@
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
     <disk type='block' device='disk'>
       <driver name='qemu' type='raw' cache='writeback' io='io_uring' discard='unmap'/>
-      <source dev='/dev/hypervisor/ubuntu'/>
+      <source dev='/dev/data/ubuntu'/>
       <target dev='sda' bus='virtio'/>
       <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
     </disk>
     <disk type='file' device='cdrom'>
       <driver name='qemu' type='raw' discard='unmap'/>
-      <source file='/mnt/iso/ubuntu-22.10.iso'/>
+      <source file='/var/lib/libvirt/images/ubuntu-22.10.iso'/>
       <target dev='sdb' bus='sata'/>
       <readonly/>
       <address type='drive' controller='0' bus='0' target='0' unit='1'/>
@@ -161,14 +165,14 @@
     <audio id='1' type='none'/>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x0c' slot='0x00' function='0x0'/>
+        <address domain='0x0000' bus='0x0a' slot='0x00' function='0x0'/>
       </source>
       <rom file='/var/lib/libvirt/vbios/NAVI22.rom'/>
       <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0' multifunction='on'/>
     </hostdev>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x0c' slot='0x00' function='0x1'/>
+        <address domain='0x0000' bus='0x0a' slot='0x00' function='0x1'/>
       </source>
       <rom file='/var/lib/libvirt/vbios/NAVI22.rom'/>
       <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x1'/>
@@ -177,19 +181,7 @@
       <source>
         <address domain='0x0000' bus='0x02' slot='0x00' function='0x0'/>
       </source>
-      <address type='pci' domain='0x0000' bus='0x09' slot='0x00' function='0x0'/>
-    </hostdev>
-    <hostdev mode='subsystem' type='pci' managed='yes'>
-      <source>
-        <address domain='0x0000' bus='0x0e' slot='0x00' function='0x3'/>
-      </source>
       <address type='pci' domain='0x0000' bus='0x0a' slot='0x00' function='0x0'/>
-    </hostdev>
-    <hostdev mode='subsystem' type='pci' managed='yes'>
-      <source>
-        <address domain='0x0000' bus='0x0e' slot='0x00' function='0x4'/>
-      </source>
-      <address type='pci' domain='0x0000' bus='0x08' slot='0x00' function='0x0'/>
     </hostdev>
     <memballoon model='virtio'>
       <address type='pci' domain='0x0000' bus='0x05' slot='0x00' function='0x0'/>
