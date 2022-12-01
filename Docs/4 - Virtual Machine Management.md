@@ -64,7 +64,7 @@ After extracting, login on the main host and run the command below to copy the R
 mkdir -p /var/lib/libvirt/vbios/
 
 # Copy ROM file from where you saved it
-cp /mnt/files/NAVI22.rom /var/lib/libvirt/vbios/
+cp NAVI22.rom /var/lib/libvirt/vbios/
 
 # Fix permissions on ROM files
 chmod -R 660 /var/lib/libvirt/vbios/*
@@ -90,7 +90,7 @@ To install operational systems inside VMs, you probably need an ISO file. You ca
 mkdir -p /var/lib/libvirt/images/
 
 # Copy ISO file from where you saved it
-cp /mnt/files/ubuntu.iso /var/lib/libvirt/images/ubuntu.iso
+cp ubuntu.iso /var/lib/libvirt/images/ubuntu.iso
 
 # Download the ISO that you want
 cd /var/lib/libvirt/images/
