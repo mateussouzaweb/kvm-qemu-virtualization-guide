@@ -154,7 +154,7 @@
     <interface type='bridge'>
       <mac address='52:54:00:f3:10:21'/>
       <source bridge='virbr0'/>
-      <model type='e1000e'/>
+      <model type='virtio'/>
       <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
     </interface>
     <serial type='pty'>

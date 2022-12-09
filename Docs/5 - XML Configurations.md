@@ -399,12 +399,6 @@ Use the following model to setup the bridge network if necessary:
 </devices>
 ```
 
-If you are using Windows, is recommended change the model type from ``virtio`` to ``e1000e``, but ``virtio`` can have more performance:
-
-```xml
-<model type="e1000e"/>
-```
-
 On MacOs, the recommended model type is ``vmxnet3``:
 
 ```xml

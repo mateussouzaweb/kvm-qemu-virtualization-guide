@@ -22,8 +22,8 @@ You can virtualize almost any Windows version. These observations are valid for 
 
 **Network:**
 
-- Network interface model type must be ``e1000e``.
-- Network is a bit slow compared to non-virtualized environment because of that model type, but nothing too extreme.
+- Network interface model type must be ``e1000e`` if you want to have internet in the OS install process.
+- If you are having issues connecting to the network, it is recommended change the model type from ``virtio`` to ``e1000e``, but ``virtio`` will always have more performance. 
 - If you are having issues streaming the VM to any other device, this maybe is not a network issue. Try disable the GPU Scheduler on "Settings" > "Display" > "Graphics" > "Change default graphics settings" first and see if that solves the problem.
 
 **Sample XMLs:**
