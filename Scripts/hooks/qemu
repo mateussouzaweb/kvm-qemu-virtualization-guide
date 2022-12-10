@@ -11,7 +11,7 @@ XML="/etc/libvirt/qemu/${OBJECT}.xml"
 
 # Log debug information to file
 function debug {
-  echo "[${OBJECT}] ${1}" >> "/var/log/libvirt/qemu/hooks.log"
+  echo "[HOOK] ${1}" >> "/var/log/libvirt/qemu/${OBJECT}.log"
 }
 
 # Check if file exists

@@ -83,7 +83,7 @@ if [ "${VALID}" != "true" ]; then
 fi
 
 # Print command debug info
-echo "${DOMAIN} ${COMMAND} ${BUSNUM}:${DEVNUM} ${ID}"
+echo "[HOOK] USB ${COMMAND} ${BUSNUM}:${DEVNUM} ${ID}" >> "/var/log/libvirt/qemu/${DOMAIN}.log"
 
 # Run command on libvirt
 virsh "${COMMAND}" "${DOMAIN}" --live /dev/stdin <<END

@@ -63,7 +63,7 @@ Done! Configure the VM with the desired options and you are good to go.
 If you are interested in knowing what is going on when these hooks are executed, just watch for the logs. This also can be useful to detect issues with your setup:
 
 ```bash
-tail -f /var/log/libvirt/qemu/hooks.log
+tail -f /var/log/libvirt/qemu/${NAME}.log
 ```
 
 ----
