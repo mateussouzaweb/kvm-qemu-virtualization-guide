@@ -14,8 +14,10 @@ if [ -z "${BUSNUM}" ] || [ -z "${DEVNUM}" ] || [ -z "${PRODUCT}" ]; then
 fi
 
 # Extract USB ID reference
-[[ "${PRODUCT:3:1}" == "/" ]] && PRODUCT="0${PRODUCT}"
-ID=$(echo ${PRODUCT/\//:} | cut -c1-9)
+ID="${PRODUCT//\//:}"
+[[ "${ID:3:1}" == ":" ]] && ID="0${ID}"
+[[ "${ID:8:1}" == ":" ]] && ID="${ID:0:4}:0${ID:5}"
+ID="${ID:0:9}"
 
 # Determine libvirt command
 if [ "${ACTION}" == "add" ]; then
