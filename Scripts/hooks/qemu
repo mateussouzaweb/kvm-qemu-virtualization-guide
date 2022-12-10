@@ -17,7 +17,7 @@ function debug {
 # Check if file exists
 # We check this to avoid qemu hooks on other objects that are not VMs
 if [ ! -f "${XML}" ]; then
-  debug "VM object not detected, skipping..."
+  debug "VM object not detected, skipping"
   exit 0
 fi
 
@@ -36,12 +36,12 @@ function stop_display_manager {
 
     if [ -x "$(command -v systemctl)" ]; then
       if systemctl is-active --quiet "${manager}.service"; then
-        debug "Stopping ${manager} display service."
+        debug "Stopping ${manager} display service"
         echo "${manager}" >> "${VMF}-display-manager"
         systemctl stop "${manager}.service"
       fi
       while systemctl is-active --quiet "${manager}.service"; do
-        debug "Waiting for ${manager} display service to stop..."
+        debug "Waiting for ${manager} display service to stop"
         sleep "5"
       done
     fi
@@ -56,7 +56,7 @@ function restore_display_manager {
   if [ -f "${VMF}-display-manager" ]; then
     while read -r manager; do
       if [ -x "$(command -v systemctl)" ]; then
-        debug "Starting ${manager} display service again."
+        debug "Starting ${manager} display service again"
         systemctl start "${manager}.service"
       fi
     done < "${VMF}-display-manager"
@@ -75,7 +75,7 @@ function unbind_consoles {
     if [ -x "/sys/class/vtconsole/vtcon${i}" ]; then
       value=$(cat "/sys/class/vtconsole/vtcon${i}/name")
       if [ "$(echo "${value}" | grep -c "frame buffer")" = "1" ]; then
-        debug "Unbinding console number ${i}."
+        debug "Unbinding console number ${i}"
         echo "0" > "/sys/class/vtconsole/vtcon${i}/bind"
         echo "${i}" >> "${VMF}-bound-consoles"
       fi
@@ -92,7 +92,7 @@ function rebind_consoles {
       if [ -x "/sys/class/vtconsole/vtcon${number}" ]; then
         value=$(cat "/sys/class/vtconsole/vtcon${number}/name")
         if [ "$(echo "${value}" | grep -c "frame buffer")" = "1" ]; then
-          debug "Rebinding console number ${i}."
+          debug "Rebinding console number ${i}"
           echo "1" > "/sys/class/vtconsole/vtcon${number}/bind"
         fi
       fi
@@ -109,7 +109,7 @@ function rebind_consoles {
 function unbind_framebuffer {
 
   if [ -f /proc/fb ] && [ -n "$(cat /proc/fb)" ]; then
-    debug "Unbinding framebuffer."
+    debug "Unbinding framebuffer"
     echo "1" > "${VMF}-bound-framebuffer"
     echo "efi-framebuffer.0" > /sys/bus/platform/drivers/efi-framebuffer/unbind
   fi
@@ -120,7 +120,7 @@ function unbind_framebuffer {
 function rebind_framebuffer {
 
   if [ -f "${VMF}-bound-framebuffer" ]; then
-    debug "Rebinding framebuffer."
+    debug "Rebinding framebuffer"
     echo "efi-framebuffer.0" > /sys/bus/platform/drivers/efi-framebuffer/bind
   fi
 
@@ -146,20 +146,20 @@ function release_gpu {
 
   # Fix AMD GPU reset method
   if [ "${driver}" == "amdgpu" ]; then
-    debug "Applying device_specific reset method for AMD GPUs."
+    debug "Applying device_specific reset method for AMD GPUs"
     echo "device_specific" > "${vga}/reset_method"
     echo "device_specific" > "${audio}/reset_method"
   fi
 
   # Unbind vga and audio from host
   if [ -n "${driver}" ] && [ "${driver}" != "pcieport" ]; then
-    debug "Unbinding VGA ${2} from host driver: ${driver}."
+    debug "Unbinding VGA ${2} from host driver: ${driver}"
     echo "0000:${2}" > "/sys/bus/pci/drivers/${driver}/unbind"
     echo "${driver}" > "${VMF}-${1}-gpu-driver"
   fi
 
   if [ -n "${mixer}" ] && [ "${mixer}" != "pcieport" ]; then
-    debug "Unbinding audio ${3} from host driver: ${mixer}."
+    debug "Unbinding audio ${3} from host driver: ${mixer}"
     echo "0000:${3}" > "/sys/bus/pci/drivers/${mixer}/unbind"
     echo "${mixer}" > "${VMF}-${1}-gpu-mixer"
   fi
@@ -168,7 +168,7 @@ function release_gpu {
   virsh nodedev-detach "pci_0000_${3//:/_}"
 
   # Bind to VFIO
-  debug "Binding GPU to VFIO."
+  debug "Binding GPU to VFIO"
   echo "0000:${2}" > /sys/bus/pci/drivers/vfio-pci/bind
   echo "0000:${3}" > /sys/bus/pci/drivers/vfio-pci/bind
 
@@ -178,7 +178,7 @@ function release_gpu {
 function restore_gpu {
 
   # Unbind vga and audio from VFIO
-  debug "Reataching GPU to host."
+  debug "Reataching GPU to host"
   virsh nodedev-reattach "pci_0000_${2//:/_}"
   virsh nodedev-reattach "pci_0000_${3//:/_}"
 
@@ -213,7 +213,7 @@ function restore_gpu {
 function upgrade_cpu_scaling_governor {
 
   for index in `find /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor | sort -V`; do
-    debug "Scaling CPU governor to performance mode in core number ${index//[^0-9]/}."
+    debug "Scaling CPU governor to performance mode in core number ${index//[^0-9]/}"
     cat "${index}" >> "${VMF}-scaling-governor"
     echo "performance" > "${index}"
   done
@@ -226,7 +226,7 @@ function restore_cpu_scaling_governor {
   if [ -f "${VMF}-scaling-governor" ]; then
     index=0
     while read -r scaling; do
-      debug "Restoring scaling CPU governor mode to ${scaling} in core number ${index}."
+      debug "Restoring scaling CPU governor mode to ${scaling} in core number ${index}"
       echo "${scaling}" > "/sys/devices/system/cpu/cpu${index}/cpufreq/scaling_governor"
       ((index=index+1))
     done < "${VMF}-scaling-governor"
@@ -242,7 +242,7 @@ function restore_cpu_scaling_governor {
 function preserve_cpu_cores {
 
   if [ -x "$(command -v systemctl)" ]; then
-    debug "Pinning CPU to use only the cores ${1}."
+    debug "Pinning CPU to use only the cores ${1}"
     echo "1" > "${VMF}-cpu-pinning"
     systemctl set-property --runtime -- user.slice AllowedCPUs="${1}"
     systemctl set-property --runtime -- system.slice AllowedCPUs="${1}"
@@ -255,7 +255,7 @@ function preserve_cpu_cores {
 function restore_cpu_cores {
 
   if [ -s "${VMF}-cpu-pinning" ]; then
-    debug "Restoring CPU pinning to use all cores."
+    debug "Restoring CPU pinning to use all cores"
     systemctl set-property --runtime -- user.slice AllowedCPUs=""
     systemctl set-property --runtime -- system.slice AllowedCPUs=""
     systemctl set-property --runtime -- init.scope AllowedCPUs=""
@@ -269,7 +269,7 @@ function restore_cpu_cores {
 
 # Watch and attach USB devices to VM
 function attach_usb_device {
-  debug "Added USB device to live passthrough: ${1}."
+  debug "Added USB device to live passthrough: ${1}"
   echo "${1}" >> "${VMF}-usb-watch"
 }
 
@@ -342,7 +342,7 @@ function on_release_end {
   done
 
   # Config clean up
-  debug "Cleaning config cache."
+  debug "Cleaning config cache"
   rm -f "${VMF}"-*
 
 }
@@ -351,7 +351,7 @@ function on_release_end {
 ### ======== Execution ======= ###
 ##################################
 
-debug "Hook called: ${OPERATION} ${ACTION}."
+debug "Hook called: ${OPERATION} ${ACTION}"
 
 if [ -n "$(command -v "on_${OPERATION}_${ACTION}")" ]; then
   debug "Hook options: ${OPTIONS}"
