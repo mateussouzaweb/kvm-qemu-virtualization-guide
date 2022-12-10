@@ -17,13 +17,22 @@ virsh edit ${NAME}
 To set as full hardware virtualization mode, allow snapshots on UEFI (only to ``.qcow2`` disk format) and also enable the boot from CDROM, your specs should be something like:
 
 ```xml
-<os>
+<os firmware="efi">
   <type arch="x86_64" machine="q35">hvm</type>
-  <loader readonly="yes" type="rom">/usr/share/edk2/ovmf/OVMF_CODE.fd</loader>
+  <firmware>
+    <feature enabled="yes" name="secure-boot"/>
+    <feature enabled="yes" name="enrolled-keys"/>
+  </firmware>
   <bootmenu enable="yes"/>
   <boot dev="hd"/>
   <boot dev="cdrom"/>
 </os>
+```
+
+Please be aware that these settings enable NVRAM and if you edit the machine details, Secure Boot can return error when starting the machine. To fix that issue, disable Secure Boot or start the VM with the reset NVRAM option:
+
+```bash
+virsh start ${NAME} --reset-nvram
 ```
 
 ## CPU Optimizations
