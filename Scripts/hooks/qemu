@@ -92,7 +92,7 @@ function rebind_consoles {
       if [ -x "/sys/class/vtconsole/vtcon${number}" ]; then
         value=$(cat "/sys/class/vtconsole/vtcon${number}/name")
         if [ "$(echo "${value}" | grep -c "frame buffer")" = "1" ]; then
-          debug "Rebinding console number ${i}"
+          debug "Rebinding console number ${number}"
           echo "1" > "/sys/class/vtconsole/vtcon${number}/bind"
         fi
       fi
