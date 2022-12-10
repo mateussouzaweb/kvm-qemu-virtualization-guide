@@ -168,7 +168,7 @@ function release_gpu {
   virsh nodedev-detach "pci_0000_${3//:/_}"
 
   # Bind to VFIO
-  debug "Binding GPU to VFIO"
+  debug "Binding GPU ${1} to VFIO"
   echo "0000:${2}" > /sys/bus/pci/drivers/vfio-pci/bind
   echo "0000:${3}" > /sys/bus/pci/drivers/vfio-pci/bind
 
