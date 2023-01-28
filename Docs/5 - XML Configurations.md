@@ -60,7 +60,7 @@ For a desktop VM you could use an 8-core setup like below (notice that ``cpuset`
   <vcpupin vcpu="6" cpuset="14"/>
   <vcpupin vcpu="7" cpuset="15"/>
 </cputune>
-<cpu mode="host-passthrough" check="none">
+<cpu mode="host-passthrough" check="none" migratable="off">
   <topology sockets="1" cores="4" threads="2"/>
   <feature policy="require" name="topoext"/>
   <cache mode="passthrough"/>
@@ -77,7 +77,7 @@ In the case of running a another VM in parallel, you could use a 4-core setup wi
   <vcpupin vcpu="2" cpuset="10"/>
   <vcpupin vcpu="3" cpuset="11"/>
 </cputune>
-<cpu mode="host-passthrough" check="none">
+<cpu mode="host-passthrough" check="none" migratable="off">
   <topology sockets="1" cores="2" threads="2"/>
   <feature policy="require" name="topoext"/>
   <cache mode="passthrough"/>
