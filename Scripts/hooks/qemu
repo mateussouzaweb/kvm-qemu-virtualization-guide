@@ -209,13 +209,13 @@ function restore_gpu {
 ### == CPU Scaling Governor == ###
 ##################################
 
-# Upgrade CPU scaling governor to performance mode
-function upgrade_cpu_scaling_governor {
+# Set CPU scaling governor to user defined mode
+function set_cpu_scaling_governor {
 
   for index in `find /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor | sort -V`; do
-    debug "Scaling CPU governor to performance mode in core number ${index//[^0-9]/}"
+    debug "Scaling CPU governor to ${1} mode in core number ${index//[^0-9]/}"
     cat "${index}" >> "${VMF}-scaling-governor"
-    echo "performance" > "${index}"
+    echo "${1}" > "${index}"
   done
 
 }
@@ -288,12 +288,13 @@ function on_prepare_begin {
         release_gpu "${info[@]}"
         shift
         ;;
-      # Enable CPU scaling governor for more performance
-      --scale-cpu)
-        upgrade_cpu_scaling_governor
+      # Set CPU scaling governor mode
+      --cpu-scaling-mode=*)
+        mode="${i#*=}"
+        set_cpu_scaling_governor "$mode"
         shift
         ;;
-      # Enable CPU pinning by allowing host use only specific cores
+      # Set CPU pinning by allowing host use only specific cores
       --preserve-cores=*)
         cores="${i#*=}"
         preserve_cpu_cores "$cores"
@@ -325,7 +326,7 @@ function on_release_end {
         shift
         ;;
       # Restore CPU scaling governor
-      --scale-cpu)
+      --cpu-scaling-mode=*)
         restore_cpu_scaling_governor
         shift
         ;;

@@ -1,7 +1,7 @@
 <domain type='kvm'>
   <name>fedora</name>
   <uuid>ddb86792-3a31-42ed-94e7-643332d9390a</uuid>
-  <description>--scale-cpu --preserve-cores=0,1,8,9 --gpu-passthrough=main,0a:00.0,0a:00.1 --usb-passthrough=all</description>
+  <description>--cpu-scaling-mode=performance --preserve-cores=0,1,8,9 --gpu-passthrough=main,0a:00.0,0a:00.1 --usb-passthrough=all</description>
   <memory unit='KiB'>12582912</memory>
   <currentMemory unit='KiB'>12582912</currentMemory>
   <vcpu placement='static' cpuset='2-7,10-15'>12</vcpu>

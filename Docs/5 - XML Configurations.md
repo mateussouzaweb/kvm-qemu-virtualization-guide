@@ -87,7 +87,7 @@ In the case of running a another VM in parallel, you could use a 4-core setup wi
 Notice that the cores 0, 1, 8 and 9 (the first 4 threads) were not declared on such XMLs because they will be reserved to the host. We also should use the virtualization hooks declare such cores as preserved to fully isolate CPUs from the host and scale CPU to performance mode on host to increase responsiveness on running VMs:
 
 ```xml
-<description>--scale-cpu --preserve-cores=0,1,8,9</description>
+<description>--cpu-scaling-mode=performance --preserve-cores=0,1,8,9</description>
 ```
 
 ## Linux Enhancements

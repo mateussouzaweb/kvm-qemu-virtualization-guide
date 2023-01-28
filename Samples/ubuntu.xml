@@ -1,7 +1,7 @@
 <domain type='kvm'>
   <name>ubuntu</name>
   <uuid>40e84600-43c1-4279-b0d2-ecf10415bafe</uuid>
-  <description>--scale-cpu --preserve-cores=0,1,8,9 --gpu-passthrough=main,0a:00.0,0a:00.1 --usb-passthrough=all</description>
+  <description>--cpu-scaling-mode=performance --preserve-cores=0,1,8,9 --gpu-passthrough=main,0a:00.0,0a:00.1 --usb-passthrough=all</description>
   <memory unit='KiB'>12582912</memory>
   <currentMemory unit='KiB'>12582912</currentMemory>
   <vcpu placement='static' cpuset='2-7,10-15'>12</vcpu>
