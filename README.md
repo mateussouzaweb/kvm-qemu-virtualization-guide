@@ -14,7 +14,7 @@ Our object is just one: have a **full working virtualization platform with QEMU 
 - Isolated and secure host system to just run VMs.
 - Best practices for maximum performance in VMs.
 - Linux, Windows and MacOS virtualization.
-- Single GPU passthrough support (very easy to activate/deactivate).
+- Single and Multi GPU passthrough support (very easy to activate/deactivate).
 - PCI passthrough ON DEMAND without need to pre-allocate devices on VFIO (or blacklist drivers on the OS).
 - Audio and USB device passthrough.
 - Live USB passthrough on supported VMs.

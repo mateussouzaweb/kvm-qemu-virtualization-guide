@@ -145,7 +145,7 @@ function release_gpu {
   mixer=$(basename $(readlink "${audio}/driver"))
 
   # Fix AMD GPU reset method
-  if [ "${driver}" == "amdgpu" ]; then
+  if [ "${driver}" == "amdgpu" ] && [ "${4}" == "reset" ]; then
     debug "Applying device_specific reset method for AMD GPUs"
     echo "device_specific" > "${vga}/reset_method"
     echo "device_specific" > "${audio}/reset_method"
