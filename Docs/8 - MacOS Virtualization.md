@@ -6,30 +6,24 @@ MacOS has a few tricks to virtualize. Once running with their limitations, it wo
 
 **Installation:**
 
-- Like Linux VMs, installation process does not require virtualized display graphics if you start with the correct boot flag for AMD GPUs in OpenCore config.
-- Otherwise, enable the virtualization display graphics and proceed.
+- The installation process does not require virtualized display graphics if you have a compatible GPU.
+- Otherwise, make sure you are using the virtualization display graphics.
 
 **QEMU:**
 
-- Don't forget to include the QEMU XML namespace on top of the file.
-- QEMU command line extra parameters are required to set correct flags for MacOS virtualization.
-
-**OS:**
-
-- Machine type must be ``pc-q35-4.2``, otherwise installation won't work.
-- You must use the custom patched files ``OVMF_CODE.fd`` and ``OVMF_VARS.fd``.
+- MacOS requires additional extra parameters to work. Consult how to use MacOS in KVM to learn more.
+- Don't forget to include the QEMU XML namespace on top of the file to allow the usage of extra parameters.
 
 **CPU:**
 
-- If you have an AMD CPU, don't worry, it will work.
-- Nested virtualization on AMD CPUs is not possible. This will limit the development environment in some cases.
+- If you have an AMD CPU, don't worry, it will work. However, nested virtualization on AMD CPUs is not possible (this will limit development environments in some cases).
 - If your CPU is a Mac compatible Intel chip, change ``Cascadelake-Server`` to ``host`` on the XML settings.
 
 **Graphics:**
 
 - GPU passthrough will not work on recent Nvidia graphic cards, forget it and buy a compatible AMD GPU.
 - If you will passthrough any graphic card, just don't forget to remove the default video interface. Also make sure the gfx and audio devices are in the same bus (like ``0x01``) but in different function (``0x00`` and ``0x01``).
-- For AMD GPU, you also need to set ``agdpmod=pikera`` in the ``config.plist`` NVRAM boot-args section - this file is available on the OpenCore EFI partition.
+- Also, some AMD GPUs need to set ``agdpmod=pikera`` in the ``config.plist`` of OpenCore, at NVRAM boot-args section. See below a few options of how to edit OpenCore.
 
 **Network:**
 
@@ -39,8 +33,7 @@ MacOS has a few tricks to virtualize. Once running with their limitations, it wo
 
 **Audio:**
 
-- If you will passthrough onboard audio, make sure you put it in bus ``0x00`` and slot ``0x0y`` (y is numeric).
-- This is necessary to make AppleALC recognize its audio device.
+- If you will passthrough onboard audio, make sure you put it in bus ``0x00`` and slot ``0x0y`` (y is numeric) as this is necessary to make AppleALC recognize its audio device.
 
 **USB:**
 
@@ -53,10 +46,19 @@ MacOS has a few tricks to virtualize. Once running with their limitations, it wo
 - If the keyboard does not work on OpenCore boot menu, you can use the Console to select the boot entry. Just enter the Console and press the arrow key to select the disk entry (no need to attach VNC graphics for it).
 - If the default boot entry is on the recovery image, you can change it by selecting the MacOS volume and hitting ``CTRL`` + ``Enter`` to set this as the default boot entry. The change will be reflected in the next boot.
 
+**OpenCore Settings:**
+
+- This is just a list of few options to tweak that may be useful to you.
+- Update ``boot-args`` to add AMD GPU support with the following extra text: ``agdpmod=pikera``.
+- Update ``AllowSetDefault`` to allow selecting a default entry with ``CTRL`` + ``Enter``.
+- Update ``Timeout`` to ``10`` in order to reduce boot timeout to 10s.
+- Update ``Resolution`` to `Max` in order to enable max resolution.
+- Update ``UIScale`` to ``2`` if you want to set support for HiDPI.
+
 **Post Install:**
 
-- Download the apps: Hackintool, ProperTree and GenSMBIOS to modify OpenCore.
-- Generate a unique SMBIOS and configure it in your EFI/OpenCore partition.
+- Download the following apps to help tweak and modify OpenCore: OCAuxiliaryTools, Hackintool, ProperTree and GenSMBIOS.
+- Remember to generate a unique SMBIOS and configure it in your EFI/OpenCore partition.
 - Install additional kexts for your hardware if required.
 
 **Sample XMLs:**
@@ -105,7 +107,7 @@ curl -L ${REPOSITORY}/macos.xml --output macos.xml
 vim macos.xml
 ```
 
-Here, you can also tweak the OpenCore partition before starting the VM installation directly from the host (see the guide below). I will do it to enable the AMD GPU support for example, but if you don't know what to do, simply continue this guide...
+Here, you can also tweak the OpenCore partition before starting the VM (see the guide below). I will do it to enable the AMD GPU support for example, but if you don't know what to do for now, simply continue this guide...
 
 Finally define the VM and start it:
 
@@ -116,43 +118,26 @@ virsh start macos
 
 Done!
 
-## Editing OpenCore from the Hypervisor
+## Editing OpenCore EFI
 
-If you want to mount the OpenCore partition outside the MacOS VM to tweak configurations, use the process as described here:
+If you need to mount the OpenCore partition outside the MacOS VM to tweak configurations, you can use another VM with Windows or Linux to access the partition in a GUI environment or use the process as described here to mount the EFI partition directly from the Hypervisor via terminal:
 
 ```bash
 # Mount the disk
-mkdir -p /mnt/opencore && guestmount \
-  -a /var/lib/libvirt/images/opencore.qcow2 \
-  -m /dev/sda1 /mnt/opencore
+mkdir -p /mnt/opencore
+guestmount -a /var/lib/libvirt/images/opencore.qcow2 -m /dev/sda1 /mnt/opencore
 
-# Go to partition
+# Edit the file or do something else...
 cd /mnt/opencore/EFI
-```
-
-Once inside the partition, you can make the modifications as desired. Here are some examples:
-
-```bash
-# EXAMPLE: update boot-args to add AMD GPU support
-# NOTE: keepsyms is part of boot-args
-sed -i 's/keepsyms=1/keepsyms=1 agdpmod=pikera/' OC/config.plist
-
-# EXAMPLE: allow selecting a default entry with CTRL + Enter
-# Search for AllowSetDefault: set to true
 vim OC/config.plist
 
-# EXAMPLE: reduce boot timeout
-# Search for Timeout: set to 10
-vim OC/config.plist
-```
-
-After finishing the necessary modifications, you must go outside of the partition and unmount the disk:
-
-```bash
-# Go to home location and unmount the disk
+# Unmount the disk once concluded modifications
+# NOTE: You must go outside of the partition to allow unmount the disk
 cd ${HOME}
 guestunmount /mnt/opencore
 ```
+
+This process is very useful if you are having issues booting MacOS.
 
 ----
 
