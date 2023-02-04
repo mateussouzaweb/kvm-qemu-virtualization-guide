@@ -318,29 +318,25 @@ I do not recommend attaching audio with audio drivers from Linux, but you can tr
 
 ## Extended Mouse and Keyboard Support
 
-Make sure your VM contains the following lines to extend the support for mouse and keyboard:
+Make sure your VM contains the following lines to extend the support for mouse and keyboard (they may be automatically expanded by the KVM):
 
 ```xml
 <devices>
-  <input type="mouse" bus="virtio">
-    <address type="pci" domain="0x0000" bus="0x00" slot="0x0e" function="0x0"/>
-  </input>
-  <input type="keyboard" bus="virtio">
-    <address type="pci" domain="0x0000" bus="0x00" slot="0x0f" function="0x0"/>
-  </input>
+  <input type="mouse" bus="virtio"/>
+  <input type="keyboard" bus="virtio"/>
+  <input type="mouse" bus="usb"/>
+  <input type="keyboard" bus="usb"/>
   <input type="mouse" bus="ps2"/>
   <input type="keyboard" bus="ps2"/>
 </devices>
 ```
 
-Also, when using mouse and keyboard, make sure to remove the ``tablet`` input interface. It will reduce CPU usage and bring more performance:
+Also, when using mouse and keyboard, you can remove the ``tablet`` input interface if you will not use the virtual display interface with VNC - when using emulated display, the tablet input is better because mouse movement is more precise with the available area. When this is not necessary, you can remove it to will reduce CPU usage and bring more performance:
 
 ```xml
-<!-- REMOVE -->
 <devices>
-  <input type="tablet" bus="usb">
-    <address type="usb" bus="0" port="1"/>
-  </input>
+  <!-- Add or remove interface -->
+  <input type="tablet" bus="usb"/>
 </devices>
 ```
 
