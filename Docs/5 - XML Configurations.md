@@ -46,7 +46,7 @@ virsh capabilities
 
 As a rule of thumb, you must leave the first 1 or 2 CPU core(s) to the hypervisor host. The remaining cores should be distributed to the active VMs.
 
-For a desktop VM you could use an 8-core setup like below (notice that ``cpuset`` match the topology of the CPU where 4 and 12 are sibling threads):
+For a desktop VM you could use an 4-core and 8-threads setup like below (notice that ``cpuset`` match the topology of the CPU where 4 and 12 are sibling threads):
 
 ```xml
 <vcpu cpuset="4-7,12-15">8</vcpu>
@@ -67,7 +67,7 @@ For a desktop VM you could use an 8-core setup like below (notice that ``cpuset`
 </cpu>
 ```
 
-In the case of running a another VM in parallel, you could use a 4-core setup with the following syntax to isolate its cores from the desktop VM:
+In the case of running a another VM in parallel, you could use a 2-core and 4-threads setup with the following syntax to isolate its cores from the desktop VM:
 
 ```xml
 <vcpu cpuset="2,3,10,11">4</vcpu>
@@ -84,7 +84,7 @@ In the case of running a another VM in parallel, you could use a 4-core setup wi
 </cpu>
 ```
 
-Notice that the cores 0, 1, 8 and 9 (the first 4 threads) were not declared on such XMLs because they will be reserved to the host. We also should use the virtualization hooks declare such cores as preserved to fully isolate CPUs from the host and scale CPU to performance mode on host to increase responsiveness on running VMs:
+Notice that the cores 0, 1, 8 and 9 (the first 4 threads) were not declared on such XMLs because they will be reserved to the host. We also should use the virtualization hooks to declare such cores as preserved to fully isolate CPUs from the host and scale CPU to performance mode on host to increase responsiveness on running VMs:
 
 ```xml
 <description>--cpu-scaling-mode=performance --preserve-cores=0,1,8,9</description>
