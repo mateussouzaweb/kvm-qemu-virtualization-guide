@@ -389,6 +389,26 @@ Also, it is important to notice that some USB devices can present detection and 
 </domain>
 ```
 
+## TPM Device
+
+A Trusted Platform Module (TPM) offers advanced protection with integrated cryptographic keys directly from the hardware. If your hardware contains the TPM device, you can passthrough it, but if not, you can still use an emulated one to get the same features on virtual machines. Both cases are show in the following XML:
+
+```xml
+<devices>
+  <!-- Passthrough -->
+  <tpm model='tpm-tis'>
+    <backend type='passthrough'>
+      <device path='/dev/tpm0'/>
+    </backend>
+  </tpm>
+
+  <!-- Emulated -->
+  <tpm model='tpm-tis'>
+    <backend type='emulator' version='2.0'/>
+  </tpm>
+</devices>
+```
+
 ## Bridge Network
 
 Use the following model to setup the bridge network if necessary:

@@ -6,6 +6,7 @@ You can virtualize almost any Windows version. These observations are valid for 
 
 **Installation:**
 
+- For Windows 11 installations, make sure that Secure Boot and TPM 2.0 are configured in the virtual machine.
 - Installation process will require a virtualized display graphics.
 - In the disk selection process, you must install the VirtIO driver if disks are not visible. Make sure you have the VirtIO ISO configured as a CDROM device.
 - After installing, remember to install VirtIO software.
