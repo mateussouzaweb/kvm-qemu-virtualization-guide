@@ -142,6 +142,7 @@ If the VM is running Windows, you can add some configurations to save CPU usage 
   <timer name="pit" tickpolicy="delay"/>
   <timer name="hpet" present="no"/>
   <timer name="hypervclock" present="yes"/>
+  <timer name="tsc" present="yes" mode="native"/>
 </clock>
 ```
 
