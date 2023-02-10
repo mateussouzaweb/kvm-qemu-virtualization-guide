@@ -5,7 +5,7 @@ PCI-e passthrough is a feature that allows the redirection of hardware devices t
 - ``IOMMU`` - Enabled
 - ``SVM`` or ``VD-t`` - Enabled
 - ``ACS Override`` - Disabled
-- ``Above 4G Decoding`` - Enabled
+- ``Above 4G Decoding`` - Disabled
 - ``Resizable BAR`` or ``Smart Access Memory`` - Disabled
 - ``CSM Support`` - Disabled, must use UEFI
 
