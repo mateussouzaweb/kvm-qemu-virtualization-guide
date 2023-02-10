@@ -75,8 +75,6 @@ This guide uses the OSX-KVM project as base system. We grab just the necessary f
 ```bash
 # Download files
 REPOSITORY="https://github.com/kholia/OSX-KVM/raw/master"
-wget -O /usr/share/OVMF/MACOS_CODE.fd ${REPOSITORY}/OVMF_CODE.fd
-wget -O /usr/share/OVMF/MACOS_VARS.fd ${REPOSITORY}/OVMF_VARS.fd
 wget -O /var/lib/libvirt/images/fetch-macOS-v2.py ${REPOSITORY}/fetch-macOS-v2.py
 wget -O /var/lib/libvirt/images/opencore.qcow2 ${REPOSITORY}/OpenCore/OpenCore.qcow2
 
@@ -87,13 +85,12 @@ cd /var/lib/libvirt/images
 
 # Convert DMG image to IMG format and remove unnecessary files
 qemu-img convert BaseSystem.dmg -O raw macos-{VERSION}.img
-rm -f BaseSystem.dmg BaseSystem.chunklist
+rm -f BaseSystem.dmg BaseSystem.chunklist fetch-macOS-v2.py
 
 # Fix permissions
 chmod -R 660 /var/lib/libvirt/images/*
 chown -R qemu:qemu /var/lib/libvirt/images
 restorecon -R -vF /var/lib/libvirt/images
-restorecon -R -vF /usr/share/OVMF
 ```
 
 Now, download the sample XML configuration and tweak to run on your system devices:
