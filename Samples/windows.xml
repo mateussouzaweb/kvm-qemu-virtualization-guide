@@ -1,9 +1,9 @@
 <domain type='kvm'>
   <name>windows</name>
   <uuid>4560b891-caeb-42f9-ad33-9f9b39a60aed</uuid>
-  <description>--cpu-scaling-mode=performance --preserve-cores=0,1,8,9 --gpu-passthrough=main,0a:00.0,0a:00.1 --usb-passthrough=all</description>
-  <memory unit='KiB'>12582912</memory>
-  <currentMemory unit='KiB'>12582912</currentMemory>
+  <description>--cpu-scaling-mode=schedutil --preserve-cores=0,1,8,9 --gpu-passthrough=main,0a:00.0,0a:00.1 --usb-passthrough=all</description>
+  <memory unit='KiB'>25165824</memory>
+  <currentMemory unit='KiB'>25165824</currentMemory>
   <vcpu placement='static' cpuset='2-7,10-15'>12</vcpu>
   <cputune>
     <vcpupin vcpu='0' cpuset='2'/>
@@ -19,11 +19,11 @@
     <vcpupin vcpu='10' cpuset='14'/>
     <vcpupin vcpu='11' cpuset='15'/>
   </cputune>
-  <os firmware="efi">
-    <type arch="x86_64" machine="q35">hvm</type>
+  <os firmware='efi'>
+    <type arch='x86_64' machine='pc-q35-7.0'>hvm</type>
     <firmware>
-      <feature enabled="yes" name="secure-boot"/>
-      <feature enabled="yes" name="enrolled-keys"/>
+      <feature enabled='yes' name='enrolled-keys'/>
+      <feature enabled='yes' name='secure-boot'/>
     </firmware>
     <boot dev='hd'/>
     <boot dev='cdrom'/>
@@ -146,19 +146,19 @@
       <target chassis='10' port='0x8'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x0' multifunction='on'/>
     </controller>
-    <controller type='virtio-serial' index='0'>
-      <address type='pci' domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
-    </controller>
     <controller type='pci' index='11' model='pcie-root-port'>
       <model name='pcie-root-port'/>
       <target chassis='11' port='0x9'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x1'/>
     </controller>
+    <controller type='virtio-serial' index='0'>
+      <address type='pci' domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
+    </controller>
     <interface type='bridge'>
-      <mac address='52:54:00:f3:10:21'/>
+      <mac address='52:54:00:c9:32:f3'/>
       <source bridge='virbr0'/>
       <model type='virtio'/>
-      <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x06' slot='0x00' function='0x0'/>
     </interface>
     <serial type='pty'>
       <target type='isa-serial' port='0'>
@@ -173,16 +173,23 @@
       <address type='virtio-serial' controller='0' bus='0' port='1'/>
     </channel>
     <input type='mouse' bus='virtio'>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x0e' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
     </input>
     <input type='keyboard' bus='virtio'>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x0f' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x08' slot='0x00' function='0x0'/>
+    </input>
+    <input type='mouse' bus='usb'>
+      <address type='usb' bus='0' port='2'/>
+    </input>
+    <input type='keyboard' bus='usb'>
+      <address type='usb' bus='0' port='3'/>
     </input>
     <input type='mouse' bus='ps2'/>
     <input type='keyboard' bus='ps2'/>
     <tpm model='tpm-tis'>
       <backend type='emulator' version='2.0'/>
     </tpm>
+    <audio id='1' type='none'/>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
         <address domain='0x0000' bus='0x0a' slot='0x00' function='0x0'/>
@@ -197,11 +204,12 @@
       <rom file='/var/lib/libvirt/vbios/NAVI22.rom'/>
       <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x1'/>
     </hostdev>
-    <hostdev mode='subsystem' type='pci' managed='yes'>
+    <hostdev mode='subsystem' type='usb' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x02' slot='0x00' function='0x0'/>
+        <vendor id='0x046d'/>
+        <product id='0xc52b'/>
       </source>
-      <address type='pci' domain='0x0000' bus='0x09' slot='0x00' function='0x0'/>
+      <address type='usb' bus='0' port='1'/>
     </hostdev>
     <memballoon model='virtio'>
       <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>

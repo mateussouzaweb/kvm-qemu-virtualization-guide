@@ -1,9 +1,9 @@
 <domain type='kvm'>
   <name>fedora</name>
   <uuid>ddb86792-3a31-42ed-94e7-643332d9390a</uuid>
-  <description>--cpu-scaling-mode=performance --preserve-cores=0,1,8,9 --gpu-passthrough=main,0a:00.0,0a:00.1 --usb-passthrough=all</description>
-  <memory unit='KiB'>12582912</memory>
-  <currentMemory unit='KiB'>12582912</currentMemory>
+  <description>--cpu-scaling-mode=schedutil --preserve-cores=0,1,8,9 --gpu-passthrough=main,0a:00.0,0a:00.1 --usb-passthrough=all</description>
+  <memory unit='KiB'>25165824</memory>
+  <currentMemory unit='KiB'>25165824</currentMemory>
   <vcpu placement='static' cpuset='2-7,10-15'>12</vcpu>
   <cputune>
     <vcpupin vcpu='0' cpuset='2'/>
@@ -19,11 +19,11 @@
     <vcpupin vcpu='10' cpuset='14'/>
     <vcpupin vcpu='11' cpuset='15'/>
   </cputune>
-  <os firmware="efi">
-    <type arch="x86_64" machine="q35">hvm</type>
+  <os firmware='efi'>
+    <type arch='x86_64' machine='pc-q35-7.0'>hvm</type>
     <firmware>
-      <feature enabled="yes" name="secure-boot"/>
-      <feature enabled="yes" name="enrolled-keys"/>
+      <feature enabled='yes' name='enrolled-keys'/>
+      <feature enabled='yes' name='secure-boot'/>
     </firmware>
     <boot dev='hd'/>
     <boot dev='cdrom'/>
@@ -58,7 +58,7 @@
   <on_reboot>restart</on_reboot>
   <on_crash>destroy</on_crash>
   <pm>
-    <suspend-to-mem enabled='no'/>
+    <suspend-to-mem enabled='yes'/>
     <suspend-to-disk enabled='no'/>
   </pm>
   <devices>
@@ -167,10 +167,16 @@
       <address type='virtio-serial' controller='0' bus='0' port='1'/>
     </channel>
     <input type='mouse' bus='virtio'>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x0e' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x08' slot='0x00' function='0x0'/>
     </input>
     <input type='keyboard' bus='virtio'>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x0f' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x0a' slot='0x00' function='0x0'/>
+    </input>
+    <input type='mouse' bus='usb'>
+      <address type='usb' bus='0' port='2'/>
+    </input>
+    <input type='keyboard' bus='usb'>
+      <address type='usb' bus='0' port='3'/>
     </input>
     <input type='mouse' bus='ps2'/>
     <input type='keyboard' bus='ps2'/>
@@ -192,11 +198,12 @@
       <rom file='/var/lib/libvirt/vbios/NAVI22.rom'/>
       <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x1'/>
     </hostdev>
-    <hostdev mode='subsystem' type='pci' managed='yes'>
-      <source>
-        <address domain='0x0000' bus='0x02' slot='0x00' function='0x0'/>
+    <hostdev mode='subsystem' type='usb' managed='yes'>
+      <source startupPolicy='optional'>
+        <vendor id='0x046d'/>
+        <product id='0xc52b'/>
       </source>
-      <address type='pci' domain='0x0000' bus='0x0b' slot='0x00' function='0x0'/>
+      <address type='usb' bus='0' port='1'/>
     </hostdev>
     <memballoon model='virtio'>
       <address type='pci' domain='0x0000' bus='0x05' slot='0x00' function='0x0'/>
