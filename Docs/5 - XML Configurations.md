@@ -62,6 +62,7 @@ For a desktop VM you could use an 4-core and 8-threads setup like below (notice 
 </cputune>
 <cpu mode="host-passthrough" check="none" migratable="off">
   <topology sockets="1" cores="4" threads="2"/>
+  <feature policy='require' name='invtsc'/>
   <feature policy="require" name="topoext"/>
   <cache mode="passthrough"/>
 </cpu>
@@ -79,6 +80,7 @@ In the case of running a another VM in parallel, you could use a 2-core and 4-th
 </cputune>
 <cpu mode="host-passthrough" check="none" migratable="off">
   <topology sockets="1" cores="2" threads="2"/>
+  <feature policy='require' name='invtsc'/>
   <feature policy="require" name="topoext"/>
   <cache mode="passthrough"/>
 </cpu>
