@@ -43,6 +43,10 @@ Save the file once done.
 Now, we need to enable the VFIO module on system load with the following command:
 
 ```bash
+# Kernel 6.2+
+echo 'add_drivers+=" vfio vfio_iommu_type1 vfio_pci "' >> /etc/dracut.conf.d/vfio.conf
+
+# Kernel 6.1 or less
 echo 'add_drivers+=" vfio vfio_iommu_type1 vfio_pci vfio_virqfd "' >> /etc/dracut.conf.d/vfio.conf
 ```
 
