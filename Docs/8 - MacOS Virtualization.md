@@ -84,7 +84,8 @@ cd /var/lib/libvirt/images
 ./fetch-macOS-v2.py
 
 # Convert DMG image to IMG format and remove unnecessary files
-qemu-img convert BaseSystem.dmg -O raw macos-{VERSION}.img
+VERSION="ventura"
+qemu-img convert BaseSystem.dmg -O raw macos-${VERSION}.img
 rm -f BaseSystem.dmg BaseSystem.chunklist fetch-macOS-v2.py
 
 # Fix permissions
