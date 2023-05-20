@@ -1,9 +1,9 @@
 <domain type='kvm' xmlns:qemu='http://libvirt.org/schemas/domain/qemu/1.0'>
   <name>macos</name>
   <uuid>71dc6d4f-1796-4145-9ec0-4872357c39d8</uuid>
-  <description>--cpu-scaling-mode=performance --preserve-cores=0,1,8,9 --gpu-passthrough=secondary,08:00.0,08:00.1</description>
-  <memory unit='KiB'>12582912</memory>
-  <currentMemory unit='KiB'>12582912</currentMemory>
+  <description>--cpu-scaling-mode=schedutil --preserve-cores=0,1,8,9 --gpu-passthrough=main,0a:00.0,0a:00.1</description>
+  <memory unit='KiB'>16384000</memory>
+  <currentMemory unit='KiB'>16384000</currentMemory>
   <vcpu placement='static' cpuset='4-7,12-15'>8</vcpu>
   <cputune>
     <vcpupin vcpu='0' cpuset='4'/>
@@ -18,8 +18,8 @@
   <os firmware='efi'>
     <type arch='x86_64' machine='pc-q35-7.2'>hvm</type>
     <firmware>
-      <feature enabled='no' name='enrolled-keys'/>
-      <feature enabled='no' name='secure-boot'/>
+      <feature enabled='yes' name='enrolled-keys'/>
+      <feature enabled='yes' name='secure-boot'/>
     </firmware>
     <boot dev='hd'/>
     <boot dev='cdrom'/>
@@ -175,28 +175,29 @@
     </graphics>
     <audio id='1' type='none'/>
     <video>
-      <model type='vga' vram='131072' heads='1' primary='yes'/>
+      <model type='vmvga' vram='131072' heads='1' primary='yes'/>
       <address type='pci' domain='0x0000' bus='0x09' slot='0x01' function='0x0'/>
     </video>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x08' slot='0x00' function='0x0'/>
+        <address domain='0x0000' bus='0x0a' slot='0x00' function='0x0'/>
       </source>
       <rom file='/var/lib/libvirt/vbios/NAVI14.rom'/>
       <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0' multifunction='on'/>
     </hostdev>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x08' slot='0x00' function='0x1'/>
+        <address domain='0x0000' bus='0x0a' slot='0x00' function='0x1'/>
       </source>
       <rom file='/var/lib/libvirt/vbios/NAVI14.rom'/>
       <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x1'/>
     </hostdev>
-    <hostdev mode='subsystem' type='pci' managed='yes'>
-      <source>
-        <address domain='0x0000' bus='0x02' slot='0x00' function='0x0'/>
+    <hostdev mode='subsystem' type='usb' managed='yes'>
+      <source startupPolicy='optional'>
+        <vendor id='0x046d'/>
+        <product id='0xc52b'/>
       </source>
-      <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0'/>
+      <address type='usb' bus='0' port='3'/>
     </hostdev>
     <memballoon model='none'/>
   </devices>
@@ -211,6 +212,6 @@
     <qemu:arg value='-smbios'/>
     <qemu:arg value='type=2'/>
     <qemu:arg value='-cpu'/>
-    <qemu:arg value='Penryn,kvm=on,vendor=GenuineIntel,+invtsc,vmware-cpuid-freq=on,+ssse3,+sse4.2,+popcnt,+avx,+aes,+xsave,+xsaveopt,check'/>
+    <qemu:arg value='Haswell,vendor=GenuineIntel,kvm=on,+sse3,+sse4.2,+aes,+xsave,+avx,+xsaveopt,+xsavec,+xgetbv1,+avx2,+bmi2,+smep,+bmi1,+fma,+movbe,+invtsc,+avx2'/>
   </qemu:commandline>
 </domain>
