@@ -29,7 +29,7 @@ Replace ``$OPTIONS`` with the appropriate parameters for your case:
 
 The options below are dedicated to GPU passthrough:
 
-- **ANY GPU:** Disables fallback video output: ``video=vesafb:off,efifb:off``
+- **ANY GPU:** Disables fallback video output: ``video=vesafb:off,efifb:off,simplefb:off``
 - **NVIDIA GPU:** Disables nouveau driver: ``nouveau.modeset=0``
 - **AMD GPU:** Disables ASPM support: ``amdgpu.aspm=0``
 
