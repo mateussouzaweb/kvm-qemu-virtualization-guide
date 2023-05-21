@@ -164,8 +164,8 @@ function release_gpu {
     echo "${mixer}" > "${VMF}-${1}-gpu-mixer"
   fi
 
-  virsh nodedev-detach "pci_0000_${2//:/_}"
-  virsh nodedev-detach "pci_0000_${3//:/_}"
+  virsh nodedev-detach "pci_0000_${2//[:.]/_}"
+  virsh nodedev-detach "pci_0000_${3//[:.]/_}"
 
   # Bind to VFIO
   debug "Binding GPU ${1} to VFIO"
@@ -179,8 +179,8 @@ function restore_gpu {
 
   # Unbind vga and audio from VFIO
   debug "Reataching GPU ${1} to host"
-  virsh nodedev-reattach "pci_0000_${2//:/_}"
-  virsh nodedev-reattach "pci_0000_${3//:/_}"
+  virsh nodedev-reattach "pci_0000_${2//[:.]/_}"
+  virsh nodedev-reattach "pci_0000_${3//[:.]/_}"
 
   # Check for drivers and bind again if necessary
   vga="/sys/bus/pci/devices/0000:${2}"
