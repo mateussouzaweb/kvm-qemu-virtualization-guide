@@ -1,9 +1,9 @@
 <domain type='kvm'>
   <name>fedora</name>
   <uuid>ddb86792-3a31-42ed-94e7-643332d9390a</uuid>
-  <description>--cpu-scaling-mode=schedutil --preserve-cores=0,1,8,9 --gpu-passthrough=main,0a:00.0,0a:00.1 --usb-passthrough=all</description>
-  <memory unit='KiB'>25165824</memory>
-  <currentMemory unit='KiB'>25165824</currentMemory>
+  <description>--cpu-scaling-mode=schedutil --preserve-cores=0,1,8,9 --gpu-passthrough=main,06:00.0,06:00.1,reset --usb-passthrough=all</description>
+  <memory unit='KiB'>16777216</memory>
+  <currentMemory unit='KiB'>16777216</currentMemory>
   <vcpu placement='static' cpuset='2-7,10-15'>12</vcpu>
   <cputune>
     <vcpupin vcpu='0' cpuset='2'/>
@@ -65,15 +65,15 @@
   </pm>
   <devices>
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
-    <disk type='block' device='disk'>
+    <disk type='file' device='disk'>
       <driver name='qemu' type='raw' cache='writeback' io='io_uring' discard='unmap'/>
-      <source dev='/dev/data/fedora'/>
+      <source file='/var/lib/libvirt/images/fedora.raw'/>
       <target dev='sda' bus='virtio'/>
       <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
     </disk>
     <disk type='file' device='cdrom'>
       <driver name='qemu' type='raw' discard='unmap'/>
-      <source file='/var/lib/libvirt/images/fedora-workstation-37.iso'/>
+      <source file='/var/lib/libvirt/images/fedora-workstation-38.iso'/>
       <target dev='sdb' bus='sata'/>
       <readonly/>
       <address type='drive' controller='0' bus='0' target='0' unit='1'/>
@@ -138,11 +138,16 @@
     <controller type='pci' index='11' model='pcie-root-port'>
       <model name='pcie-root-port'/>
       <target chassis='11' port='0x8'/>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x0' multifunction='on'/>
     </controller>
     <controller type='pci' index='12' model='pcie-to-pci-bridge'>
       <model name='pcie-pci-bridge'/>
       <address type='pci' domain='0x0000' bus='0x09' slot='0x00' function='0x0'/>
+    </controller>
+    <controller type='pci' index='13' model='pcie-root-port'>
+      <model name='pcie-root-port'/>
+      <target chassis='13' port='0x9'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x1'/>
     </controller>
     <controller type='virtio-serial' index='0'>
       <address type='pci' domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
@@ -151,9 +156,10 @@
       <address type='pci' domain='0x0000' bus='0x0c' slot='0x01' function='0x0'/>
     </controller>
     <interface type='bridge'>
-      <mac address='52:54:00:51:20:2b'/>
+      <mac address='52:54:00:5d:56:64'/>
       <source bridge='virbr0'/>
       <model type='virtio'/>
+      <link state='up'/>
       <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
     </interface>
     <serial type='pty'>
@@ -169,10 +175,10 @@
       <address type='virtio-serial' controller='0' bus='0' port='1'/>
     </channel>
     <input type='mouse' bus='virtio'>
-      <address type='pci' domain='0x0000' bus='0x08' slot='0x00' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x0a' slot='0x00' function='0x0'/>
     </input>
     <input type='keyboard' bus='virtio'>
-      <address type='pci' domain='0x0000' bus='0x0a' slot='0x00' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x0b' slot='0x00' function='0x0'/>
     </input>
     <input type='mouse' bus='usb'>
       <address type='usb' bus='0' port='2'/>
@@ -185,19 +191,26 @@
     <tpm model='tpm-tis'>
       <backend type='emulator' version='2.0'/>
     </tpm>
+    <graphics type='vnc' port='-1' autoport='yes' listen='0.0.0.0'>
+      <listen type='address' address='0.0.0.0'/>
+    </graphics>
     <audio id='1' type='none'/>
+    <video>
+      <model type='bochs' vram='16384' heads='1' primary='yes'/>
+      <address type='pci' domain='0x0000' bus='0x08' slot='0x00' function='0x0'/>
+    </video>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x0a' slot='0x00' function='0x0'/>
+        <address domain='0x0000' bus='0x06' slot='0x00' function='0x0'/>
       </source>
-      <rom file='/var/lib/libvirt/vbios/NAVI22.rom'/>
+      <rom file='/var/lib/libvirt/vbios/NAVI14.rom'/>
       <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0' multifunction='on'/>
     </hostdev>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x0a' slot='0x00' function='0x1'/>
+        <address domain='0x0000' bus='0x06' slot='0x00' function='0x1'/>
       </source>
-      <rom file='/var/lib/libvirt/vbios/NAVI22.rom'/>
+      <rom file='/var/lib/libvirt/vbios/NAVI14.rom'/>
       <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x1'/>
     </hostdev>
     <hostdev mode='subsystem' type='usb' managed='yes'>

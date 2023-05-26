@@ -1,9 +1,9 @@
 <domain type='kvm' xmlns:qemu='http://libvirt.org/schemas/domain/qemu/1.0'>
   <name>macos</name>
   <uuid>71dc6d4f-1796-4145-9ec0-4872357c39d8</uuid>
-  <description>--cpu-scaling-mode=schedutil --preserve-cores=0,1,8,9 --gpu-passthrough=main,0a:00.0,0a:00.1</description>
-  <memory unit='KiB'>16384000</memory>
-  <currentMemory unit='KiB'>16384000</currentMemory>
+  <description>--cpu-scaling-mode=schedutil --preserve-cores=0,1,8,9 --gpu-passthrough=main,06:00.0,06:00.1,reset</description>
+  <memory unit='KiB'>16777216</memory>
+  <currentMemory unit='KiB'>16777216</currentMemory>
   <vcpu placement='static' cpuset='4-7,12-15'>8</vcpu>
   <cputune>
     <vcpupin vcpu='0' cpuset='4'/>
@@ -18,8 +18,8 @@
   <os firmware='efi'>
     <type arch='x86_64' machine='pc-q35-7.2'>hvm</type>
     <firmware>
-      <feature enabled='yes' name='enrolled-keys'/>
-      <feature enabled='yes' name='secure-boot'/>
+      <feature enabled='no' name='enrolled-keys'/>
+      <feature enabled='no' name='secure-boot'/>
     </firmware>
     <boot dev='hd'/>
     <boot dev='cdrom'/>
@@ -51,20 +51,20 @@
   <devices>
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
     <disk type='file' device='disk'>
-      <driver name='qemu' type='qcow2' cache='writeback' io='threads'/>
+      <driver name='qemu' type='qcow2' cache='writeback' io='io_uring' discard='unmap'/>
       <source file='/var/lib/libvirt/images/opencore.qcow2'/>
       <target dev='sda' bus='virtio'/>
       <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
     </disk>
-    <disk type='block' device='disk'>
+    <disk type='file' device='disk'>
       <driver name='qemu' type='raw' cache='writeback' io='io_uring' discard='unmap'/>
-      <source dev='/dev/data/macos'/>
+      <source file='/var/lib/libvirt/images/macos.raw'/>
       <target dev='sdb' bus='virtio'/>
       <address type='pci' domain='0x0000' bus='0x05' slot='0x00' function='0x0'/>
     </disk>
     <disk type='file' device='disk'>
-      <driver name='qemu' type='raw' cache='writeback'/>
-      <source file='/var/lib/libvirt/images/macos-ventura.img'/>
+      <driver name='qemu' type='raw' cache='writeback' io='io_uring' discard='unmap'/>
+      <source file='/var/lib/libvirt/images/macos-monterey.img'/>
       <target dev='sdc' bus='virtio'/>
       <address type='pci' domain='0x0000' bus='0x06' slot='0x00' function='0x0'/>
     </disk>
@@ -145,7 +145,7 @@
       <address type='pci' domain='0x0000' bus='0x00' slot='0x07' function='0x2'/>
     </controller>
     <interface type='bridge'>
-      <mac address='52:54:00:e6:85:40'/>
+      <mac address='52:54:00:62:ac:b6'/>
       <source bridge='virbr0'/>
       <model type='vmxnet3'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x0'/>
@@ -162,6 +162,12 @@
       <target type='virtio' name='org.qemu.guest_agent.0'/>
       <address type='virtio-serial' controller='0' bus='0' port='1'/>
     </channel>
+    <input type='mouse' bus='virtio'>
+      <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0'/>
+    </input>
+    <input type='keyboard' bus='virtio'>
+      <address type='pci' domain='0x0000' bus='0x08' slot='0x00' function='0x0'/>
+    </input>
     <input type='tablet' bus='usb'>
       <address type='usb' bus='0' port='1'/>
     </input>
@@ -180,14 +186,14 @@
     </video>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x0a' slot='0x00' function='0x0'/>
+        <address domain='0x0000' bus='0x06' slot='0x00' function='0x0'/>
       </source>
       <rom file='/var/lib/libvirt/vbios/NAVI14.rom'/>
       <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0' multifunction='on'/>
     </hostdev>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x0a' slot='0x00' function='0x1'/>
+        <address domain='0x0000' bus='0x06' slot='0x00' function='0x1'/>
       </source>
       <rom file='/var/lib/libvirt/vbios/NAVI14.rom'/>
       <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x1'/>
@@ -212,6 +218,6 @@
     <qemu:arg value='-smbios'/>
     <qemu:arg value='type=2'/>
     <qemu:arg value='-cpu'/>
-    <qemu:arg value='Haswell,vendor=GenuineIntel,kvm=on,+sse3,+sse4.2,+aes,+xsave,+avx,+xsaveopt,+xsavec,+xgetbv1,+avx2,+bmi2,+smep,+bmi1,+fma,+movbe,+invtsc,+avx2'/>
+    <qemu:arg value='Haswell-noTSX,vendor=GenuineIntel,+invtsc,+hypervisor,kvm=on,vmware-cpuid-freq=on'/>
   </qemu:commandline>
 </domain>

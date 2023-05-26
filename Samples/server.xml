@@ -56,11 +56,11 @@
   </pm>
   <devices>
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
-    <disk type='block' device='disk'>
+    <disk type='file' device='disk'>
       <driver name='qemu' type='raw' cache='writeback' io='io_uring' discard='unmap'/>
-      <source dev='/dev/data/server'/>
+      <source file='/var/lib/libvirt/images/server.raw'/>
       <target dev='sda' bus='virtio'/>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x07' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x08' slot='0x00' function='0x0'/>
     </disk>
     <disk type='file' device='cdrom'>
       <driver name='qemu' type='raw'/>
@@ -150,7 +150,7 @@
       <address type='pci' domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
     </controller>
     <interface type='bridge'>
-      <mac address='52:54:00:1c:8a:1d'/>
+      <mac address='52:54:00:fb:aa:f9'/>
       <source bridge='virbr0'/>
       <model type='virtio'/>
       <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>

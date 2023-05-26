@@ -1,7 +1,7 @@
 <domain type='kvm'>
-  <name>windows</name>
-  <uuid>4560b891-caeb-42f9-ad33-9f9b39a60aed</uuid>
-  <description>--cpu-scaling-mode=schedutil --preserve-cores=0,1,8,9 --gpu-passthrough=main,0e:00.0,0e:00.1 --usb-passthrough=all</description>
+  <name>deepin</name>
+  <uuid>2febab5d-1bc7-498f-9864-1af78efa5665</uuid>
+  <description>--cpu-scaling-mode=schedutil --preserve-cores=0,1,8,9 --gpu-passthrough=main,06:00.0,06:00.1,reset --usb-passthrough=all</description>
   <memory unit='KiB'>16777216</memory>
   <currentMemory unit='KiB'>16777216</currentMemory>
   <vcpu placement='static' cpuset='2-7,10-15'>12</vcpu>
@@ -32,15 +32,10 @@
   <features>
     <acpi/>
     <apic/>
-    <pae/>
     <hyperv mode='custom'>
       <relaxed state='on'/>
       <vapic state='on'/>
       <spinlocks state='on' retries='8191'/>
-      <vpindex state='on'/>
-      <synic state='on'/>
-      <stimer state='on'/>
-      <reset state='on'/>
       <vendor_id state='on' value='1234567890ab'/>
     </hyperv>
     <kvm>
@@ -54,43 +49,34 @@
     <cache mode='passthrough'/>
     <feature policy='require' name='invtsc'/>
     <feature policy='require' name='topoext'/>
-    <feature policy='disable' name='hypervisor'/>
   </cpu>
-  <clock offset='localtime'>
+  <clock offset='utc'>
     <timer name='rtc' tickpolicy='catchup'/>
     <timer name='pit' tickpolicy='delay'/>
     <timer name='hpet' present='no'/>
-    <timer name='hypervclock' present='yes'/>
     <timer name='tsc' present='yes' mode='native'/>
   </clock>
   <on_poweroff>destroy</on_poweroff>
   <on_reboot>restart</on_reboot>
   <on_crash>destroy</on_crash>
   <pm>
-    <suspend-to-mem enabled='no'/>
+    <suspend-to-mem enabled='yes'/>
     <suspend-to-disk enabled='no'/>
   </pm>
   <devices>
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
     <disk type='file' device='disk'>
       <driver name='qemu' type='raw' cache='writeback' io='io_uring' discard='unmap'/>
-      <source file='/var/lib/libvirt/images/windows.raw'/>
+      <source file='/var/lib/libvirt/images/deepin.raw'/>
       <target dev='sda' bus='virtio'/>
-      <address type='pci' domain='0x0000' bus='0x05' slot='0x00' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
     </disk>
     <disk type='file' device='cdrom'>
       <driver name='qemu' type='raw' discard='unmap'/>
-      <source file='/var/lib/libvirt/images/windows-11.iso'/>
+      <source file='/var/lib/libvirt/images/deepin-23.04-beta.iso'/>
       <target dev='sdb' bus='sata'/>
       <readonly/>
       <address type='drive' controller='0' bus='0' target='0' unit='1'/>
-    </disk>
-    <disk type='file' device='cdrom'>
-      <driver name='qemu' type='raw' discard='unmap'/>
-      <source file='/var/lib/libvirt/images/virtio-windows.iso'/>
-      <target dev='sdc' bus='sata'/>
-      <readonly/>
-      <address type='drive' controller='0' bus='0' target='0' unit='2'/>
     </disk>
     <controller type='usb' index='0' model='qemu-xhci' ports='15'>
       <address type='pci' domain='0x0000' bus='0x02' slot='0x00' function='0x0'/>
@@ -142,26 +128,39 @@
     <controller type='pci' index='9' model='pcie-root-port'>
       <model name='pcie-root-port'/>
       <target chassis='9' port='0x18'/>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0' multifunction='on'/>
     </controller>
     <controller type='pci' index='10' model='pcie-root-port'>
       <model name='pcie-root-port'/>
-      <target chassis='10' port='0x8'/>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x0' multifunction='on'/>
+      <target chassis='10' port='0x19'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x1'/>
     </controller>
     <controller type='pci' index='11' model='pcie-root-port'>
       <model name='pcie-root-port'/>
-      <target chassis='11' port='0x9'/>
+      <target chassis='11' port='0x8'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x0' multifunction='on'/>
+    </controller>
+    <controller type='pci' index='12' model='pcie-to-pci-bridge'>
+      <model name='pcie-pci-bridge'/>
+      <address type='pci' domain='0x0000' bus='0x09' slot='0x00' function='0x0'/>
+    </controller>
+    <controller type='pci' index='13' model='pcie-root-port'>
+      <model name='pcie-root-port'/>
+      <target chassis='13' port='0x9'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x1'/>
     </controller>
     <controller type='virtio-serial' index='0'>
       <address type='pci' domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
     </controller>
+    <controller type='scsi' index='0' model='lsilogic'>
+      <address type='pci' domain='0x0000' bus='0x0c' slot='0x01' function='0x0'/>
+    </controller>
     <interface type='bridge'>
-      <mac address='52:54:00:fb:41:81'/>
+      <mac address='52:54:00:2e:1e:b8'/>
       <source bridge='virbr0'/>
       <model type='virtio'/>
-      <address type='pci' domain='0x0000' bus='0x06' slot='0x00' function='0x0'/>
+      <link state='up'/>
+      <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
     </interface>
     <serial type='pty'>
       <target type='isa-serial' port='0'>
@@ -176,10 +175,10 @@
       <address type='virtio-serial' controller='0' bus='0' port='1'/>
     </channel>
     <input type='mouse' bus='virtio'>
-      <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x0a' slot='0x00' function='0x0'/>
     </input>
     <input type='keyboard' bus='virtio'>
-      <address type='pci' domain='0x0000' bus='0x08' slot='0x00' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x0b' slot='0x00' function='0x0'/>
     </input>
     <input type='mouse' bus='usb'>
       <address type='usb' bus='0' port='2'/>
@@ -198,31 +197,35 @@
     <audio id='1' type='none'/>
     <video>
       <model type='bochs' vram='16384' heads='1' primary='yes'/>
-      <address type='pci' domain='0x0000' bus='0x09' slot='0x00' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x08' slot='0x00' function='0x0'/>
     </video>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x0e' slot='0x00' function='0x0'/>
+        <address domain='0x0000' bus='0x06' slot='0x00' function='0x0'/>
       </source>
-      <rom file='/var/lib/libvirt/vbios/NAVI22.rom'/>
+      <rom file='/var/lib/libvirt/vbios/NAVI14.rom'/>
       <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0' multifunction='on'/>
     </hostdev>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x0e' slot='0x00' function='0x1'/>
+        <address domain='0x0000' bus='0x06' slot='0x00' function='0x1'/>
       </source>
-      <rom file='/var/lib/libvirt/vbios/NAVI22.rom'/>
+      <rom file='/var/lib/libvirt/vbios/NAVI14.rom'/>
       <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x1'/>
     </hostdev>
     <hostdev mode='subsystem' type='usb' managed='yes'>
-      <source>
+      <source startupPolicy='optional'>
         <vendor id='0x046d'/>
         <product id='0xc52b'/>
       </source>
       <address type='usb' bus='0' port='1'/>
     </hostdev>
     <memballoon model='virtio'>
-      <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x05' slot='0x00' function='0x0'/>
     </memballoon>
+    <rng model='virtio'>
+      <backend model='random'>/dev/urandom</backend>
+      <address type='pci' domain='0x0000' bus='0x06' slot='0x00' function='0x0'/>
+    </rng>
   </devices>
 </domain>
