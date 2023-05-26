@@ -108,7 +108,7 @@ restorecon -R -vF /var/lib/libvirt/images
 
 ## Disk Management
 
-Virtual machines likely require a disk to install and run their software. Here, we are a few options like directly attaching a physical disk, creating a LVM partition or creating a virtual disk for this propose with ``.qcow2`` or ``.raw`` disk images format. Use the commands below to create the desired disk format for the VM:
+Virtual machines likely require a disk to install and run their software. Here, we are a few options like directly attaching a physical disk, creating a LVM partition or creating a virtual disk for this propose with ``.qcow2`` or ``.raw`` disk images format. Use one of the commands below to create the desired disk format for the VM:
 
 ```bash
 # LVM partition
@@ -126,7 +126,7 @@ chown -R qemu:qemu /var/lib/libvirt/images
 restorecon -R -vF /var/lib/libvirt/images
 ```
 
-You don't need to format the disk or partition, just pass it to the VM and run the installation process. To have the best performance and flexibility, you should have high-speed disks like SSD or NVME disk to directly attach to the VM but LVM partitions as just as good and I recommend this method in every situation. 
+You don't need to format the disk or partition, just pass it to the VM and run the installation process.
 
 ## Creating a Virtual Machine from CLI
 
@@ -141,7 +141,7 @@ lsblk # Disks
 
 Isolate the relevant info and save such information to use later on the VM configuration.
 
-To create a VM directly from CLI, use the following command. This process is slightly different from the method available everywhere because we will first generate one sample XML based on the described OS, tweak the settings and finally create a new VM based on the specs that we declared:
+To create a VM directly from CLI, use the commands as below. This process is slightly different from the method available everywhere because we will first generate one sample XML based on the described OS, tweak the settings and finally create a new VM based on the specs that we declared:
 
 ```bash
 # Edit variables

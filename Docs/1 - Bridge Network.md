@@ -15,10 +15,10 @@ nmcli
 # Define variables
 # Use the current network details to fill these variables
 BRIDGE_NAME="virbr0"
-NETWORK_INTERFACE="eno1"
+NETWORK_INTERFACE="enp7s0"
 SUBNET_IP="192.168.0.100/24"
 GATEWAY="192.168.0.1"
-DNS="8.8.8.8 8.8.4.4"
+DNS="1.1.1.1 1.0.0.1"
 
 # Delete libvirt bridge if available
 # nmcli connection delete virbr0
