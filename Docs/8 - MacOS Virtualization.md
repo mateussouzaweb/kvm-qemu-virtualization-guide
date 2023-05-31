@@ -78,6 +78,10 @@ REPOSITORY="https://github.com/kholia/OSX-KVM/raw/master"
 wget -O /var/lib/libvirt/images/fetch-macOS-v2.py ${REPOSITORY}/fetch-macOS-v2.py
 wget -O /var/lib/libvirt/images/opencore.qcow2 ${REPOSITORY}/OpenCore/OpenCore.qcow2
 
+# Convert OpenCore image to RAW
+qemu-img convert opencore.qcow2 opencore.raw
+rm opencore.qcow2
+
 # Fetch MacOS
 chmod +x /var/lib/libvirt/images/fetch-macOS-v2.py
 cd /var/lib/libvirt/images
@@ -123,7 +127,7 @@ If you need to mount the OpenCore partition outside the MacOS VM to tweak config
 ```bash
 # Mount the disk
 mkdir -p /mnt/opencore
-guestmount -a /var/lib/libvirt/images/opencore.qcow2 -m /dev/sda1 /mnt/opencore
+guestmount -a /var/lib/libvirt/images/opencore.raw -m /dev/sda1 /mnt/opencore
 
 # Edit the file or do something else...
 cd /mnt/opencore/EFI
