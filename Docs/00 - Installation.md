@@ -1,6 +1,6 @@
 # Host System Installation
 
-To start, we need an operational system for the host that will be our hypervisor. After many tries in various distros, Fedora Server and Fedora Workstation was the most stable distribution with blinding edge features where things simply just work, so to start, I strongly recommend using Fedora as the hypervisor. Other distributions are great, but always resulted in problems for me or got a process more complicated and since we are focusing here on a concrete and working solution, Fedora was obviously the alternative.
+To start, you need an operational system for the host that will be the hypervisor. After many tries in various distros, Fedora Server and Fedora Workstation was the most stable distribution with blinding edge features where things simply just work, so to start, I strongly recommend using Fedora as the hypervisor. Other distributions are great, but always resulted in problems for me or got a process more complicated and since we are focusing here on a concrete and working solution, Fedora was obviously the alternative.
 
 I also decided to focus on Fedora Server first because the nature of its terminal only environment makes it easier to passthrough devices to VMs and avoid common issues available in full desktop environments. The guide should work on Fedora Workstation as well and relevant information will be available when necessary.
 
@@ -34,27 +34,34 @@ dnf install -y \
     qemu-kvm \
     libvirt \
     virt-install \
-    libguestfs-tools \
-    cockpit \
-    cockpit-machines
+    libguestfs-tools
 
 # Make sure permissions are correct
 restorecon -R -vF /var/lib/libvirt
 
 # Enable the service
 systemctl enable --now libvirtd
+```
+
+If you are using a full-fledged desktop, also install the GUI software. After installation, you can also use the Virt Manager application to manage VMs within your mouse:
+
+```bash
+# Desktop mode ONLY
+dnf install -y libgovirt virt-manager
+```
+
+If you want the hypervisor to be remote accessible, you should install the Cockpit package. After installation, you also can access the web UI of Cockpit with another machine for remote management with the address in the format ``https://$IP:9090/``:
+
+```bash
+# Remote access ONLY
+dnf install -y cockpit cockpit-machines
+
+# Enable the service
 systemctl enable --now cockpit.socket
 
 # Enable firewall
 firewall-cmd --add-service=cockpit
 firewall-cmd --add-service=cockpit --permanent
-```
-
-If you are using a full-fledged desktop, also install the GUI software:
-
-```bash
-# Desktop mode ONLY
-dnf install -y libgovirt virt-manager
 ```
 
 For setups with other users that are not the **root** user, you also need to make sure users always connect to QEMU system URI because only this endpoint has access to the host resources. For each user that will run VMs, run the following commands:
@@ -81,9 +88,7 @@ reboot
 
 Congratulations!
 
-You now have the necessary packages to run basic virtualization. You also can access the web UI of Cockpit with another machine for remote management with the address ``https://$IP:9090/``. For the desktop mode, you can also use the Virt Manager application to manage VMs.
-
-We now can proceed to tweak the system for full and greater virtualization!
+You now have the necessary packages to run basic virtualization and we can proceed to tweak the system for full and greater virtualization!
 
 ----
 
