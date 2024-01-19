@@ -38,6 +38,10 @@ Finally, the options below are related to drivers and PCI-e:
 - **ANY:** Makes VFIO loads first: ``rd.driver.pre=vfio-pci``
 - **ANY:** Enables extra PCI-e group separation: ``pcie_acs_override=downstream,multifunction``
 
+If you want to make any specific PCI-e device (like a network card) to be eligible and controlled by VFIO, you also should declare such devices in the boot parameters. Use the command ``lspci -nn`` to get the vendor and device code of the device (for example: ``15b3:1003``) and declare it with the format below:
+
+- **ANY:** Declarares PCI-e devices managed by VFIO: ``vfio_pci.ids=${VENDOR_CODE}:${DEVICE_CODE},...``
+
 Save the file once done.
 
 Now, we need to enable the VFIO module on system load with the following command:
