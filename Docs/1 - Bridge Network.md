@@ -15,21 +15,22 @@ nmcli
 # Define variables
 # Use the current network details to fill these variables
 BRIDGE_NAME="virbr0"
-NETWORK_INTERFACE="enp7s0"
-SUBNET_IP="192.168.0.100/24"
-GATEWAY="192.168.0.1"
-DNS="1.1.1.1 1.0.0.1"
+NETWORK_INTERFACE="enp2s0"
+SUBNET_IP="192.168.1.100/24"
+GATEWAY="192.168.1.1"
+DNS="192.168.1.1"
 
 # Delete libvirt bridge if available
-# nmcli connection delete virbr0
+nmcli connection delete virbr0
 
 # Create bridge
 nmcli connection add type bridge \
     autoconnect yes con-name "${BRIDGE_NAME}" ifname "${BRIDGE_NAME}"
 
-nmcli connection modify "${BRIDGE_NAME}" ipv4.ignore-auto-dns yes
 nmcli connection modify "${BRIDGE_NAME}" ipv4.addresses "${SUBNET_IP}" ipv4.method manual
 nmcli connection modify "${BRIDGE_NAME}" ipv4.gateway "${GATEWAY}"
+
+nmcli connection modify "${BRIDGE_NAME}" ipv4.ignore-auto-dns yes
 nmcli connection modify "${BRIDGE_NAME}" ipv4.dns "${DNS}"
 
 # Put network interface inside the bridge
