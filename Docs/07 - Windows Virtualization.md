@@ -36,5 +36,5 @@ You can virtualize almost any Windows version. These observations are valid for 
 
 Others tips and tricks:
 
-- **[Linux Virtualization](6%20-%20Linux%20Virtualization.md)**
-- **[MacOS Virtualization](8%20-%20MacOS%20Virtualization.md)**
+- **[Linux Virtualization](06%20-%20Linux%20Virtualization.md)**
+- **[MacOS Virtualization](08%20-%20MacOS%20Virtualization.md)**

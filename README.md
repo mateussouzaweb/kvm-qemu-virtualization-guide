@@ -31,14 +31,14 @@ Our object is just one: have a **full working virtualization platform with QEMU 
 
 Follow the guides inside the ```Docs``` folder or use the links below for a specific topic:
 
-- **[Host System Installation](Docs/0%20-%20Installation.md)**
-- **[Configuring the Bridge Network](Docs/1%20-%20Bridge%20Network.md)**
-- **[Enabling PCI-e Passthrough](Docs/2%20-%20PCI-e%20Passthrough.md)**
-- **[Virtualization Hooks](Docs/3%20-%20Virtualization%20Hooks.md)**
-- **[Managing Virtual Machines](Docs/4%20-%20Virtual%20Machine%20Management.md)**
-- **[XML Configurations](Docs/5%20-%20XML%20Configurations.md)**
-- **[Linux Virtualization](Docs/6%20-%20Linux%20Virtualization.md)**
-- **[Windows Virtualization](Docs/7%20-%20Windows%20Virtualization.md)**
-- **[MacOS Virtualization](Docs/8%20-%20MacOS%20Virtualization.md)**
-- **[File Sharing](Docs/9%20-%20File%20Sharing.md)**
+- **[Host System Installation](Docs/00%20-%20Installation.md)**
+- **[Configuring the Bridge Network](Docs/01%20-%20Bridge%20Network.md)**
+- **[Enabling PCI-e Passthrough](Docs/02%20-%20PCI-e%20Passthrough.md)**
+- **[Virtualization Hooks](Docs/03%20-%20Virtualization%20Hooks.md)**
+- **[Managing Virtual Machines](Docs/04%20-%20Virtual%20Machine%20Management.md)**
+- **[XML Configurations](Docs/05%20-%20XML%20Configurations.md)**
+- **[Linux Virtualization](Docs/06%20-%20Linux%20Virtualization.md)**
+- **[Windows Virtualization](Docs/07%20-%20Windows%20Virtualization.md)**
+- **[MacOS Virtualization](Docs/08%20-%20MacOS%20Virtualization.md)**
+- **[File Sharing](Docs/09%20-%20File%20Sharing.md)**
 - **[Docker Containers](Docs/10%20-%20Docker%20Containers.md)**

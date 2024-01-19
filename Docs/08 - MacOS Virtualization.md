@@ -145,5 +145,5 @@ This process is very useful if you are having issues booting MacOS.
 
 Others tips and tricks:
 
-- **[Linux Virtualization](6%20-%20Linux%20Virtualization.md)**
-- **[Windows Virtualization](7%20-%20Windows%20Virtualization.md)**
+- **[Linux Virtualization](06%20-%20Linux%20Virtualization.md)**
+- **[Windows Virtualization](07%20-%20Windows%20Virtualization.md)**

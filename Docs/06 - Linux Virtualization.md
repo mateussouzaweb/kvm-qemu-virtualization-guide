@@ -23,5 +23,5 @@ You can virtualize any Linux distribution and everything should work as expected
 
 Others tips and tricks:
 
-- **[Windows Virtualization](7%20-%20Windows%20Virtualization.md)**
-- **[MacOS Virtualization](8%20-%20MacOS%20Virtualization.md)**
+- **[Windows Virtualization](07%20-%20Windows%20Virtualization.md)**
+- **[MacOS Virtualization](08%20-%20MacOS%20Virtualization.md)**

@@ -108,7 +108,7 @@ reboot
 
 Check the IOMMU groups again to make sure it is working. You now should be able to create VMs and attach PCI-e devices to it.
 
-Next step: **[Setting up Virtualization Hooks](3%20-%20Virtualization%20Hooks.md)**
+Next step: **[Setting up Virtualization Hooks](03%20-%20Virtualization%20Hooks.md)**
 
 ----
 

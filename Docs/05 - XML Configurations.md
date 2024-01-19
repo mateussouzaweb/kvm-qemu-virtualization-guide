@@ -484,6 +484,6 @@ If you come from the previous topic, set the relevant XML details for your VM an
 
 I will update this configuration guide once I learn more relevant details in the future. If you are targeting one specific type of virtual machine, I created a few topics on that to write my observations:
 
-- **[Linux Virtualization](6%20-%20Linux%20Virtualization.md)**
-- **[Windows Virtualization](7%20-%20Windows%20Virtualization.md)**
-- **[MacOS Virtualization](8%20-%20MacOS%20Virtualization.md)**
+- **[Linux Virtualization](06%20-%20Linux%20Virtualization.md)**
+- **[Windows Virtualization](07%20-%20Windows%20Virtualization.md)**
+- **[MacOS Virtualization](08%20-%20MacOS%20Virtualization.md)**

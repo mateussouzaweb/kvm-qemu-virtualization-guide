@@ -179,7 +179,7 @@ virt-install \
   > ${NAME}.xml
 ```
 
-Now that you generated the basic XML, you need to edit the XML file to set extra configurations and tweak your VM configuration. The best configurations are described on the next topic: **[XML Configurations](5%20-%20XML%20Configurations.md)**:
+Now that you generated the basic XML, you need to edit the XML file to set extra configurations and tweak your VM configuration. The best configurations are described on the next topic: **[XML Configurations](05%20-%20XML%20Configurations.md)**:
 
 ```bash
 vim ${NAME}.xml

@@ -87,4 +87,4 @@ We now can proceed to tweak the system for full and greater virtualization!
 
 ----
 
-Next step: **[Configuring the Bridge Network](1%20-%20Bridge%20Network.md)**
+Next step: **[Configuring the Bridge Network](01%20-%20Bridge%20Network.md)**
