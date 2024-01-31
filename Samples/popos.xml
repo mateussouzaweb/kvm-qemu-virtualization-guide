@@ -1,7 +1,7 @@
 <domain type='kvm'>
   <name>popos</name>
   <uuid>004490b9-1b45-4eab-8045-f785fbee08c5</uuid>
-  <description>--cpu-scaling-mode=schedutil --preserve-cores=0,1,8,9 --gpu-passthrough=main,06:00.0,06:00.1,reset --usb-passthrough=all</description>
+  <description>--cpu-scaling-mode=schedutil --preserve-cores=0,1,8,9 --gpu-passthrough=main,0c:00.0,0c:00.1 --usb-passthrough=all</description>
   <memory unit='KiB'>16777216</memory>
   <currentMemory unit='KiB'>16777216</currentMemory>
   <vcpu placement='static' cpuset='2-7,10-15'>12</vcpu>
@@ -201,16 +201,16 @@
     </video>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x06' slot='0x00' function='0x0'/>
+        <address domain='0x0000' bus='0x0c' slot='0x00' function='0x0'/>
       </source>
-      <rom file='/var/lib/libvirt/vbios/NAVI14.rom'/>
+      <rom file='/var/lib/libvirt/vbios/NAVI22.rom'/>
       <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0' multifunction='on'/>
     </hostdev>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x06' slot='0x00' function='0x1'/>
+        <address domain='0x0000' bus='0x0c' slot='0x00' function='0x1'/>
       </source>
-      <rom file='/var/lib/libvirt/vbios/NAVI14.rom'/>
+      <rom file='/var/lib/libvirt/vbios/NAVI22.rom'/>
       <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x1'/>
     </hostdev>
     <hostdev mode='subsystem' type='usb' managed='yes'>
