@@ -32,7 +32,7 @@ OPTIONS=$(grep -oPm1 "(?<=<description>)[^<]+" "${XML}")
 function stop_display_manager {
 
   managers=("sddm" "gdm" "lightdm" "lxdm" "xdm" "mdm" "display-manager")
-  for manager in managers; do
+  for manager in "${managers[@]}"; do
 
     if [ -x "$(command -v systemctl)" ]; then
       if systemctl is-active --quiet "${manager}.service"; then
