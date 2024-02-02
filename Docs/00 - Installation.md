@@ -34,6 +34,7 @@ dnf install -y \
     qemu-kvm \
     libvirt \
     virt-install \
+    guestfs-tools \
     libguestfs-tools
 
 # Make sure permissions are correct
