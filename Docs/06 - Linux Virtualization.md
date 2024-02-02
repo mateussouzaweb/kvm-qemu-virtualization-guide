@@ -7,7 +7,8 @@ You can virtualize any Linux distribution and everything should work as expected
 **Installation:**
 
 - Installation runs fine with the GPU passthrough, you don't need to attach a virtual display to run installation.
-- After installing, remember to install the ``qemu-guest-agent`` package.
+- After installing, remember to install the ``qemu-guest-agent``.
+- If you are using SPICE services, remember to install the  and ``spice-vdagent`` package.
 
 **Graphics:**
 
