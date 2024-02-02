@@ -7,15 +7,17 @@ You can virtualize almost any Windows version. These observations are valid for 
 **Installation:**
 
 - For Windows 11 installations, make sure that Secure Boot and TPM 2.0 are configured in the virtual machine.
-- Installation process will require a virtualized display graphics.
-- In the disk selection process, you must install the VirtIO driver if disks are not visible. Make sure you have the VirtIO ISO configured as a CDROM device.
-- After installing, remember to install VirtIO software.
+- Installation runs fine with the GPU passthrough, you don't need to attach a virtual display to run installation.
+- The correct network interface model is also important for internet access. See the notes below for more details.
+- Make sure you have the VirtIO ISO configured as a CDROM device during the installation process.
+- Once you are in the disk selection process of Windows installation, you must install the VirtIO drivers from the CDROM if disks are not visible.
+- After installing, remember to install VirtIO software from the VirtIO ISO. This software includes drivers for QEMU Guest Agent and SPICE guest agent and drivers.
 
 **Graphics:**
 
-- Use the patched VGA BIOS on Nvidia GPUs.
+- Remember to use the patched VGA BIOS on Nvidia GPUs.
 - Just install the GPU driver of the manufacturer (AMD/Nvidia) and GPU should work.
-- After the driver has been installed, remove the virtualized display graphics if you are having issues.
+- After the driver has been installed, remove the virtualized display graphics if you are having display issues.
 
 **USB:**
 
@@ -23,9 +25,10 @@ You can virtualize almost any Windows version. These observations are valid for 
 
 **Network:**
 
-- Network interface model type must be ``e1000e`` if you want to have internet in the OS install process.
-- If you are having issues connecting to the network, it is recommended change the model type from ``virtio`` to ``e1000e``, but ``virtio`` will always have more performance. 
-- If you are having issues streaming the VM to any other device, this maybe is not a network issue. Try disable the GPU Scheduler on "Settings" > "Display" > "Graphics" > "Change default graphics settings" first and see if that solves the problem.
+- For Windows, there are basically 3 network interfaces models on Qemu: ``virtio``, ``igb`` and ``e1000e``.
+- You must set the network interface model as  ``igb`` or ``e1000e`` to have internet access during the Windows installation process.
+- Once Windows has been installed, install the VirtIO drivers and set the network as ``virtio`` because this model will always have more performance than others - supports 10G networks for example.
+- If you are having issues streaming the VM to any other devices, this maybe is not a network issue. Try disable the GPU Scheduler on "Settings" > "Display" > "Graphics" > "Change default graphics settings" first and see if that solves the problem.
 
 **Sample XMLs:**
 
