@@ -60,9 +60,9 @@ MacOS has a few tricks to virtualize. Once running with their limitations, it wo
 
 **Post Install:**
 
-- Download the following apps to help tweak and modify OpenCore: OCAuxiliaryTools, Hackintool, ProperTree and GenSMBIOS.
+- Download the following apps to help tweak and modify OpenCore: [OCAuxiliaryTools](https://github.com/ic005k/OCAuxiliaryTools), [Hackintool](https://github.com/benbaker76/Hackintool), [ProperTree](https://github.com/corpnewt/ProperTree) and [GenSMBIOS](https://github.com/corpnewt/GenSMBIOS).
 - Remember to generate a unique SMBIOS and configure it in your EFI/OpenCore partition.
-- Install additional kexts for your hardware if required - like NootRX for example.
+- Install additional kexts for your hardware if required - like [NootRx](https://github.com/ChefKissInc/NootRX) for example.
 
 **Sample XMLs:**
 
@@ -142,7 +142,7 @@ cd ${HOME}
 guestunmount /mnt/opencore
 ```
 
-You can also use another VM with Windows or Linux to access the partition in a GUI environment with OCAuxiliaryTools, ProperTree or another related program. 
+You can also use another VM with Windows or Linux to access the partition in a GUI environment with [OCAuxiliaryTools](https://github.com/ic005k/OCAuxiliaryTools), [ProperTree](https://github.com/corpnewt/ProperTree) or another related program. 
 
 This process is very useful if you are having issues booting MacOS.
 
