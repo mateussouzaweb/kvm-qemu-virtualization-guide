@@ -448,6 +448,11 @@ The QEMU guest agent adds many cool features to the VM, including more precise V
 
 After VM is running, you must install the QEMU guest agent to increase performance and get more precise metrics. On Windows, download and use the [VirtIO ISO](https://github.com/virtio-win/virtio-win-pkg-scripts). On Linux, install the ``qemu-guest-agent`` package. MacOS does not have a compatible package yet.
 
+```bash
+sudo apt install -y qemu-guest-agent
+systemctl start qemu-guest-agent
+```
+
 ## SPICE Guest Agent
 
 The SPICE project adds support for remote access to virtual machines in a seamless way. With SPICE, you can copy and paste between the host and the virtual machine, play videos, record audio, share usb devices and share folders without complications. Use the following settings inside the VM to enable the communication channel:
