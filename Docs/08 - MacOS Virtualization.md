@@ -11,45 +11,48 @@ MacOS has a few tricks to virtualize. Once running with their limitations, it wo
 
 **QEMU:**
 
-- MacOS requires additional extra parameters to work. Consult how to use MacOS in KVM to learn more.
+- Virtual machines with MacOS requires additional extra parameters to work. Consult how to use MacOS in KVM to learn more.
 - Don't forget to include the QEMU XML namespace on top of the file to allow the usage of extra parameters.
 
 **CPU:**
 
 - If you have an AMD CPU, don't worry, it will work. However, nested virtualization on AMD CPUs is not possible (this will limit development environments in some cases).
-- If your CPU is a Mac compatible Intel chip, change ``Haswell`` to ``host`` on the XML settings.
+- If your CPU is a Mac compatible Intel chip, change ``Haswell-noTSX`` to ``host`` on the XML settings.
 
 **Graphics:**
 
-- GPU passthrough will not work on recent Nvidia graphic cards, forget it and buy a compatible AMD GPU.
-- If you will passthrough any graphic card, just don't forget to remove the default video interface. Also make sure the gfx and audio devices are in the same bus (like ``0x01``) but in different function (``0x00`` and ``0x01``).
-- Also, some AMD GPUs need to set ``agdpmod=pikera`` in the ``config.plist`` of OpenCore, at NVRAM boot-args section. See below a few options of how to edit OpenCore.
+- If you will passthrough any graphic card, just don't forget to remove the default video interface. Also make sure the *gfx* and *audio* devices are in the same bus (like ``0x01``) but in different function (``0x00`` and ``0x01``).
+- GPU passthrough will not work on Nvidia graphic cards - forget it and buy a compatible AMD GPU.
+- Some AMD GPUs need to set ``agdpmod=pikera`` in the ``config.plist`` of OpenCore, at "*NVRAM boot-args*" section - see below how to edit OpenCore from CLI if you need.
+- Non-compatible RDNA 2 GPUs can be enable with [NootRx](https://github.com/ChefKissInc/NootRX). If you need this kext, do not append ``agdpmod=pikera`` in the ``config.plist`` and disable ``WhateverGreen`` kext.
+- When doing GPU passthrough, boot can take a few minutes to finish - please be patient, it will work.
 
 **Network:**
 
-- Network interface model type must be ``vmxnet3``.
+- Network interface model type must be ``vmxnet3`` because this is the only model compatible with MacOS.
 - Make sure the address is in bus ``0x0`` and slot ``0x0y`` (y is numeric).
 - These settings will solve any issues that you can have on the installation process, built-in NIC, Apple Store and iCloud.
 
 **Audio:**
 
-- If you will passthrough onboard audio, make sure you put it in bus ``0x00`` and slot ``0x0y`` (y is numeric) as this is necessary to make AppleALC recognize its audio device.
+- If you will passthrough onboard audio, make sure you put it in bus ``0x00`` and slot ``0x0y`` (y is numeric) as this is necessary to make ``AppleALC`` recognize its audio device.
 
 **USB:**
 
 - Live USB passthrough is not possible. You need to attach the USB device and then restart the VM to work.
-- Attached USB keyboard at start may not work on OpenCore boot menu. To solve this, you must passthrough the USB Controller device.
+- Attached USB keyboard may not work on OpenCore boot menu.
 - USB passthrough of USB 3.X devices may not work on MacOS.
+- To avoid all of these issues, you should passthrough the entire USB Controller device to MacOS via PCI-e.
 
 **Boot:**
 
-- If the keyboard does not work on OpenCore boot menu, you can use the Console to select the boot entry. Just enter the Console and press the arrow key to select the disk entry (no need to attach VNC graphics for it).
+- If the keyboard does not work on OpenCore boot menu, you can use the console connection to select the boot entry. Just enter the console with ``virsh console macos`` and press the arrow key to select the disk entry (no need to attach VNC graphics for it).
 - If the default boot entry is on the recovery image, you can change it by selecting the MacOS volume and hitting ``CTRL`` + ``Enter`` to set this as the default boot entry. The change will be reflected in the next boot.
 
 **OpenCore Settings:**
 
 - This is just a list of few options to tweak that may be useful to you.
-- Update ``boot-args`` to add AMD GPU support with the following extra text: ``agdpmod=pikera``.
+- Update ``boot-args`` to add AMD GPU support with the following extra text when necessary: ``agdpmod=pikera``.
 - Update ``AllowSetDefault`` to allow selecting a default entry with ``CTRL`` + ``Enter``.
 - Update ``Timeout`` to ``10`` in order to reduce boot timeout to 10s.
 - Update ``Resolution`` to `Max` in order to enable max resolution.
@@ -59,12 +62,12 @@ MacOS has a few tricks to virtualize. Once running with their limitations, it wo
 
 - Download the following apps to help tweak and modify OpenCore: OCAuxiliaryTools, Hackintool, ProperTree and GenSMBIOS.
 - Remember to generate a unique SMBIOS and configure it in your EFI/OpenCore partition.
-- Install additional kexts for your hardware if required.
+- Install additional kexts for your hardware if required - like NootRX for example.
 
 **Sample XMLs:**
 
 - You can check some configurations for MacOS machines in the ``Samples/`` folder.
-- Install instructions are available below.
+- Install instructions using this sample XML are available below.
 
 ## Installation
 
@@ -109,7 +112,7 @@ curl -L ${REPOSITORY}/macos.xml --output macos.xml
 vim macos.xml
 ```
 
-Here, you can also tweak the OpenCore partition before starting the VM (see the guide below). I will do it to enable the AMD GPU support for example, but if you don't know what to do for now, simply continue this guide...
+Here, you can also tweak the OpenCore partition before starting the VM (see the next section). I must do it to enable the AMD GPU support for my machine, but if you don't know what to do for now, simply continue this guide...
 
 Finally define the VM and start it:
 
@@ -122,7 +125,7 @@ Done!
 
 ## Editing OpenCore EFI
 
-If you need to mount the OpenCore partition outside the MacOS VM to tweak configurations, you can use another VM with Windows or Linux to access the partition in a GUI environment or use the process as described here to mount the EFI partition directly from the Hypervisor via terminal:
+If you need to mount the OpenCore partition outside the MacOS VM to tweak configurations, use the process as described here to mount the EFI partition directly from the Hypervisor via terminal:
 
 ```bash
 # Mount the disk
@@ -138,6 +141,8 @@ vim OC/config.plist
 cd ${HOME}
 guestunmount /mnt/opencore
 ```
+
+You can also use another VM with Windows or Linux to access the partition in a GUI environment with OCAuxiliaryTools, ProperTree or another related program. 
 
 This process is very useful if you are having issues booting MacOS.
 
