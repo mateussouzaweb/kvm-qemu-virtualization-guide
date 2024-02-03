@@ -4,9 +4,12 @@ PCI-e passthrough is a feature that allows the redirection of hardware devices t
 
 - ``IOMMU`` - Enabled
 - ``SVM`` or ``VD-t`` - Enabled
-- ``ACS Override`` - Disabled
-- ``Above 4G Decoding`` - Disabled
-- ``Resizable BAR`` or ``Smart Access Memory`` - Disabled
+- ``SR-IOV Support`` - Enabled
+- ``ACS Enable`` or ``ACS Override`` - Auto or Disabled
+- ``Above 4G Decoding`` - Enabled or Disabled
+- ``Resizable BAR`` or ``Smart Access Memory`` - Disabled 
+- ``PCIe ARI Support`` - Auto or Enabled
+- ``Enable AER Cap`` - Auto or Enabled
 - ``CSM Support`` - Disabled, must use UEFI
 
 Consult the motherboard manual if you have doubts about how to find these settings, some of them may not be visible depending on your hardware. Once you have this correctly configured, follow the steps below to change the boot params of the host in order to enable the support for PCI-e Passthrough on the system:
