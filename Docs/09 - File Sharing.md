@@ -52,6 +52,17 @@ sudo mount -t virtiofs files /mnt/files
 echo "files /mnt/files virtiofs defaults 0 0" | sudo tee -a /etc/fstab
 ```
 
+On MacOS, you can mount the shared FS with the following command:
+
+```bash
+# First, make sure path exists
+mkdir $HOME/files
+
+# Temporary mount
+# For persistent mount, use Automator with AppleScript 
+mount_virtiofs files $HOME/files
+```
+
 Remember, this method works only on local virtual machines. If you need to share files with other devices, please consider the Samba Sharing service option.
 
 ## Sharing Files with Samba Sharing
