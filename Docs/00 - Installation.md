@@ -61,8 +61,8 @@ dnf install -y cockpit cockpit-machines
 systemctl enable --now cockpit.socket
 
 # Enable firewall
-firewall-cmd --add-service=cockpit
-firewall-cmd --add-service=cockpit --permanent
+firewall-cmd --permanent --add-service=cockpit
+firewall-cmd --reload
 ```
 
 For setups with other users that are not the **root** user, you also need to make sure users always connect to QEMU system URI because only this endpoint has access to the host resources. For each user that will run VMs, run the following commands:
