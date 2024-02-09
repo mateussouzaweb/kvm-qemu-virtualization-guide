@@ -63,13 +63,16 @@ After extracting, login on the main host and run the command below to copy the R
 # Create folder if not exists
 mkdir -p /var/lib/libvirt/vbios/
 
+# Go to target directory
+cd /var/lib/libvirt/vbios/
+
 # Copy ROM file from where you saved it
-cp NAVI22.rom /var/lib/libvirt/vbios/
+cp /path/of/NAVI22.rom NAVI22.rom
 
 # Fix permissions on ROM files
-chmod -R 660 /var/lib/libvirt/vbios/*
-chown -R qemu:qemu /var/lib/libvirt/vbios
-restorecon -R -vF /var/lib/libvirt/vbios
+chmod -R 660 ${PWD}/*
+chown -R qemu:qemu ${PWD}
+restorecon -R -vF ${PWD}
 ```
 
 **NVIDIA only**: If you need to patch the GPU BIOS in order to avoid ``code 43`` issue, use the following command to create a patched ROM version of your GPU BIOS:
@@ -89,21 +92,22 @@ To install operational systems inside VMs, you probably need an ISO file. You ca
 # Create folder if not exists
 mkdir -p /var/lib/libvirt/images/
 
+# Go to target directory
+cd /var/lib/libvirt/images/
+
 # Copy ISO file from where you saved it
-cp ubuntu.iso /var/lib/libvirt/images/ubuntu.iso
+cp /path/of/ubuntu.iso ubuntu.iso
 
 # Download the ISO that you want
-cd /var/lib/libvirt/images/
 wget http://releases.ubuntu.com/jammy/ubuntu-22.04-desktop-amd64.iso
 
 # Download virtio drivers for Windows
-cd /var/lib/libvirt/images/
 wget https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/latest-virtio/virtio-win.iso
 
 # Fix permissions on ISO files
-chmod -R 660 /var/lib/libvirt/images/*
-chown -R qemu:qemu /var/lib/libvirt/images
-restorecon -R -vF /var/lib/libvirt/images
+chmod -R 660 ${PWD}/*
+chown -R qemu:qemu ${PWD}
+restorecon -R -vF ${PWD}
 ```
 
 ## Disk Management
@@ -111,19 +115,22 @@ restorecon -R -vF /var/lib/libvirt/images
 Virtual machines likely require a disk to install and run their software. Here, we are a few options like directly attaching a physical disk, creating a LVM partition or creating a virtual disk for this propose with ``.qcow2`` or ``.raw`` disk images format. Use one of the commands below to create the desired disk format for the VM:
 
 ```bash
+# Go to target directory
+cd /var/lib/libvirt/images/
+
 # LVM partition
 lvcreate -n ${NAME} -L 100G ${VOLUME_GROUP}
 
 # Raw disk
-qemu-img create -f raw /var/lib/libvirt/images/${NAME}.raw 100G
+qemu-img create -f raw ${NAME}.raw 100G
 
 # QCOW2 disk
-qemu-img create -f qcow2 /var/lib/libvirt/images/${NAME}.qcow2 100G
+qemu-img create -f qcow2 ${NAME}.qcow2 100G
 
 # Fix permissions on virtual disk files
-chmod -R 660 /var/lib/libvirt/images/*
-chown -R qemu:qemu /var/lib/libvirt/images
-restorecon -R -vF /var/lib/libvirt/images
+chmod -R 660 ${PWD}/*
+chown -R qemu:qemu ${PWD}
+restorecon -R -vF ${PWD}
 ```
 
 You don't need to format the disk or partition, just pass it to the VM and run the installation process.

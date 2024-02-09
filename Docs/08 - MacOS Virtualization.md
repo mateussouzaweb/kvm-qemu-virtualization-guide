@@ -76,18 +76,20 @@ See: <https://github.com/kholia/OSX-KVM>
 This guide uses the OSX-KVM project as base system. We grab just the necessary files to run it on QEMU. Start by downloading files and fetching the desired MacOS version:
 
 ```bash
+# Go to target directory
+cd /var/lib/libvirt/images
+
 # Download files
 REPOSITORY="https://github.com/kholia/OSX-KVM/raw/master"
-wget -O /var/lib/libvirt/images/fetch-macOS-v2.py ${REPOSITORY}/fetch-macOS-v2.py
-wget -O /var/lib/libvirt/images/opencore.qcow2 ${REPOSITORY}/OpenCore/OpenCore.qcow2
+wget -O fetch-macOS-v2.py ${REPOSITORY}/fetch-macOS-v2.py
+wget -O opencore.qcow2 ${REPOSITORY}/OpenCore/OpenCore.qcow2
 
 # Convert OpenCore image to RAW
 qemu-img convert opencore.qcow2 opencore.raw
 rm opencore.qcow2
 
 # Fetch MacOS
-chmod +x /var/lib/libvirt/images/fetch-macOS-v2.py
-cd /var/lib/libvirt/images
+chmod +x fetch-macOS-v2.py
 ./fetch-macOS-v2.py
 
 # Convert DMG image to IMG format and remove unnecessary files
@@ -96,9 +98,9 @@ qemu-img convert BaseSystem.dmg -O raw macos-${VERSION}.img
 rm -f BaseSystem.dmg BaseSystem.chunklist fetch-macOS-v2.py
 
 # Fix permissions
-chmod -R 660 /var/lib/libvirt/images/*
-chown -R qemu:qemu /var/lib/libvirt/images
-restorecon -R -vF /var/lib/libvirt/images
+chmod -R 660 ${PWD}/*
+chown -R qemu:qemu ${PWD}
+restorecon -R -vF ${PWD}
 ```
 
 Now, download the sample XML configuration and tweak to run on your system devices:
