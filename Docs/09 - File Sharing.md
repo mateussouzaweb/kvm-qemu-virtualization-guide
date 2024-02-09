@@ -138,10 +138,10 @@ Great! You can now configure and open the shared location inside VMs and other m
 
 ### Connecting to a Samba Shared Location
 
-**Windows:** Open the "*File Explorer*" and then right-click on "*This PC*" (in the left pane). From the resulting context menu, select "*Add A Network Location*". When requested for the network address, use ``\\192.168.0.100\files`` and continue by filling in the authentication details.
+**Windows:** Open the "*File Explorer*" and then right-click on "*This PC*" (in the left pane). From the resulting context menu, select "*Add A Network Location*". When requested for the network address, use ``\\192.168.1.100\files`` and continue by filling in the authentication details.
 
-**MacOS:** Open "*Finder*" and use the menu option "*Go*" > "*Connect to Server...*". In the address field, enter ``smb://192.168.0.100/files`` and click on "*Connect*". Accept the prompt and continue by filling in the authentication details when requested.
+**MacOS:** Open "*Finder*" and use the menu option "*Go*" > "*Connect to Server...*". In the address field, enter ``smb://192.168.1.100/files`` and click on "*Connect*". Accept the prompt and continue by filling in the authentication details when requested.
 
-**Linux:** In the "*Connect to Server*" option of the file browser, enter the address as ``smb://192.168.0.100/files`` and continue by filling in the authentication details.
+**Linux:** In the "*Connect to Server*" option of the file browser, enter the address as ``smb://192.168.1.100/files`` and continue by filling in the authentication details.
 
 **Docker:** You also can mount samba share volumes with the CIFS protocol. Check the [documentation](https://docs.docker.com/storage/volumes/#create-cifssamba-volumes) to learn how to do it.

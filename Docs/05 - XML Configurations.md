@@ -455,7 +455,7 @@ systemctl start qemu-guest-agent
 
 ## SPICE Guest Agent
 
-The SPICE project adds support for remote access to virtual machines in a seamless way. With SPICE, you can copy and paste between the host and the virtual machine, play videos, record audio, share usb devices and share folders without complications. Use the following settings inside the VM to enable the communication channel:
+The SPICE project adds support for remote access to virtual machines in a seamless way. With SPICE, you can copy and paste between the host and the virtual machine, play videos, record audio, share USB devices and folders without complications. Use the following settings inside the VM to enable the communication channel:
 
 ```xml
 <channel type='spicevmc'>

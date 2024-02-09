@@ -15,7 +15,7 @@ nmcli
 # Define variables
 # Use the current network details to fill these variables
 BRIDGE_NAME="virbr0"
-NETWORK_INTERFACE="enp2s0"
+NETWORK_INTERFACE="enp5s0"
 SUBNET_IP="192.168.1.100/24"
 GATEWAY="192.168.1.1"
 DNS="192.168.1.1"
