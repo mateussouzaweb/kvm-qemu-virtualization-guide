@@ -133,6 +133,16 @@ chown -R qemu:qemu ${PWD}
 restorecon -R -vF ${PWD}
 ```
 
+When necessary, you can also convert between formats or transform your physical disk to virtual:
+
+```bash
+# Convert qcow2 to raw
+qemu-img convert -p -O raw ${NAME}.qcow2 ${NAME}.raw
+
+# Convert physical to virtual
+qemu-img convert -p -O raw /dev/nvme1n1 ${NAME}.raw
+```
+
 You don't need to format the disk or partition, just pass it to the VM and run the installation process.
 
 ## Creating a Virtual Machine from CLI
