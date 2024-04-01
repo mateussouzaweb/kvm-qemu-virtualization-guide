@@ -112,7 +112,7 @@ restorecon -R -vF ${PWD}
 
 ## Disk Management
 
-Virtual machines likely require a disk to install and run their software. Here, we are a few options like directly attaching a physical disk, creating a LVM partition or creating a virtual disk for this propose with ``.qcow2`` or ``.raw`` disk images format. Use one of the commands below to create the desired disk format for the VM:
+Virtual machines likely require a disk to install and run their software. Here, you have a few options like directly attaching a physical disk, creating a LVM partition or creating a virtual disk for this propose with ``.qcow2`` or ``.raw`` disk images format. Use one of the commands below to create the desired disk format for the VM:
 
 ```bash
 # Go to target directory
@@ -147,7 +147,7 @@ You don't need to format the disk or partition, just pass it to the VM and run t
 
 ## Creating a Virtual Machine from CLI
 
-Now that you have solved the GPU BIOS, ISO and Disk dependencies for the VM, you can create and configure a new virtual machine. To finish, we just need to know the list of OS variants available to install and the hardware parts that can be attached to the VM:
+You can create and configure a new virtual machine directly from the CLI. First, you need to know the list of OS variants available to install and the hardware parts that can be attached to the VM:
 
 ```bash
 osinfo-query os # OS list
