@@ -19,28 +19,28 @@ nmcli device
 CONNECTION_NAME="enp5s0"
 NETWORK_INTERFACE="enp5s0"
 
-# Delete libvirt bridge if available
+# Create the bridge network
 nmcli connection delete virbr0
-
-# Create new bridge
 nmcli connection add type bridge \
-    autoconnect yes con-name virbr0 ifname virbr0
-
-nmcli connection modify virbr0 ipv4.method auto
-nmcli connection modify virbr0 ipv6.method auto
+    autoconnect yes \
+    con-name virbr0 \
+    ifname virbr0 \
+    ipv4.method auto \
+    ipv6.method auto
 
 # Put network interface inside the bridge
 nmcli connection delete "${CONNECTION_NAME}"
 nmcli connection add type bridge-slave \
-    autoconnect yes con-name "${NETWORK_INTERFACE}" \
+    autoconnect yes \
+    con-name "${NETWORK_INTERFACE}" \
     ifname "${NETWORK_INTERFACE}" \
     master virbr0
 
 # Restore connection
 nmcli connection up virbr0
 
-# Restart network manager
-systemctl restart NetworkManager
+# Restart
+reboot
 ```
 
 If your motherboard also has WiFi and you want to completely disable it, just run the command below to do it. By disabling WiFi (a service not used at this case), you can avoid some bugs along the way reducing the need of system maintenance:
