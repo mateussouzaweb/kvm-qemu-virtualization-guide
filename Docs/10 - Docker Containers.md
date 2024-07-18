@@ -18,7 +18,7 @@ sudo usermod -aG docker ${USERNAME}
 newgrp docker
 ```
 
-Now, let's make sure Docker won't mess with bridge network by applying some customizations on the service:
+Now, let's make sure Docker won't mess with bridge networks by applying some customizations on the service:
 
 ```bash
 sudo systemctl edit docker.service
@@ -27,6 +27,8 @@ sudo systemctl edit docker.service
 [Service]
 ExecStartPre=/bin/sh -c "/usr/sbin/iptables -D FORWARD -p all -i virbr0 -j ACCEPT || true"
 ExecStartPre=/bin/sh -c "/usr/sbin/iptables -A FORWARD -p all -i virbr0 -j ACCEPT || true"
+ExecStartPre=/bin/sh -c "/usr/sbin/ip6tables -D FORWARD -p all -i virbr0 -j ACCEPT || true"
+ExecStartPre=/bin/sh -c "/usr/sbin/ip6tables -A FORWARD -p all -i virbr0 -j ACCEPT || true"
 ```
 
 Finally, start the service and you are ready to run any container that you like:
