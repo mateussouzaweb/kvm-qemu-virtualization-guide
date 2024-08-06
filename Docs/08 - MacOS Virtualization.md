@@ -81,26 +81,26 @@ cd /var/lib/libvirt/images
 
 # Download files
 REPOSITORY="https://github.com/kholia/OSX-KVM/raw/master"
-wget -O fetch-macOS-v2.py ${REPOSITORY}/fetch-macOS-v2.py
-wget -O opencore.qcow2 ${REPOSITORY}/OpenCore/OpenCore.qcow2
+sudo wget -O fetch-macOS-v2.py ${REPOSITORY}/fetch-macOS-v2.py
+sudo wget -O opencore.qcow2 ${REPOSITORY}/OpenCore/OpenCore.qcow2
 
 # Convert OpenCore image to RAW
-qemu-img convert opencore.qcow2 opencore.raw
-rm opencore.qcow2
+sudo qemu-img convert opencore.qcow2 opencore.raw
+sudo rm opencore.qcow2
 
 # Fetch MacOS
-chmod +x fetch-macOS-v2.py
-./fetch-macOS-v2.py
+sudo chmod +x fetch-macOS-v2.py
+sudo ./fetch-macOS-v2.py
 
 # Convert DMG image to IMG format and remove unnecessary files
 VERSION="ventura"
-qemu-img convert BaseSystem.dmg -O raw macos-${VERSION}.img
-rm -f BaseSystem.dmg BaseSystem.chunklist fetch-macOS-v2.py
+sudo qemu-img convert BaseSystem.dmg -O raw macos-${VERSION}.img
+sudo rm -f BaseSystem.dmg BaseSystem.chunklist fetch-macOS-v2.py
 
 # Fix permissions
-chmod -R 660 ${PWD}/*
-chown -R qemu:qemu ${PWD}
-restorecon -R -vF ${PWD}
+sudo chmod -R 660 ${PWD}/*
+sudo chown -R qemu:qemu ${PWD}
+sudo restorecon -R -vF ${PWD}
 ```
 
 Now, download the sample XML configuration and tweak to run on your system devices:
@@ -131,17 +131,17 @@ If you need to mount the OpenCore partition outside the MacOS VM to tweak config
 
 ```bash
 # Mount the disk
-mkdir -p /mnt/opencore
-guestmount -a /var/lib/libvirt/images/opencore.raw -m /dev/sda1 /mnt/opencore
+sudo mkdir -p /mnt/opencore
+sudo guestmount -a /var/lib/libvirt/images/opencore.raw -m /dev/sda1 /mnt/opencore
 
 # Edit the file or do something else...
 cd /mnt/opencore/EFI
-vim OC/config.plist
+sudo vim OC/config.plist
 
 # Unmount the disk once concluded modifications
 # NOTE: You must go outside of the partition to allow unmount the disk
 cd ${HOME}
-guestunmount /mnt/opencore
+sudo guestunmount /mnt/opencore
 ```
 
 You can also use another VM with Windows or Linux to access the partition in a GUI environment with [OCAuxiliaryTools](https://github.com/ic005k/OCAuxiliaryTools), [ProperTree](https://github.com/corpnewt/ProperTree) or another related program. 
