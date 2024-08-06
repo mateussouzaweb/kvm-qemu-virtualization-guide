@@ -54,7 +54,7 @@ If you want the hypervisor to be remote accessible, you should install the Cockp
 
 ```bash
 # Remote access ONLY
-sudo dnf install -y cockpit cockpit-machines
+sudo dnf install -y cockpit cockpit-machines cockpit-pcp
 
 # Enable the service
 sudo systemctl enable --now cockpit.socket
