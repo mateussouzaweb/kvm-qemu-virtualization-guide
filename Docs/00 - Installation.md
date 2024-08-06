@@ -43,7 +43,7 @@ sudo restorecon -R -vF /var/lib/libvirt
 sudo systemctl enable --now libvirtd
 ```
 
-If you are using a full-fledged desktop, also install the GUI software. After installation, you can also use the Virt Manager application to manage VMs within your mouse:
+If you are using a full-fledged desktop, also install the GUI software. After installation, you can also use the Virtual Machine Manager application to manage VMs within your mouse:
 
 ```bash
 # Desktop mode ONLY
