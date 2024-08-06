@@ -51,6 +51,10 @@ To avoid issues with GPU cards inside VMs, we recommend extracting the GPU ROM B
 Use GPU-z on Windows standalone machine to extract the ROM file for the GPU or download the BIOS at <https://www.techpowerup.com/vgabios/>. To extract the BIOS file from Linux, you must run a live USB distro with CLI mode, then run the following command:
 
 ```bash
+# Ensure to run as sudo
+sudo su
+
+# Perform BIOS extraction
 echo 1 > /sys/bus/pci/devices/{$ID}/rom
 cat /sys/bus/pci/devices/{$ID}/rom > ${NAME}.rom
 echo 0 > /sys/bus/pci/devices/{$ID}/rom
@@ -61,23 +65,27 @@ After extracting, login on the main host and run the command below to copy the R
 ```bash
 # IMPORTANT: Every GPU BIOS file must be located at /var/lib/libvirt/vbios/
 # Create folder if not exists
-mkdir -p /var/lib/libvirt/vbios/
+sudo mkdir -p /var/lib/libvirt/vbios/
 
 # Go to target directory
 cd /var/lib/libvirt/vbios/
 
 # Copy ROM file from where you saved it
-cp /path/of/NAVI22.rom NAVI22.rom
+sudo cp /path/of/NAVI22.rom NAVI22.rom
 
 # Fix permissions on ROM files
-chmod -R 660 ${PWD}/*
-chown -R qemu:qemu ${PWD}
-restorecon -R -vF ${PWD}
+sudo chmod -R 660 ${PWD}/*
+sudo chown -R qemu:qemu ${PWD}
+sudo restorecon -R -vF ${PWD}
 ```
 
 **NVIDIA only**: If you need to patch the GPU BIOS in order to avoid ``code 43`` issue, use the following command to create a patched ROM version of your GPU BIOS:
 
 ```bash
+# Ensure to run as sudo
+sudo su
+
+# Perform BIOS modification
 echo "`grep -aoib video ${NAME}.rom | \
   cut -d: -f1` / 16 * 16" | bc | \
   xargs -I OFF dd if=${NAME}.rom of=${NAME}-P.rom bs=OFF skip=1
@@ -90,24 +98,24 @@ To install operational systems inside VMs, you probably need an ISO file. You ca
 ```bash
 # IMPORTANT: Every ISO must be located at /var/lib/libvirt/images/
 # Create folder if not exists
-mkdir -p /var/lib/libvirt/images/
+sudo mkdir -p /var/lib/libvirt/images/
 
 # Go to target directory
 cd /var/lib/libvirt/images/
 
 # Copy ISO file from where you saved it
-cp /path/of/ubuntu.iso ubuntu.iso
+sudo cp /path/of/ubuntu.iso ubuntu.iso
 
 # Download the ISO that you want
-wget http://releases.ubuntu.com/jammy/ubuntu-22.04-desktop-amd64.iso
+sudo wget http://releases.ubuntu.com/jammy/ubuntu-22.04-desktop-amd64.iso
 
 # Download virtio drivers for Windows
-wget https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/latest-virtio/virtio-win.iso
+sudo wget https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/latest-virtio/virtio-win.iso
 
 # Fix permissions on ISO files
-chmod -R 660 ${PWD}/*
-chown -R qemu:qemu ${PWD}
-restorecon -R -vF ${PWD}
+sudo chmod -R 660 ${PWD}/*
+sudo chown -R qemu:qemu ${PWD}
+sudo restorecon -R -vF ${PWD}
 ```
 
 ## Disk Management
@@ -119,28 +127,28 @@ Virtual machines likely require a disk to install and run their software. Here, 
 cd /var/lib/libvirt/images/
 
 # LVM partition
-lvcreate -n ${NAME} -L 100G ${VOLUME_GROUP}
+sudo lvcreate -n ${NAME} -L 100G ${VOLUME_GROUP}
 
 # Raw disk
-qemu-img create -f raw ${NAME}.raw 100G
+sudo qemu-img create -f raw ${NAME}.raw 100G
 
 # QCOW2 disk
-qemu-img create -f qcow2 ${NAME}.qcow2 100G
+sudo qemu-img create -f qcow2 ${NAME}.qcow2 100G
 
 # Fix permissions on virtual disk files
-chmod -R 660 ${PWD}/*
-chown -R qemu:qemu ${PWD}
-restorecon -R -vF ${PWD}
+sudo chmod -R 660 ${PWD}/*
+sudo chown -R qemu:qemu ${PWD}
+sudo restorecon -R -vF ${PWD}
 ```
 
 When necessary, you can also convert between formats or transform your physical disk to virtual:
 
 ```bash
 # Convert qcow2 to raw
-qemu-img convert -p -O raw ${NAME}.qcow2 ${NAME}.raw
+sudo qemu-img convert -p -O raw ${NAME}.qcow2 ${NAME}.raw
 
 # Convert physical to virtual
-qemu-img convert -p -O raw /dev/nvme1n1 ${NAME}.raw
+sudo qemu-img convert -p -O raw /dev/nvme1n1 ${NAME}.raw
 ```
 
 You don't need to format the disk or partition, just pass it to the VM and run the installation process.

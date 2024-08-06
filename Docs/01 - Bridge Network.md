@@ -10,8 +10,8 @@ Run the following commands to create the bridge network with the host adapter, d
 
 ```bash
 # See current network details
-nmcli connection
-nmcli device
+sudo nmcli connection
+sudo nmcli device
 ```
 
 ```bash
@@ -20,8 +20,8 @@ CONNECTION_NAME="enp5s0"
 NETWORK_INTERFACE="enp5s0"
 
 # Create the bridge network
-nmcli connection delete virbr0
-nmcli connection add type bridge \
+sudo nmcli connection delete virbr0
+sudo nmcli connection add type bridge \
     autoconnect yes \
     con-name virbr0 \
     ifname virbr0 \
@@ -29,29 +29,29 @@ nmcli connection add type bridge \
     ipv6.method auto
 
 # Put network interface inside the bridge
-nmcli connection delete "${CONNECTION_NAME}"
-nmcli connection add type bridge-slave \
+sudo nmcli connection delete "${CONNECTION_NAME}"
+sudo nmcli connection add type bridge-slave \
     autoconnect yes \
     con-name "${NETWORK_INTERFACE}" \
     ifname "${NETWORK_INTERFACE}" \
     master virbr0
 
 # Restore connection
-nmcli connection up virbr0
+sudo nmcli connection up virbr0
 
 # Restart
-reboot
+sudo reboot
 ```
 
 If your motherboard also has WiFi and you want to completely disable it, just run the command below to do it. By disabling WiFi (a service not used at this case), you can avoid some bugs along the way reducing the need of system maintenance:
 
 ```bash
 # Disable radio
-nmcli radio wifi off
+sudo nmcli radio wifi off
 
 # Stop service
-systemctl disable wpa_supplicant
-systemctl stop wpa_supplicant
+sudo systemctl disable wpa_supplicant
+sudo systemctl stop wpa_supplicant
 ```
 
 Very good! Your network is ready now.

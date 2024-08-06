@@ -15,7 +15,7 @@ PCI-e passthrough is a feature that allows the redirection of hardware devices t
 Consult the motherboard manual if you have doubts about how to find these settings, some of them may not be visible depending on your hardware. Once you have this correctly configured, follow the steps below to change the boot params of the host in order to enable the support for PCI-e Passthrough on the system:
 
 ```bash
-vim /etc/default/grub
+sudo vim /etc/default/grub
 ```
 
 ```bash
@@ -50,15 +50,15 @@ Save the file once done.
 Now, we need to enable the VFIO module on system load with the following command:
 
 ```bash
-echo 'add_drivers+=" vfio vfio_iommu_type1 vfio_pci "' >> /etc/dracut.conf.d/vfio.conf
+sudo sh -c "echo 'add_drivers+=\" vfio vfio_iommu_type1 vfio_pci \"' >> /etc/dracut.conf.d/vfio.conf"
 ```
 
 To finish, rebuild boot details and restart the system again:
 
 ```bash
-grub2-mkconfig -o /boot/grub2/grub.cfg
-dracut -f
-reboot
+sudo grub2-mkconfig -o /boot/grub2/grub.cfg
+sudo dracut -f
+sudo reboot
 ```
 
 After restart, check if everything is working as expected with the commands:
@@ -76,8 +76,8 @@ virt-host-validate | grep "QEMU"
 # PCI-e IOMMU groups and USB bus check
 # First download the helper command
 REPOSITORY="https://mateussouzaweb.github.io/kvm-qemu-virtualization-guide/Scripts/bin"
-curl -L ${REPOSITORY}/lspci-groups --output /usr/local/bin/lspci-groups
-chmod +x /usr/local/bin/lspci-groups
+sudo curl -L ${REPOSITORY}/lspci-groups --output /usr/local/bin/lspci-groups
+sudo chmod +x /usr/local/bin/lspci-groups
 
 # Now run it
 lspci-groups
@@ -95,14 +95,14 @@ Go to <https://github.com/some-natalie/fedora-acs-override/actions> and download
 
 ```bash
 # Install the new kernel
-unzip kernel-*-acs-override-rpms.zip -d kernel-acs-override
-dnf install --allowerasing kernel-acs-override/*.rpm
+sudo unzip kernel-*-acs-override-rpms.zip -d kernel-acs-override
+sudo dnf install --allowerasing kernel-acs-override/*.rpm
 
 # Clean artifacts
-rm -fr kernel-acs-override/ kernel-*-acs-override-rpms.zip
+sudo rm -fr kernel-acs-override/ kernel-*-acs-override-rpms.zip
 
 # Reboot
-reboot
+sudo reboot
 ```
 
 Check the IOMMU groups again to make sure it is working. You now should be able to create VMs and attach PCI-e devices to it.
@@ -119,17 +119,17 @@ The steps are pretty simple, just run the following commands to install the pack
 
 ```bash
 # Update and instal kernel packages
-dnf distro-sync
-dnf install -y dkms kernel-devel kernel-headers
+sudo dnf distro-sync
+sudo dnf install -y dkms kernel-devel kernel-headers
 
 # Install module
-git clone https://github.com/gnif/vendor-reset.git /usr/share/vendor-reset;
+sudo git clone https://github.com/gnif/vendor-reset.git /usr/share/vendor-reset;
 cd /usr/share/vendor-reset
-dkms install .
+sudo dkms install .
 
 # Load module on system boot
-echo 'vendor-reset' >> /etc/modules-load.d/vendor-reset.conf
+sudo echo 'vendor-reset' >> /etc/modules-load.d/vendor-reset.conf
 
 # Reboot
-reboot
+sudo reboot
 ```

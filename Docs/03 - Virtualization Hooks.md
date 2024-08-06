@@ -37,23 +37,23 @@ Use the process below to create and install the QEMU hooks (you can study the co
 REPOSITORY="https://mateussouzaweb.github.io/kvm-qemu-virtualization-guide/Scripts/hooks"
 DESTINATION="/etc/libvirt/hooks"
 
-mkdir -p ${DESTINATION} ${DESTINATION}/udev
-curl -L ${REPOSITORY}/qemu --output ${DESTINATION}/qemu
-curl -L ${REPOSITORY}/udev/usb --output ${DESTINATION}/udev/usb
+sudo mkdir -p ${DESTINATION} ${DESTINATION}/udev
+sudo curl -L ${REPOSITORY}/qemu --output ${DESTINATION}/qemu
+sudo curl -L ${REPOSITORY}/udev/usb --output ${DESTINATION}/udev/usb
 
-chmod +x ${DESTINATION}/qemu
-chmod +x ${DESTINATION}/udev/usb
-restorecon -R -vF ${DESTINATION}
+sudo chmod +x ${DESTINATION}/qemu
+sudo chmod +x ${DESTINATION}/udev/usb
+sudo restorecon -R -vF ${DESTINATION}
 ```
 
 We also need to attach USB rules to passthrough USB devices:
 
 ```bash
 # Add rule
-echo 'SUBSYSTEM=="usb",RUN+="'${DESTINATION}'/udev/usb"' > /etc/udev/rules.d/90-libvirt-usb.rules
+sudo sh -c "echo 'SUBSYSTEM==\"usb\",RUN+=\"'${DESTINATION}'/udev/usb\"' > /etc/udev/rules.d/90-libvirt-usb.rules"
 
 # Reload rules config
-udevadm control --reload-rules
+sudo udevadm control --reload-rules
 ```
 
 Done! Configure the VM with the desired options and you are good to go.
@@ -63,7 +63,7 @@ Done! Configure the VM with the desired options and you are good to go.
 If you are interested in knowing what is going on when these hooks are executed, just watch for the logs. This also can be useful to detect issues with your setup:
 
 ```bash
-tail -f /var/log/libvirt/qemu/${NAME}.log
+sudo tail -f /var/log/libvirt/qemu/${NAME}.log
 ```
 
 ----

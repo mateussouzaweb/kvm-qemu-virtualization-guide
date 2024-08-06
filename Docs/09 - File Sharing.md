@@ -43,13 +43,13 @@ On Linux VMs, once the virtual machine is started, create the directory and moun
 
 ```bash
 # First, make sure path exists
-mkdir /mnt/files
+sudo mkdir /mnt/files
 
 # Temporary mount
 sudo mount -t virtiofs files /mnt/files
 
 # Persistent mount on each restart
-echo "files /mnt/files virtiofs defaults 0 0" | sudo tee -a /etc/fstab
+sudo sh -c "echo 'files /mnt/files virtiofs defaults 0 0' >> /etc/fstab"
 ```
 
 On MacOS, you can mount the shared FS with the following command:
@@ -72,10 +72,13 @@ Samba sharing uses the network layer to work and has the benefit of offering a l
 To enable this feature on the hypervisor, start by installing the software and enabling it on firewall:
 
 ```bash
-dnf install -y samba
-systemctl enable smb --now
-firewall-cmd --permanent --add-service=samba
-firewall-cmd --reload
+# Install service
+sudo dnf install -y samba
+sudo systemctl enable smb --now
+
+# Enable firewall
+sudo firewall-cmd --permanent --add-service=samba
+sudo firewall-cmd --reload
 ```
 
 Now, create the user authentication details that will able to connect on the shared location (please note that the user authentication details mentioned here is not the same as the hypervisor user):
@@ -83,7 +86,7 @@ Now, create the user authentication details that will able to connect on the sha
 ```bash
 # Add samba user
 USERNAME="mateussouzaweb"
-smbpasswd -a ${USERNAME}
+sudo smbpasswd -a ${USERNAME}
 ```
 
 Once you have created the user, create a LVM partition to place shared files, format it and mount on the system:
@@ -91,27 +94,27 @@ Once you have created the user, create a LVM partition to place shared files, fo
 ```bash
 # Create partition
 VOLUME_GROUP="hypervisor"
-lvcreate -n files -L 100G ${VOLUME_GROUP}
+sudo lvcreate -n files -L 100G ${VOLUME_GROUP}
 
 # Format the partition
-mkfs.xfs /dev/${VOLUME_GROUP}/files
+sudo mkfs.xfs /dev/${VOLUME_GROUP}/files
 
 # Persist and mount volume
-echo "/dev/${VOLUME_GROUP}/files /mnt/files xfs defaults 0 0"  >> /etc/fstab
-mkdir /mnt/files
-chown -R ${USERNAME}:${USERNAME} /mnt/files
-mount -a
+sudo sh -c "echo '/dev/${VOLUME_GROUP}/files /mnt/files xfs defaults 0 0' >> /etc/fstab"
+sudo mkdir /mnt/files
+sudo chown -R ${USERNAME}:${USERNAME} /mnt/files
+sudo mount -a
 
 # Set SELinux permissions
-semanage fcontext --add --type "samba_share_t" "/mnt/files(/.*)?"
-restorecon -R -vF /mnt/files
+sudo semanage fcontext --add --type "samba_share_t" "/mnt/files(/.*)?"
+sudo restorecon -R -vF /mnt/files
 ```
 
 Finally, configure the samba service and restart it:
 
 ```bash
 # Write config
-cat <<EOT > /etc/samba/smb.conf
+sudo sh -c "cat <<EOT > /etc/samba/smb.conf
 [global]
     workgroup = SAMBA
     security = user
@@ -128,10 +131,10 @@ cat <<EOT > /etc/samba/smb.conf
     create mask = 0644
     directory mask = 0775
     write list = user
-EOT
+EOT"
 
 # Restart service to changes to take effect
-systemctl restart smb
+sudo systemctl restart smb
 ```
 
 Great! You can now configure and open the shared location inside VMs and other machines.

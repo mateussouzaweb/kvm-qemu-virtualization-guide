@@ -450,7 +450,7 @@ After VM is running, you must install the QEMU guest agent to increase performan
 
 ```bash
 sudo apt install -y qemu-guest-agent
-systemctl start qemu-guest-agent
+sudo systemctl start qemu-guest-agent
 ```
 
 ## SPICE Guest Agent
@@ -467,7 +467,7 @@ After VM is running, you must install the SPICE guest agent. The VirtIO ISO alre
 
 ```bash
 sudo apt install -y install spice-vdagent
-systemctl start spice-vdagent
+sudo systemctl start spice-vdagent
 ```
 
 ## Serial Console Access

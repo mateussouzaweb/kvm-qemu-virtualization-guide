@@ -4,18 +4,18 @@ Besides virtual machines, you can also use the hypervisor to run containers. Fol
 
 ```bash
 # Add repository
-dnf -y install dnf-plugins-core
-dnf config-manager \
+sudo dnf -y install dnf-plugins-core
+sudo dnf config-manager \
     --add-repo \
     https://download.docker.com/linux/fedora/docker-ce.repo
 
 # Install docker
-dnf install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+sudo dnf install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
 # Add user permission
 USERNAME="mateussouzaweb"
 sudo usermod -aG docker ${USERNAME}
-newgrp docker
+sudo newgrp docker
 ```
 
 Now, let's make sure Docker won't mess with bridge networks by applying some customizations on the service:
@@ -34,5 +34,5 @@ ExecStartPre=/bin/sh -c "/usr/sbin/ip6tables -A FORWARD -p all -i virbr0 -j ACCE
 Finally, start the service and you are ready to run any container that you like:
 
 ```bash
-systemctl enable --now docker
+sudo systemctl enable --now docker
 ```

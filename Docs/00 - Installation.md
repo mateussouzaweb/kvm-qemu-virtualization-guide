@@ -6,7 +6,6 @@ I also decided to focus on Fedora Server first because the nature of its termina
 
 First, install the operational system in your machine if it has not been done yet. You can download the ISO at <https://getfedora.org> if you decide to use Fedora. To guide you in this process, here a few general recommendations:
 
-- If you are not using the **root** user, remember to use ``sudo`` (or ``sudo su``) on the commands of this process and after each reboot.
 - If you have another machine and can connect to it via SSH, that would be great too, copying and pasting are much faster than manual typing these commands.
 
 ## Installing Virtualization Support
@@ -15,10 +14,10 @@ After the OS is installed, run the following commands to update the system and i
 
 ```bash
 # Update system packages
-dnf update -y
+sudo dnf update -y
 
 # Install the basic packages
-dnf install -y vim wget \
+sudo dnf install -y vim wget \
     curl openssl \
     zip htop lm_sensors \
     git git-core \
@@ -30,7 +29,7 @@ Now, install the virtualization packages:
 
 ```bash
 # Virtualization packages
-dnf install -y \
+sudo dnf install -y \
     qemu-kvm \
     libvirt \
     virt-install \
@@ -38,31 +37,31 @@ dnf install -y \
     libguestfs-tools
 
 # Make sure permissions are correct
-restorecon -R -vF /var/lib/libvirt
+sudo restorecon -R -vF /var/lib/libvirt
 
 # Enable the service
-systemctl enable --now libvirtd
+sudo systemctl enable --now libvirtd
 ```
 
 If you are using a full-fledged desktop, also install the GUI software. After installation, you can also use the Virt Manager application to manage VMs within your mouse:
 
 ```bash
 # Desktop mode ONLY
-dnf install -y libgovirt virt-manager
+sudo dnf install -y libgovirt virt-manager
 ```
 
 If you want the hypervisor to be remote accessible, you should install the Cockpit package. After installation, you also can access the web UI of Cockpit with another machine for remote management with the address in the format ``https://$IP:9090/``:
 
 ```bash
 # Remote access ONLY
-dnf install -y cockpit cockpit-machines
+sudo dnf install -y cockpit cockpit-machines
 
 # Enable the service
-systemctl enable --now cockpit.socket
+sudo systemctl enable --now cockpit.socket
 
 # Enable firewall
-firewall-cmd --permanent --add-service=cockpit
-firewall-cmd --reload
+sudo firewall-cmd --permanent --add-service=cockpit
+sudo firewall-cmd --reload
 ```
 
 For setups with other users that are not the **root** user, you also need to make sure users always connect to QEMU system URI because only this endpoint has access to the host resources. For each user that will run VMs, run the following commands:
@@ -72,19 +71,19 @@ For setups with other users that are not the **root** user, you also need to mak
 USERNAME="mateussouzaweb"
 
 # Apply group permissions to the user
-usermod -a -G libvirt,kvm ${USERNAME}
+sudo usermod -a -G libvirt,kvm ${USERNAME}
 
 # Create config directory and append configuration
 DESTINATION="/home/${USERNAME}/.config/libvirt"
-mkdir -p ${DESTINATION}
-echo 'uri_default = "qemu:///system"' >> "${DESTINATION}/libvirt.conf"
-chown -R ${USERNAME}:${USERNAME} ${DESTINATION}
+sudo mkdir -p ${DESTINATION}
+sudo sh -c "echo 'uri_default = \"qemu:///system\"' >> \"${DESTINATION}/libvirt.conf\""
+sudo chown -R ${USERNAME}:${USERNAME} ${DESTINATION}
 ```
 
 Reboot and you are done:
 
 ```bash
-reboot
+sudo reboot
 ```
 
 Congratulations!
