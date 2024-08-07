@@ -364,7 +364,7 @@ For others cases, you should configure USB devices like mouse and keyboard to di
   <hostdev mode="subsystem" type="usb" managed="yes">
     <source startupPolicy="optional">
       <vendor id="0x046d"/>
-      <product id="0xc52b"/>
+      <product id="0xc548"/>
     </source>
   </hostdev>
 </devices>
