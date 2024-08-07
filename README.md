@@ -11,8 +11,9 @@ Our object is just one: have a **full working virtualization platform with QEMU 
 - Virtualization solution with Fedora as hypervisor.
 - Easy guide if you already have KVM / QEMU knowledge.
 - Virtualization that just works.
-- Isolated and secure host system to just run VMs.
+- Up to date guide that explores the features of modern VFIO software.
 - Best practices for maximum performance in VMs.
+- Isolated and secure host system to just run VMs.
 - Linux, Windows and MacOS virtualization.
 - Single and Multi GPU passthrough support (very easy to activate/deactivate).
 - PCI passthrough ON DEMAND without need to pre-allocate devices on VFIO (or blacklist drivers on the OS).
@@ -25,7 +26,22 @@ Our object is just one: have a **full working virtualization platform with QEMU 
 - Support for BOOT interface via CLI (to select the startup disk for example).
 - More!
 
-----
+## My Current Setup
+
+Just to provide additional context, here is my current hardware configuration:
+
+- Motherboard: ASRock X570 Phantom Gaming 4
+- Memory: Corsair Vengeance 32GB 2666MHz DDR4
+- CPU: AMD Ryzen 5700X
+- GPU: AMD RX 6700XT XFX QICK 319 12GB
+
+This guide also was previously tested with the following hardware:
+
+- Motherboard: Gigabyte B450 Aorus Pro Wifi
+- Memory: Corsair Vengeance 16GB 2133MHz DDR4
+- CPU: AMD Ryzen 1700X
+- GPU: AMD RX 5500XT Gigabyte Gaming OC 4G
+- GPU: Nvidia GTX 1070 Gigabyte G1 Gaming 8GB
 
 ## How to Start
 
