@@ -113,9 +113,13 @@ Next step: **[Setting up Virtualization Hooks](03%20-%20Virtualization%20Hooks.m
 
 ## Vendor Reset for AMD GPUs
 
-If you are using an AMD GPU, chances are that your device has the vendor reset bug. This bug always results in a complete black screen or even system freeze when you try to attach or detach the GPU on virtual machines. If you are lucky like me, you need to install the vendor reset package to fix this issue.
+If you are using an AMD GPU, chances are that your device has the vendor reset bug. This bug will always result in a complete black screen or even system freezes when you try to attach or detach the GPU on virtual machines. If you are lucky like me and have a GPU from the series listed below, you need to install the vendor reset package to fix this issue:
 
-The steps are pretty simple, just run the following commands to install the package and fix the issue:
+- **Polaris 10, 11 and 12**
+- **Vega 10 and 20**
+- **Navi 10, 12 and 14**
+
+If your AMD GPU is not in that list, then your GPU definitely does not have the vendor reset bug. To install the vendor reset package, the steps are pretty simple, just run the following commands to install the package and fix the issue:
 
 ```bash
 # Update and instal kernel packages
