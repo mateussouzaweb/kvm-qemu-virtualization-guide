@@ -74,6 +74,7 @@ cd /var/lib/libvirt/vbios/
 sudo cp /path/of/NAVI22.rom NAVI22.rom
 
 # Fix permissions on ROM files
+sudo chmod +rwx ${PWD}
 sudo chmod -R 660 ${PWD}/*
 sudo chown -R qemu:qemu ${PWD}
 sudo restorecon -R -vF ${PWD}
@@ -113,6 +114,7 @@ sudo wget http://releases.ubuntu.com/jammy/ubuntu-22.04-desktop-amd64.iso
 sudo wget https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/latest-virtio/virtio-win.iso
 
 # Fix permissions on ISO files
+sudo chmod +rwx ${PWD}
 sudo chmod -R 660 ${PWD}/*
 sudo chown -R qemu:qemu ${PWD}
 sudo restorecon -R -vF ${PWD}
@@ -136,6 +138,7 @@ sudo qemu-img create -f raw ${NAME}.raw 100G
 sudo qemu-img create -f qcow2 ${NAME}.qcow2 100G
 
 # Fix permissions on virtual disk files
+sudo chmod +rwx ${PWD}
 sudo chmod -R 660 ${PWD}/*
 sudo chown -R qemu:qemu ${PWD}
 sudo restorecon -R -vF ${PWD}

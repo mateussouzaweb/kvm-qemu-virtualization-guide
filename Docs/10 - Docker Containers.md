@@ -15,7 +15,7 @@ sudo dnf install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 # Add user permission
 USERNAME="mateussouzaweb"
 sudo usermod -aG docker ${USERNAME}
-sudo newgrp docker
+newgrp docker
 ```
 
 Now, let's make sure Docker won't mess with bridge networks by applying some customizations on the service:

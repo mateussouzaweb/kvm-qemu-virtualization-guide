@@ -71,7 +71,7 @@ For setups with other users that are not the **root** user, you also need to mak
 USERNAME="mateussouzaweb"
 
 # Apply group permissions to the user
-sudo usermod -a -G libvirt,kvm ${USERNAME}
+sudo usermod -aG libvirt,kvm ${USERNAME}
 
 # Create config directory and append configuration
 DESTINATION="/home/${USERNAME}/.config/libvirt"

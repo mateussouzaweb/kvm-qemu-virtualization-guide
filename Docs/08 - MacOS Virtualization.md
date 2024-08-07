@@ -98,6 +98,7 @@ sudo qemu-img convert BaseSystem.dmg -O raw macos-${VERSION}.img
 sudo rm -f BaseSystem.dmg BaseSystem.chunklist fetch-macOS-v2.py
 
 # Fix permissions
+sudo chmod +rwx ${PWD}
 sudo chmod -R 660 ${PWD}/*
 sudo chown -R qemu:qemu ${PWD}
 sudo restorecon -R -vF ${PWD}
@@ -108,10 +109,10 @@ Now, download the sample XML configuration and tweak to run on your system devic
 ```bash
 # Download sample
 REPOSITORY="https://mateussouzaweb.github.io/kvm-qemu-virtualization-guide/Samples"
-curl -L ${REPOSITORY}/macos.xml --output macos.xml
+sudo curl -L ${REPOSITORY}/macos.xml --output macos.xml
 
 # Edit settings
-vim macos.xml
+sudo vim macos.xml
 ```
 
 Here, you can also tweak the OpenCore partition before starting the VM (see the next section). I must do it to enable the AMD GPU support for my machine, but if you don't know what to do for now, simply continue this guide...
@@ -135,8 +136,7 @@ sudo mkdir -p /mnt/opencore
 sudo guestmount -a /var/lib/libvirt/images/opencore.raw -m /dev/sda1 /mnt/opencore
 
 # Edit the file or do something else...
-cd /mnt/opencore/EFI
-sudo vim OC/config.plist
+sudo vim /mnt/opencore/EFI/OC/config.plist
 
 # Unmount the disk once concluded modifications
 # NOTE: You must go outside of the partition to allow unmount the disk
