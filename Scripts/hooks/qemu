@@ -39,10 +39,11 @@ function stop_display_manager {
         debug "Stopping ${manager} display service"
         echo "${manager}" >> "${VMF}-display-manager"
         systemctl stop "${manager}.service"
+        sleep "2"
       fi
       while systemctl is-active --quiet "${manager}.service"; do
         debug "Waiting for ${manager} display service to stop"
-        sleep "5"
+        sleep "2"
       done
     fi
 
@@ -56,6 +57,7 @@ function restore_display_manager {
   if [ -f "${VMF}-display-manager" ]; then
     while read -r manager; do
       if [ -x "$(command -v systemctl)" ]; then
+        sleep "2"
         debug "Starting ${manager} display service again"
         systemctl start "${manager}.service"
       fi
