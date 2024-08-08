@@ -85,7 +85,7 @@ sudo wget -O fetch-macOS-v2.py ${REPOSITORY}/fetch-macOS-v2.py
 sudo wget -O opencore.qcow2 ${REPOSITORY}/OpenCore/OpenCore.qcow2
 
 # Convert OpenCore image to RAW
-sudo qemu-img convert opencore.qcow2 opencore.raw
+sudo qemu-img convert -p -O raw opencore.qcow2 opencore.raw
 sudo rm opencore.qcow2
 
 # Fetch MacOS
