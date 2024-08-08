@@ -53,6 +53,7 @@ virsh net-define /dev/stdin <<EOF
 EOF
 
 # Start network and check status
+virsh net-autostart default
 virsh net-start default
 virsh net-list
 ```
