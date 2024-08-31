@@ -148,6 +148,7 @@
       <mac address='52:54:00:62:ac:b6'/>
       <source bridge='virbr0'/>
       <model type='vmxnet3'/>
+      <link state='up'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x0'/>
     </interface>
     <serial type='pty'>
