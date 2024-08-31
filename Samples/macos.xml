@@ -51,14 +51,14 @@
   <devices>
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
     <disk type='file' device='disk'>
-      <driver name='qemu' type='raw' cache='writeback' io='io_uring' discard='unmap'/>
-      <source file='/var/lib/libvirt/images/opencore.raw'/>
+      <driver name='qemu' type='qcow2' cache='writeback' io='io_uring' discard='unmap'/>
+      <source file='/var/lib/libvirt/images/opencore.qcow2'/>
       <target dev='sda' bus='virtio'/>
       <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
     </disk>
     <disk type='file' device='disk'>
-      <driver name='qemu' type='raw' cache='writeback' io='io_uring' discard='unmap'/>
-      <source file='/var/lib/libvirt/images/macos.raw'/>
+      <driver name='qemu' type='qcow2' cache='writeback' io='io_uring' discard='unmap'/>
+      <source file='/var/lib/libvirt/images/macos.qcow2'/>
       <target dev='sdb' bus='virtio'/>
       <address type='pci' domain='0x0000' bus='0x05' slot='0x00' function='0x0'/>
     </disk>

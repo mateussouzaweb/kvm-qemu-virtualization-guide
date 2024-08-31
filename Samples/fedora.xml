@@ -66,8 +66,8 @@
   <devices>
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
     <disk type='file' device='disk'>
-      <driver name='qemu' type='raw' cache='writeback' io='io_uring' discard='unmap'/>
-      <source file='/var/lib/libvirt/images/fedora.raw'/>
+      <driver name='qemu' type='qcow2' cache='writeback' io='io_uring' discard='unmap'/>
+      <source file='/var/lib/libvirt/images/fedora.qcow2'/>
       <target dev='sda' bus='virtio'/>
       <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
     </disk>
