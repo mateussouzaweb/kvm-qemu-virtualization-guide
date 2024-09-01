@@ -12,6 +12,7 @@ You can virtualize almost any Windows version. These observations are valid for 
 - Make sure you have the VirtIO ISO configured as a CDROM device during the installation process.
 - Once you are in the disk selection process of Windows installation, you must install the VirtIO drivers from the CDROM if disks are not visible.
 - After installing, remember to install VirtIO software from the VirtIO ISO. This software includes drivers for QEMU Guest Agent and SPICE guest agent and drivers.
+- Do you want a Windows installation without bloatware? Set time and currency format as ``English (World)`` in the installation process.
 
 **Graphics:**
 

@@ -21,7 +21,8 @@ MacOS has a few tricks to virtualize. Once running with their limitations, it wo
 
 **Graphics:**
 
-- If you will passthrough any graphic card, just don't forget to remove the default video interface. Also make sure the *gfx* and *audio* devices are in the same bus (like ``0x01``) but in different function (``0x00`` and ``0x01``).
+- If you will passthrough any graphic card, just don't forget to remove the default video interface. 
+- Make sure the *gfx* and *audio* devices are in the same bus (like ``0x01``) but in different function (``0x00`` and ``0x01``) for GPU passthrough.
 - GPU passthrough will not work on Nvidia graphic cards - forget it and buy a compatible AMD GPU.
 - Some AMD GPUs need to set ``agdpmod=pikera`` in the ``config.plist`` of OpenCore, at "*NVRAM boot-args*" section - see below how to edit OpenCore from CLI if you need.
 - Non-compatible RDNA 2 GPUs can be enable with [NootRx](https://github.com/ChefKissInc/NootRX). If you need this kext, do not append ``agdpmod=pikera`` in the ``config.plist`` and disable ``WhateverGreen`` kext.
