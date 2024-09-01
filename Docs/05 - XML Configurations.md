@@ -284,9 +284,9 @@ Since we are attaching the GPU to the VM, we must set the virtualization hook op
 <description>--gpu-passthrough=secondary,08:00.0,08:00.1</description>
 ```
 
-This is everything that I need to make my GPUs work. In my experience, you usually don't need to remove the VNC display after OS installation, it will work as a boot display only to manage the boot options.
+Don't forget also to remove any line related to ``<graphics>``, ``<video>`` and other unnecessary devices from your VM config in the XML (SPLICE or VNC related) - this step can solve a lot of problems with GPU passthrough because these declarations may prevent the GPU passthrough from running properly!
 
-If you are having problems with the black screen in your VM, use the VNC display to check what the issue is. You can attach a VNC display, if necessary, with the following XML:
+If you are having problems with the black screen in your VM after GPU passthrough and can't detect what is it, use the VNC display to check the issue. You can attach a VNC display with the following XML and it can work as a boot display to manage the boot options:
 
 ```xml
 <devices>
@@ -299,8 +299,6 @@ If you are having problems with the black screen in your VM, use the VNC display
   </video>
 </devices>
 ```
-
-In the case of problems, you should remove the VNC display once the GPU driver has been installed on VM because it may prevent the GPU passthrough from running properly. Don't forget also to remove any line related to ``<graphics>``, ``<video>`` and other unnecessary devices from your VM config in the XML (SPLICE or VNC related). This step can solve a lot of your problems!
 
 ## Audio Passthrough
 
