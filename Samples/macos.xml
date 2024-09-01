@@ -177,13 +177,9 @@
     </input>
     <input type='mouse' bus='ps2'/>
     <input type='keyboard' bus='ps2'/>
-    <graphics type='vnc' port='-1' autoport='yes' listen='0.0.0.0'>
-      <listen type='address' address='0.0.0.0'/>
-    </graphics>
     <audio id='1' type='none'/>
     <video>
-      <model type='vmvga' vram='131072' heads='1' primary='yes'/>
-      <address type='pci' domain='0x0000' bus='0x09' slot='0x01' function='0x0'/>
+      <model type="none"/>
     </video>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>

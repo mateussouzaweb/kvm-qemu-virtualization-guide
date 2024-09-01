@@ -193,13 +193,9 @@
     <tpm model='tpm-tis'>
       <backend type='emulator' version='2.0'/>
     </tpm>
-    <graphics type='vnc' port='-1' autoport='yes' listen='0.0.0.0'>
-      <listen type='address' address='0.0.0.0'/>
-    </graphics>
     <audio id='1' type='none'/>
     <video>
-      <model type='bochs' vram='16384' heads='1' primary='yes'/>
-      <address type='pci' domain='0x0000' bus='0x09' slot='0x00' function='0x0'/>
+      <model type="none"/>
     </video>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
