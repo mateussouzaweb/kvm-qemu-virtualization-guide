@@ -34,6 +34,7 @@ Just to provide additional context, here is my current hardware configuration:
 - Memory: Corsair Vengeance 32GB 2666MHz DDR4
 - CPU: AMD Ryzen 5700X
 - GPU: AMD RX 6700XT XFX QICK 319 12GB
+- SSD: Crucial SSD P2 2TB NVMe PCIe M.2
 
 This guide also was previously tested with the following hardware:
 
