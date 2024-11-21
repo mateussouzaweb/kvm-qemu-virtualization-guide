@@ -42,10 +42,11 @@
       <hidden state='on'/>
     </kvm>
     <vmport state='off'/>
+    <smm state='on'/>
     <ioapic driver='kvm'/>
   </features>
   <cpu mode='host-passthrough' check='none' migratable='off'>
-    <topology sockets='1' dies='1' cores='6' threads='2'/>
+    <topology sockets='1' dies='1' clusters='1' cores='6' threads='2'/>
     <cache mode='passthrough'/>
     <feature policy='require' name='invtsc'/>
     <feature policy='require' name='topoext'/>
@@ -73,7 +74,7 @@
     </disk>
     <disk type='file' device='cdrom'>
       <driver name='qemu' type='raw' discard='unmap'/>
-      <source file='/var/lib/libvirt/images/fedora-workstation-40.iso'/>
+      <source file='/var/lib/libvirt/images/fedora-silverblue-40.iso'/>
       <target dev='sdb' bus='sata'/>
       <readonly/>
       <address type='drive' controller='0' bus='0' target='0' unit='1'/>
@@ -193,7 +194,7 @@
     </tpm>
     <audio id='1' type='none'/>
     <video>
-      <model type="none"/>
+      <model type='none'/>
     </video>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
@@ -216,6 +217,7 @@
       </source>
       <address type='usb' bus='0' port='1'/>
     </hostdev>
+    <watchdog model='itco' action='reset'/>
     <memballoon model='virtio'>
       <address type='pci' domain='0x0000' bus='0x05' slot='0x00' function='0x0'/>
     </memballoon>

@@ -30,7 +30,7 @@
     <apic/>
   </features>
   <cpu mode='host-passthrough' check='none' migratable='off'>
-    <topology sockets='1' dies='1' cores='4' threads='2'/>
+    <topology sockets='1' dies='1' clusters='1' cores='4' threads='2'/>
     <cache mode='passthrough'/>
     <feature policy='require' name='invtsc'/>
     <feature policy='require' name='topoext'/>
@@ -179,7 +179,7 @@
     <input type='keyboard' bus='ps2'/>
     <audio id='1' type='none'/>
     <video>
-      <model type="none"/>
+      <model type='none'/>
     </video>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
@@ -204,6 +204,7 @@
     </hostdev>
     <memballoon model='none'/>
   </devices>
+  <watchdog model='itco' action='reset'/>
   <seclabel type='dynamic' model='selinux' relabel='yes'/>
   <qemu:commandline>
     <qemu:arg value='-global'/>
