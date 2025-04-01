@@ -12,23 +12,18 @@ PCI-e passthrough is a feature that allows the redirection of hardware devices t
 - ``Enable AER Cap`` - Auto or Enabled
 - ``CSM Support`` - Disabled, must use UEFI
 
-Consult the motherboard manual if you have doubts about how to find these settings, some of them may not be visible depending on your hardware. Once you have this correctly configured, follow the steps below to change the boot params of the host in order to enable the support for PCI-e Passthrough on the system:
+Consult the motherboard manual if you have doubts about how to find these settings, but be aware that some of them may not be visible depending on your hardware.
 
-```bash
-sudo vim /etc/default/grub
-```
+## Boot Parameters
 
-```bash
-# Update this line by appending the below
-GRUB_CMDLINE_LINUX="... $OPTIONS"
-```
+Boot parameters are responsible to set additional configurations in the system when kernel is initiating and should be used in conjunction with the BIOS settings. Any Linux distribution can be tweaked with boot parameters but they must match your current hardware specs to properly enable PCI-e passthrough. 
 
-Replace ``$OPTIONS`` with the appropriate parameters for your case:
+We will list the most important options here and you should take note for the most appropriate parameters for your case:
 
 - **INTEL CPU:** Enables Intel IOMMU: ``intel_iommu=on iommu=pt``
 - **AMD CPU:** Enables AMD IOMMU: ``amd_iommu=on iommu=pt``
 - **AMD CPU:** Enables important features on AMD: ``kvm_amd.npt=1 kvm_amd.avic=1 kvm_amd.nested=1 kvm_amd.sev=1``
-- **AMD CPU:** Enables support for host CPU model inside VMs: ``kvm.ignore_msrs=1 kvm.report_ignored_msrs=0``
+- **ANY CPU:** Enables support for host CPU model inside VMs: ``kvm.ignore_msrs=1 kvm.report_ignored_msrs=0``
 
 The options below are dedicated to GPU passthrough:
 
@@ -41,27 +36,75 @@ Finally, the options below are related to drivers and PCI-e:
 - **ANY:** Makes VFIO loads first: ``rd.driver.pre=vfio-pci``
 - **ANY:** Enables extra PCI-e group separation: ``pcie_acs_override=downstream,multifunction``
 
-If you want to make any specific PCI-e device (like a network card) to be eligible and controlled by VFIO, you also should declare such devices in the boot parameters. Use the command ``lspci -nn`` to get the vendor and device code of the device (for example: ``15b3:1003``) and declare it with the format below:
+If you want to make any specific PCI-e device (like a network card) to be exclusively eligible and controlled by VFIO, you also should declare such devices in the boot parameters. Use the command ``lspci -nn`` to get the vendor and device code of the device (for example: ``15b3:1003``) and declare it with the format below:
 
-- **ANY:** Declarares PCI-e devices managed by VFIO: ``vfio_pci.ids=${VENDOR_CODE}:${DEVICE_CODE},...``
+- **ANY:** Declarares PCI-e devices managed by VFIO: ``vfio_pci.ids=${DEVICE},...``
 
-Save the file once done.
+Please take note for the most appropriate parameters for your case, they will be necessary for the next topic.
 
-Now, we need to enable the VFIO module on system load with the following command:
+## Adding Boot Parameters
 
-```bash
-sudo sh -c "echo 'add_drivers+=\" vfio vfio_iommu_type1 vfio_pci \"' >> /etc/dracut.conf.d/vfio.conf"
-```
-
-To finish, rebuild boot details and restart the system again:
+Now that you know the available boot parameters, follow the steps below to enable the support for PCI-e passthrough on traditional systems:
 
 ```bash
+# Enable VFIO modules on system load
+sudo sh -c "echo 'add_drivers+=\" vfio vfio_iommu_type1 vfio_pci \"' > /etc/dracut.conf.d/vfio.conf"
+
+# Edit GRUB options
+# Search for the line containing ``GRUB_CMDLINE_LINUX``
+# Update this line by appending the appropriate parameters for your case
+# GRUB_CMDLINE_LINUX="... $PARAMETERS"
+# Save the file once done
+sudo vim /etc/default/grub
+
+# After tweak rebuild boot details
 sudo grub2-mkconfig -o /boot/grub2/grub.cfg
 sudo dracut -f
+
+# Restart the system
 sudo reboot
 ```
 
-After restart, check if everything is working as expected with the commands:
+If you are running an immutable system, the process is different and you should append every boot parameter in OSTree on ``kargs`` with the ``--append-if-missing="$PARAMETER"`` option. I will provide a two samples here, but you should tweak it based on our needs:
+
+```bash
+# Immutable OS ONLY
+# Enable VFIO modules on system load
+rpm-ostree initramfs --enable --arg="--add-drivers" --arg="vfio-pci"
+
+# AMD CPUs ONLY
+# Append boot parameters
+rpm-ostree kargs \
+    --append-if-missing="amd_iommu=on" \
+    --append-if-missing="iommu=pt" \
+    --append-if-missing="kvm_amd.npt=1" \
+    --append-if-missing="kvm_amd.avic=1" \
+    --append-if-missing="kvm_amd.nested=1" \
+    --append-if-missing="kvm_amd.sev=1" \
+    --append-if-missing="kvm.ignore_msrs=1" \
+    --append-if-missing="kvm.report_ignored_msrs=0" \
+    --append-if-missing="video=vesafb:off,efifb:off,simplefb:off" \
+    --append-if-missing="rd.driver.pre=vfio_pci"
+
+# Intel CPUs ONLY
+# Append boot parameters
+rpm-ostree kargs \
+    --append-if-missing="intel_iommu=on" \
+    --append-if-missing="iommu=pt" \
+    --append-if-missing="kvm.ignore_msrs=1" \
+    --append-if-missing="kvm.report_ignored_msrs=0" \
+    --append-if-missing="video=vesafb:off,efifb:off,simplefb:off" \
+    --append-if-missing="rd.driver.pre=vfio_pci"
+
+# Reboot system
+systemctl reboot
+```
+
+After restart, you can check if PCI-e passthrough is working with the instructions on the next topic.
+
+## Checking Passthrough Support 
+
+You can check if everything is working as expected with the below commands:
 
 ```bash
 # Boot parameters
@@ -72,6 +115,9 @@ modprobe -c | grep vfio
 
 # Libvirt check
 virt-host-validate | grep "QEMU"
+
+# Dmesg check
+sudo dmesg | grep -i -e DMAR -e IOMMU
 
 # PCI-e IOMMU groups and USB bus check
 # First download the helper command
@@ -89,9 +135,13 @@ lspci-groups | grep "Audio"
 lspci-groups | grep "Network"
 ```
 
-For IOMMU groups output, you should have your graphics card in a separate group. This will probably be ok with your main GPU, but for secondary GPUs (if your motherboard supports it) or other devices, you may need to change the ACS implementation to allow more isolated groups when your motherboard does not do that for you - **if that is not your case and everything is ok, you can go to the next step**.
+For IOMMU groups output, you should have your graphics card in a separate group. This will probably be ok with your main GPU, but for secondary GPUs (if your motherboard supports it) or other devices, you may need to change the ACS implementation to allow more isolated groups when your motherboard does not do that for you - **if that is not your case and everything is ok, you can go to the next step**, otherwise, follow the next topic to override ACS implementation.
 
-Go to <https://github.com/some-natalie/fedora-acs-override/actions> and download the latest kernel version available (you must log in on GitHub first to download files). After completing the download, if necessary, transfer the file to the host and run the following commands to install the patched kernel with alternative ACS implementation. You already added the boot flag ``pcie_acs_override`` so now just need to install the patched kernel:
+## Overriding ACS Implementation
+
+NOTE: I don't have a guide yet for overriding ACS implementation on immutable systems, the steps below will work only on traditional systems.
+
+If you are running traditional system and need to separate IOMMU groups, go to <https://github.com/some-natalie/fedora-acs-override/actions> and download the latest kernel version available (you must log in on GitHub first to download files). After completing the download, if necessary, transfer the file to the host and run the following commands to install the patched kernel with alternative ACS implementation. You probably already added the boot flag ``pcie_acs_override`` so now just need to install the patched kernel:
 
 ```bash
 # Install the new kernel
@@ -107,10 +157,6 @@ sudo reboot
 
 Check the IOMMU groups again to make sure it is working. You now should be able to create VMs and attach PCI-e devices to it.
 
-Next step: **[Setting up Virtualization Hooks](03%20-%20Virtualization%20Hooks.md)**
-
-----
-
 ## Vendor Reset for AMD GPUs
 
 If you are using an AMD GPU, chances are that your device has the vendor reset bug. This bug will always result in a complete black screen or even system freezes when you try to attach or detach the GPU on virtual machines. If you are lucky like me and have a GPU from the series listed below, you need to install the vendor reset package to fix this issue:
@@ -119,7 +165,9 @@ If you are using an AMD GPU, chances are that your device has the vendor reset b
 - **Vega 10 and 20**
 - **Navi 10, 12 and 14**
 
-If your AMD GPU is not in that list, then your GPU definitely does not have the vendor reset bug. To install the vendor reset package, the steps are pretty simple, just run the following commands to install the package and fix the issue:
+If your AMD GPU is not in that list, then your GPU definitely does not have the vendor reset bug. To install the vendor reset package in traditional systems, the steps are pretty simple, just run the following commands to install the package and fix the issue:
+
+NOTE: I don't have a guide yet for vendor reset on immutable systems, the steps below will work only on traditional systems.
 
 ```bash
 # Update and instal kernel packages
@@ -132,8 +180,12 @@ cd /usr/share/vendor-reset
 sudo dkms install .
 
 # Load module on system boot
-sudo echo 'vendor-reset' >> /etc/modules-load.d/vendor-reset.conf
+sudo echo 'vendor-reset' > /etc/modules-load.d/vendor-reset.conf
 
 # Reboot
 sudo reboot
 ```
+
+----
+
+Next step: **[Setting up Virtualization Hooks](03%20-%20Virtualization%20Hooks.md)**
