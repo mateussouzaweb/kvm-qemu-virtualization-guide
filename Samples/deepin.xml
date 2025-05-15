@@ -201,14 +201,14 @@
         <address domain='0x0000' bus='0x0c' slot='0x00' function='0x0'/>
       </source>
       <rom file='/var/lib/libvirt/vbios/NAVI22.rom'/>
-      <address type='pci' domain='0x0000' bus='0x0c' slot='0x00' function='0x0' multifunction='on'/>
+      <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0' multifunction='on'/>
     </hostdev>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
         <address domain='0x0000' bus='0x0c' slot='0x00' function='0x1'/>
       </source>
       <rom file='/var/lib/libvirt/vbios/NAVI22.rom'/>
-      <address type='pci' domain='0x0000' bus='0x0c' slot='0x00' function='0x1'/>
+      <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x1'/>
     </hostdev>
     <hostdev mode='subsystem' type='usb' managed='yes'>
       <source startupPolicy='optional'>
