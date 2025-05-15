@@ -1,6 +1,6 @@
 <domain type='kvm'>
   <name>mint</name>
-  <uuid>32286eab-e37a-4a26-b769-1aafed6b9653</uuid>
+  <uuid>e2d09b75-0bea-4456-b79c-7c93e6442cfa</uuid>
   <description>--cpu-scaling-mode=schedutil --preserve-cores=0,1,8,9 --gpu-passthrough=main,0c:00.0,0c:00.1 --usb-passthrough=all</description>
   <memory unit='KiB'>16777216</memory>
   <currentMemory unit='KiB'>16777216</currentMemory>
