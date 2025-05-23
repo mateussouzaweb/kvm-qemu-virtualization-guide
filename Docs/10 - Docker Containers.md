@@ -3,14 +3,15 @@
 Besides virtual machines, you can also use the hypervisor to run containers. Follow the instructions below to install Docker:
 
 ```bash
-# Add repository
+# Traditional OS ONLY 
+# Add repository and install Docker
 sudo dnf -y install dnf-plugins-core
-sudo dnf config-manager \
-    --add-repo \
-    https://download.docker.com/linux/fedora/docker-ce.repo
-
-# Install docker
+sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
 sudo dnf install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+
+# Immutable OS ONLY
+# Install packages in OSTree layer
+rpm-ostree install -y docker
 
 # Add user permission
 USERNAME="mateussouzaweb"

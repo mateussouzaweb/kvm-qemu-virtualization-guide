@@ -72,8 +72,15 @@ Samba sharing uses the network layer to work and has the benefit of offering a l
 To enable this feature on the hypervisor, start by installing the software and enabling it on firewall:
 
 ```bash
+# Traditional OS ONLY 
 # Install service
 sudo dnf install -y samba
+
+# Immutable OS ONLY
+# Install packages in OSTree layer
+rpm-ostree install -y samba
+
+# Enable the service
 sudo systemctl enable smb --now
 
 # Enable firewall

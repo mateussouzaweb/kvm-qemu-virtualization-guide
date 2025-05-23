@@ -21,6 +21,7 @@ Before we start with the virtualization process, here are a few information and 
 After the OS is installed, run the following commands on traditional systems to update the OS, install basic packages used in common scenarios and install the virtualization packages:
 
 ```bash
+# Traditional OS ONLY 
 # Update system packages
 sudo dnf update -y
 
@@ -38,14 +39,14 @@ sudo dnf install -y \
 For immutable systems, you should run these commands, which will do the same in their way:
 
 ```bash
+# Immutable OS ONLY
 # Update system and reboot
 rpm-ostree update
 systemctl reboot
 
 # Install basic packages in OSTree layer
 rpm-ostree install -y \
-    vim wget curl openssl zip htop lm_sensors git \
-    terminus-fonts-console python3 python3-pip
+    vim htop lm_sensors git python3-pip terminus-fonts-console
 
 # Install virtualization packages in OSTree layer
 rpm-ostree install -y \
