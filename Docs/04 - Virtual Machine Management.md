@@ -108,7 +108,7 @@ cd /var/lib/libvirt/images/
 sudo cp /path/of/ubuntu.iso ubuntu.iso
 
 # Download the ISO that you want
-sudo wget -O ubuntu-desktop-24.04.iso https://releases.ubuntu.com/noble/ubuntu-24.04-desktop-amd64.iso
+sudo wget -O ubuntu-desktop-25.04.iso https://releases.ubuntu.com/noble/ubuntu-25.04-desktop-amd64.iso
 
 # Download virtio drivers for Windows
 sudo wget https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/latest-virtio/virtio-win.iso
@@ -173,9 +173,9 @@ To create a VM directly from CLI, use the commands as below. This process is sli
 
 ```bash
 # Edit variables
-CDROM="/var/lib/libvirt/images/ubuntu-desktop-24.04.iso"
+CDROM="/var/lib/libvirt/images/ubuntu-desktop-25.04.iso"
 DISK="/dev/hypervisor/ubuntu"
-VARIANT="ubuntu24.04"
+VARIANT="ubuntu25.04"
 NAME="ubuntu"
 
 # Generate basic XML config

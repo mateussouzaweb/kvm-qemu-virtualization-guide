@@ -74,7 +74,7 @@
     </disk>
     <disk type='file' device='cdrom'>
       <driver name='qemu' type='raw' discard='unmap'/>
-      <source file='/var/lib/libvirt/images/solus-4.5.iso'/>
+      <source file='/var/lib/libvirt/images/solus-4.7.iso'/>
       <target dev='sdb' bus='sata'/>
       <readonly/>
       <address type='drive' controller='0' bus='0' target='0' unit='1'/>
