@@ -47,6 +47,7 @@ Please take note for the most appropriate parameters for your case, they will be
 Now that you know the available boot parameters, follow the steps below to enable the support for PCI-e passthrough on traditional systems:
 
 ```bash
+# Traditional OS ONLY
 # Enable VFIO modules on system load
 sudo sh -c "echo 'add_drivers+=\" vfio vfio_iommu_type1 vfio_pci \"' > /etc/dracut.conf.d/vfio.conf"
 
@@ -170,6 +171,7 @@ If your AMD GPU is not in that list, then your GPU definitely does not have the 
 NOTE: I don't have a guide yet for vendor reset on immutable systems, the steps below will work only on traditional systems.
 
 ```bash
+# Traditional OS ONLY 
 # Update and instal kernel packages
 sudo dnf distro-sync
 sudo dnf install -y dkms kernel-devel kernel-headers
