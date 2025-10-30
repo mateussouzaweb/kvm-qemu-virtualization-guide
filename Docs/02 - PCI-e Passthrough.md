@@ -23,7 +23,11 @@ We will list the most important options here and you should take note for the mo
 - **INTEL CPU:** Enables Intel IOMMU: ``intel_iommu=on iommu=pt``
 - **AMD CPU:** Enables AMD IOMMU: ``amd_iommu=on iommu=pt``
 - **AMD CPU:** Enables important features on AMD: ``kvm_amd.npt=1 kvm_amd.avic=1 kvm_amd.nested=1 kvm_amd.sev=1``
-- **ANY CPU:** Enables support for host CPU model inside VMs: ``kvm.ignore_msrs=1 kvm.report_ignored_msrs=0``
+
+The options below are useful when your CPU is not able to natively support nested virtualization:
+
+- **ANY CPU:** Enables support for host CPU model inside VMs: ``kvm.ignore_msrs=1``
+- **ANY CPU:** Ignore CPU model errors VMs: ``kvm.report_ignored_msrs=0``
 
 The options below are dedicated to GPU passthrough:
 
@@ -82,8 +86,6 @@ rpm-ostree kargs \
     --append-if-missing="kvm_amd.avic=1" \
     --append-if-missing="kvm_amd.nested=1" \
     --append-if-missing="kvm_amd.sev=1" \
-    --append-if-missing="kvm.ignore_msrs=1" \
-    --append-if-missing="kvm.report_ignored_msrs=0" \
     --append-if-missing="video=vesafb:off,efifb:off,simplefb:off" \
     --append-if-missing="rd.driver.pre=vfio_pci"
 
@@ -92,8 +94,6 @@ rpm-ostree kargs \
 rpm-ostree kargs \
     --append-if-missing="intel_iommu=on" \
     --append-if-missing="iommu=pt" \
-    --append-if-missing="kvm.ignore_msrs=1" \
-    --append-if-missing="kvm.report_ignored_msrs=0" \
     --append-if-missing="video=vesafb:off,efifb:off,simplefb:off" \
     --append-if-missing="rd.driver.pre=vfio_pci"
 
