@@ -69,11 +69,11 @@ If you want the hypervisor to be remote accessible, you should install the Cockp
 
 ```bash
 # Remote access ONLY
-sudo dnf install -y cockpit cockpit-machines
+sudo dnf install -y cockpit cockpit-files cockpit-machines cockpit-podman
 
 # Immutable OS ONLY
 # Install packages in OSTree layer
-rpm-ostree install -y cockpit cockpit-machines cockpit-ostree
+rpm-ostree install -y cockpit cockpit-files cockpit-machines cockpit-podman  cockpit-ostree
 ```
 
 Finally, reboot and you are done:
