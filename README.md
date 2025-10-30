@@ -34,15 +34,17 @@ Just to provide additional context, here is my current hardware configuration:
 - Motherboard: ASRock X570 Phantom Gaming 4
 - Memory: Corsair Vengeance 32GB 2666MHz DDR4
 - CPU: AMD Ryzen 5700X
-- GPU: AMD RX 6700XT XFX QICK 319 12GB
+- GPU: AMD RX 9700 XT Sapphire PULSE 16GB
+- GPU: Nvidia RTX 5060 Gigabyte LP 8GB
 - SSD: Crucial SSD P2 2TB NVMe PCIe M.2
 
 This guide also was previously tested with the following hardware:
 
-- Motherboard: Gigabyte B450 Aorus Pro Wifi
+- Motherboard: Gigabyte B450 Aorus Pro WiFi
 - Memory: Corsair Vengeance 16GB 2133MHz DDR4
 - CPU: AMD Ryzen 1700X
-- GPU: AMD RX 5500XT Gigabyte Gaming OC 4G
+- GPU: AMD RX 5500 XT Gigabyte Gaming OC 4G
+- GPU: AMD RX 6700 XT XFX QICK 319 12GB
 - GPU: Nvidia GTX 1070 Gigabyte G1 Gaming 8GB
 
 ## How to Start
