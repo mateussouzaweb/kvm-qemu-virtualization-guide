@@ -14,8 +14,8 @@ sudo nmcli device
 
 ```bash
 # Update with correct values 
-CONNECTION_NAME="enp5s0"
-NETWORK_INTERFACE="enp5s0"
+CONNECTION_NAME="enp7s0"
+NETWORK_INTERFACE="enp7s0"
 
 # Create the bridge network
 sudo nmcli connection delete virbr0
