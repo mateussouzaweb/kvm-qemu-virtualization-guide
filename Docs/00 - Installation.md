@@ -2,7 +2,7 @@
 
 First, we need an solid operational system for the host that will be the hypervisor.
 
-In my experience, Fedora is the most stable distribution with blinding edge features where things simply just works, and I strongly recommend you start using Fedora as the hypervisor. Today, Fedora Project is separated on many variations that also makes him an interesting choose as the hypervisor since you can choose between traditional systems like Fedora Server and Fedora Workstation or immutables systems with Fedora Atomic Desktop.
+In my experience, Fedora is the most stable distribution with blinding edge features where things simply just works, and I strongly recommend you start using Fedora as the hypervisor. Today, Fedora Project is separated on many variations that also makes him an interesting choose as the hypervisor since you can choose between traditional systems like Fedora Server, Fedora Workstation and Fedora KDE or immutables systems with Fedora Atomic Desktop.
 
 How about others Linux distributions? Many of them are great, but when we are speaking about hypervisor for virtualization, they always resulted in problems for me or got a process more complicated and since we are focusing here on a concrete and working solution, Fedora is obviously the best alternative - you can download Fedora at <https://getfedora.org> and install it on your machine if it has not been done yet.
 
@@ -13,7 +13,7 @@ Before we start with the virtualization process, here are a few information and 
 - The guide will contain instructions for both traditional and immutable systems and will be provided as CLI commands.
 - Additional instructions and relevant information about specific environments will be available when necessary.
 - If you decided for Fedora Server, you should connect to it via SSH, because copying and pasting are much faster than manual typing these commands.
-- If you decided for Fedora Workstation, please ensure to follow extra steps for desktop environments.
+- If you decided for Fedora Desktop, please ensure to follow extra steps for desktop environments.
 - If you decided for Fedora Atomic Desktops, is important to notice that the process is slightly different and specific commands will be provided as well.
 
 ## Installing Virtualization Support
