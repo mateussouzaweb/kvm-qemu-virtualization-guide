@@ -134,6 +134,8 @@ lspci-groups | grep "USB"
 lspci-groups | grep "VGA"
 lspci-groups | grep "Audio"
 lspci-groups | grep "Network"
+lspci-groups | grep "NVMe"
+lspci-groups | grep "SSD"
 ```
 
 For IOMMU groups output, you should have your graphics card in a separate group. This will probably be ok with your main GPU, but for secondary GPUs (if your motherboard supports it) or other devices, you may need to change the ACS implementation to allow more isolated groups when your motherboard does not do that for you - **if that is not your case and everything is ok, you can go to the next step**, otherwise, follow the next topic to override ACS implementation.
