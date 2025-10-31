@@ -175,12 +175,26 @@ Just tells what to do when events are triggered and declare suspend rules. Add i
 
 ## CDROM Device from ISO
 
-You can manually attach ISO as CDROM device to run installations. This also can be used in the future if you want to reinstall a distro or try something else:
+You can manually attach ISO files as CDROM device to perform system installations. This also can be used in the future if you want to reinstall a distro or try something else in the same virtual machine.
+
+CDROMs can be added by using storage pools or by providing the absolute path of the CDROM disk.
+By default, KVM offers one ``default`` storage pool that refers to the same path as ``/var/lib/libvirt/images``.
 
 ```xml
+<!-- CDROM - volume from pool -->
+<devices>
+  <disk type="volume" device="cdrom">
+    <driver name="qemu" type="raw" discard="unmap"/>
+    <source pool="default" volume="ubuntu.iso"/>
+    <target dev="sdc" bus="sata"/>
+    <readonly/>
+  </disk>
+</devices>
+
+<!-- CDROM - direct file path -->
 <devices>
   <disk type="file" device="cdrom">
-    <driver name="qemu" type="raw"/>
+    <driver name="qemu" type="raw" discard="unmap"/>
     <source file="/var/lib/libvirt/images/ubuntu.iso"/>
     <target dev="sdc" bus="sata"/>
     <readonly/>
@@ -191,9 +205,20 @@ You can manually attach ISO as CDROM device to run installations. This also can 
 On Windows, you also will need to put an additional CDROM device for VirtIO packages:
 
 ```xml
+<!-- CDROM - volume from pool -->
+<devices>
+  <disk type="volume" device="cdrom">
+    <driver name="qemu" type="raw" discard="unmap"/>
+    <source pool="default" volume="virtio-win.iso"/>
+    <target dev="sdd" bus="sata"/>
+    <readonly/>
+  </disk>
+</devices>
+
+<!-- CDROM - direct file path -->
 <devices>
   <disk type="file" device="cdrom">
-    <driver name="qemu" type="raw"/>
+    <driver name="qemu" type="raw" discard="unmap"/>
     <source file="/var/lib/libvirt/images/virtio-win.iso"/>
     <target dev="sdd" bus="sata"/>
     <readonly/>
@@ -229,10 +254,20 @@ You can add a physical disk or LVM partitions into VMs. First, make sure that th
 
 ## Virtual Disks
 
-You can add RAW or QCOW2 virtual disks into VMs. First, make sure that the target virtual disk is unused elsewhere since a disk can be used only in one running VM:
+You can add RAW or QCOW2 virtual disks into VMs by using storage pools or by providing the absolute path of the virtual disk.
+By default, KVM offers one ``default`` storage pool that refers to the same path as ``/var/lib/libvirt/images``.
 
 ```xml
-<!-- RAW -->
+<!-- RAW - volume from pool -->
+<devices>
+  <disk type="volume" device="disk">
+    <driver name="qemu" type="raw" cache="writeback" io="io_uring" discard="unmap"/>
+    <source pool="default" volume="${NAME}.raw"/>
+    <target dev="sdb" bus="virtio"/>
+  </disk>
+</devices>
+
+<!-- RAW - direct file path -->
 <devices>
   <disk type="file" device="disk">
     <driver name="qemu" type="raw" cache="writeback" io="io_uring" discard="unmap"/>
@@ -241,7 +276,16 @@ You can add RAW or QCOW2 virtual disks into VMs. First, make sure that the targe
   </disk>
 </devices>
 
-<!-- QCOW2 -->
+<!-- QCOW2 - volume from pool -->
+<devices>
+  <disk type="volume" device="disk">
+    <driver name="qemu" type="qcow2" cache="writeback" io="io_uring" discard="unmap"/>
+    <source pool="default" volume="${NAME}.qcow2"/>
+    <target dev="sdb" bus="virtio"/>
+  </disk>
+</devices>
+
+<!-- QCOW2 - direct file path -->
 <devices>
   <disk type="file" device="disk">
     <driver name="qemu" type="qcow2" cache="writeback" io="io_uring" discard="unmap"/>
@@ -250,6 +294,8 @@ You can add RAW or QCOW2 virtual disks into VMs. First, make sure that the targe
   </disk>
 </devices>
 ```
+
+You also need to make sure that the target virtual disk is unused elsewhere when powering the virtual machine since a disk can be used only in one running VM.
 
 ## GPU Passthrough and VGA Bios
 
