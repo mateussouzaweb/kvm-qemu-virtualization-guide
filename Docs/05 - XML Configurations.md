@@ -35,6 +35,21 @@ Please be aware that these settings enable NVRAM and if you edit the machine det
 virsh start ${NAME} --reset-nvram
 ```
 
+If you don't want to deal with Secure Boot or it is not supported on the virtual machine that you are trying to run, here is a sample with the feature disabled:
+
+```xml
+<os firmware="efi">
+  <type arch="x86_64" machine="q35">hvm</type>
+  <firmware>
+    <feature enabled="no" name="secure-boot"/>
+    <feature enabled="no" name="enrolled-keys"/>
+  </firmware>
+  <bootmenu enable="yes"/>
+  <boot dev="hd"/>
+  <boot dev="cdrom"/>
+</os>
+```
+
 ## CPU Optimizations
 
 For a good CPU optimization, we first need to know how the CPU set cores and threads. Use the following command to understand how it works in your case. We need that information to configure the CPU pinning correctly:
