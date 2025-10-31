@@ -451,7 +451,9 @@ A Trusted Platform Module (TPM) offers advanced protection with integrated crypt
 
   <!-- Emulated -->
   <tpm model='tpm-tis'>
-    <backend type='emulator' version='2.0'/>
+    <backend type='emulator' version='2.0'>
+      <profile name='default-v1'/>
+    </backend>
   </tpm>
 </devices>
 ```

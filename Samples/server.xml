@@ -184,7 +184,9 @@
     <input type='mouse' bus='ps2'/>
     <input type='keyboard' bus='ps2'/>
     <tpm model='tpm-tis'>
-      <backend type='emulator' version='2.0'/>
+      <backend type='emulator' version='2.0'>
+        <profile name='default-v1'/>
+      </backend>
     </tpm>
     <graphics type='vnc' port='-1' autoport='yes' listen='0.0.0.0'>
       <listen type='address' address='0.0.0.0'/>
