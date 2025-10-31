@@ -159,7 +159,7 @@
       <address type='pci' domain='0x0000' bus='0x0c' slot='0x01' function='0x0'/>
     </controller>
     <interface type='bridge'>
-      <mac address='52:54:00:8e:5d:e4'/>
+      <mac address='52:54:00:4b:3d:a2'/>
       <source bridge='virbr0'/>
       <model type='virtio'/>
       <link state='up'/>
