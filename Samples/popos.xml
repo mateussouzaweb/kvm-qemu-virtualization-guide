@@ -25,6 +25,8 @@
       <feature enabled='no' name='enrolled-keys'/>
       <feature enabled='no' name='secure-boot'/>
     </firmware>
+    <loader readonly='yes' type='pflash' format='qcow2'>/usr/share/edk2/ovmf/OVMF_CODE_4M.qcow2</loader>
+    <nvram template='/usr/share/edk2/ovmf/OVMF_VARS_4M.qcow2' templateFormat='qcow2' format='qcow2'>/var/lib/libvirt/qemu/nvram/popos_VARS.qcow2</nvram>
     <boot dev='hd'/>
     <boot dev='cdrom'/>
     <bootmenu enable='yes'/>
