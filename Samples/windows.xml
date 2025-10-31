@@ -73,22 +73,22 @@
   </pm>
   <devices>
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
-    <disk type='file' device='disk'>
+    <disk type='volume' device='disk'>
       <driver name='qemu' type='qcow2' cache='writeback' io='io_uring' discard='unmap'/>
-      <source file='/var/lib/libvirt/images/windows.qcow2'/>
+      <source pool='default' volume='windows.qcow2'/>
       <target dev='sda' bus='virtio'/>
       <address type='pci' domain='0x0000' bus='0x05' slot='0x00' function='0x0'/>
     </disk>
-    <disk type='file' device='cdrom'>
+    <disk type='volume' device='cdrom'>
       <driver name='qemu' type='raw' discard='unmap'/>
-      <source file='/var/lib/libvirt/images/windows-11.iso'/>
+      <source pool='default' volume='windows-11.iso'/>
       <target dev='sdb' bus='sata'/>
       <readonly/>
       <address type='drive' controller='0' bus='0' target='0' unit='1'/>
     </disk>
-    <disk type='file' device='cdrom'>
+    <disk type='volume' device='cdrom'>
       <driver name='qemu' type='raw' discard='unmap'/>
-      <source file='/var/lib/libvirt/images/virtio-windows.iso'/>
+      <source pool='default' volume='virtio-windows.iso'/>
       <target dev='sdc' bus='sata'/>
       <readonly/>
       <address type='drive' controller='0' bus='0' target='0' unit='2'/>
