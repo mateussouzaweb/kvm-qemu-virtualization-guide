@@ -204,9 +204,9 @@
       </source>
       <address type='usb' bus='0' port='3'/>
     </hostdev>
+    <watchdog model='itco' action='reset'/>
     <memballoon model='none'/>
   </devices>
-  <watchdog model='itco' action='reset'/>
   <seclabel type='dynamic' model='selinux' relabel='yes'/>
   <qemu:commandline>
     <qemu:arg value='-global'/>
