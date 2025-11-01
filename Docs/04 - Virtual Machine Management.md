@@ -8,6 +8,7 @@ These are some basic commands to manage VMs:
 
 ```bash
 virsh list --all # List all VMs
+virsh define ${NAME}.xml # Define VM from XML file
 virsh edit ${NAME} # Edit VM XML
 virsh start ${NAME} # Start the VM
 virsh console ${NAME} # Enters in VM console
@@ -41,6 +42,14 @@ To edit all available VMs:
 ```bash
 for i in `virsh list --all --name`; do
   virsh edit $i
+done
+```
+
+To define multiple VMs from XML specs:
+
+```bash
+for XML in ./*.xml; do
+  virsh define $XML
 done
 ```
 
