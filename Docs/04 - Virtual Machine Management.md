@@ -71,7 +71,7 @@ sudo mkdir -p /var/lib/libvirt/vbios/
 cd /var/lib/libvirt/vbios/
 
 # Copy ROM file from where you saved it
-sudo cp /path/of/NAVI22.rom NAVI22.rom
+sudo cp /path/of/NAVI48.rom NAVI48.rom
 
 # Fix permissions on ROM files
 sudo chmod +rwx ${PWD}

@@ -1,7 +1,7 @@
 <domain type='kvm'>
   <name>bazzite</name>
   <uuid>32286eab-e37a-4a26-b769-1aafed6b9653</uuid>
-  <description>--cpu-scaling-mode=schedutil --preserve-cores=0,1,8,9 --gpu-passthrough=main,0c:00.0,0c:00.1 --usb-passthrough=all</description>
+  <description>--cpu-scaling-mode=schedutil --preserve-cores=0,1,8,9 --gpu-passthrough=main,0e:00.0,0e:00.1 --usb-passthrough=all</description>
   <memory unit='KiB'>16777216</memory>
   <currentMemory unit='KiB'>16777216</currentMemory>
   <vcpu placement='static' cpuset='2-7,10-15'>12</vcpu>
@@ -202,16 +202,14 @@
     </video>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x0c' slot='0x00' function='0x0'/>
+        <address domain='0x0000' bus='0x0e' slot='0x00' function='0x0'/>
       </source>
-      <rom file='/var/lib/libvirt/vbios/NAVI22.rom'/>
       <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0' multifunction='on'/>
     </hostdev>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x0c' slot='0x00' function='0x1'/>
+        <address domain='0x0000' bus='0x0e' slot='0x00' function='0x1'/>
       </source>
-      <rom file='/var/lib/libvirt/vbios/NAVI22.rom'/>
       <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x1'/>
     </hostdev>
     <hostdev mode='subsystem' type='usb' managed='yes'>
