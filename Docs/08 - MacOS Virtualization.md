@@ -90,7 +90,7 @@ sudo chmod +x fetch-macOS-v2.py
 sudo ./fetch-macOS-v2.py
 
 # Convert DMG image to IMG format and remove unnecessary files
-VERSION="sonoma"
+VERSION="sequoia"
 sudo qemu-img convert BaseSystem.dmg -O raw macos-${VERSION}.img
 sudo rm -f BaseSystem.dmg BaseSystem.chunklist fetch-macOS-v2.py
 
