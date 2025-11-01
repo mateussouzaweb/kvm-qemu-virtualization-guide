@@ -32,15 +32,16 @@ The options below are useful when your CPU is not able to natively support neste
 The options below are dedicated to GPU passthrough:
 
 - **ANY GPU:** Disables fallback video output: ``video=vesafb:off,efifb:off,simplefb:off``
-- **NVIDIA GPU:** Disables nouveau driver: ``nouveau.modeset=0``
+- **NVIDIA GPU:** Increase compatibility of nouveau with VFIO: ``nouveau.modeset=0``
+- **NVIDIA GPU:** Completely disable nouveau driver: ``modprobe.blacklist=nouveau rd.driver.blacklist=nouveau``
 - **AMD GPU:** Disables ASPM support: ``amdgpu.aspm=0``
 
 Finally, the options below are related to drivers and PCI-e:
 
-- **ANY:** Makes VFIO loads first: ``rd.driver.pre=vfio-pci``
+- **ANY:** Makes VFIO loads first on Linux boot: ``rd.driver.pre=vfio-pci``
 - **ANY:** Enables extra PCI-e group separation: ``pcie_acs_override=downstream,multifunction``
 
-If you want to make any specific PCI-e device (like a network card) to be exclusively eligible and controlled by VFIO, you also should declare such devices in the boot parameters. Use the command ``lspci -nn`` to get the vendor and device code of the device (for example: ``15b3:1003``) and declare it with the format below:
+If you want to make any specific PCI-e device (like a network card or a secondary GPU) to be exclusively eligible and controlled by VFIO, you can also declare such devices in the boot parameters. Use the command ``lspci -nn`` to get the vendor and device code of the device (for example: ``15b3:1003``) and declare it with the format below:
 
 - **ANY:** Declarares PCI-e devices managed by VFIO: ``vfio_pci.ids=${DEVICE},...``
 
