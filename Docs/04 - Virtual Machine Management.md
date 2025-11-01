@@ -44,6 +44,14 @@ for i in `virsh list --all --name`; do
 done
 ```
 
+To define multiple VMs from XML specs:
+
+```bash
+for XML in ./*.xml; do
+  virsh define $XML
+done
+```
+
 ## VGA BIOS Management
 
 To avoid issues with GPU cards inside VMs, we recommend extracting the GPU ROM BIOS. If you know that your GPU card doesn't need it, just skip this process, otherwise, you need to run this just once.
