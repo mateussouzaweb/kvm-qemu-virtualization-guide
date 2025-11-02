@@ -339,10 +339,10 @@ Since we are attaching the GPU to the VM, we must set the virtualization hook op
 
 ```xml
 <!-- If you have only one GPU or is attaching the main GPU -->
-<description>--gpu-passthrough=main,0e:00.0,0e:00.1</description>
+<description>--gpu-passthrough=main,04:00.0,04:00.1</description>
 
 <!-- If you are attaching other secondary GPU -->
-<description>--gpu-passthrough=secondary,04:00.0,04:00.1</description>
+<description>--gpu-passthrough=secondary,0e:00.0,0e:00.1</description>
 ```
 
 Don't forget also to remove any line related to ``<graphics>``, ``<video>`` and other unnecessary devices from your VM config in the XML (SPLICE or VNC related) - this step can solve a lot of problems with GPU passthrough because these declarations may prevent the GPU passthrough from running properly!
