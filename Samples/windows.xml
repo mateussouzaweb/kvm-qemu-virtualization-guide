@@ -232,13 +232,6 @@
       </source>
       <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x1'/>
     </hostdev>
-    <hostdev mode='subsystem' type='usb' managed='yes'>
-      <source startupPolicy='optional'>
-        <vendor id='0x046d'/>
-        <product id='0xc548'/>
-      </source>
-      <address type='usb' bus='0' port='1'/>
-    </hostdev>
     <watchdog model='itco' action='reset'/>
     <memballoon model='virtio'>
       <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
