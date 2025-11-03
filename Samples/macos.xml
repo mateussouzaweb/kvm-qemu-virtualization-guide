@@ -190,7 +190,7 @@
     </graphics>
     <audio id='1' type='none'/>
     <video>
-      <model type='none'/>
+      <model type='virtio' heads='1' primary='yes'>
     </video>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
