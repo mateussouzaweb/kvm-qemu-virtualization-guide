@@ -153,20 +153,33 @@ function release_gpu {
     echo "device_specific" > "${audio}/reset_method"
   fi
 
-  # Unbind vga and audio from host
-  if [ -n "${driver}" ] && [ "${driver}" != "pcieport" ]; then
+  # Unbind VGA from host
+  if [ -n "${driver}" ] && \
+    [ "${driver}" != "pcieport" ] && \
+    [ "${driver}" != "vfio-pci" ]; then
     debug "Unbinding VGA ${2} from host driver: ${driver}"
     echo "0000:${2}" > "/sys/bus/pci/drivers/${driver}/unbind"
     echo "${driver}" > "${VMF}-${1}-gpu-driver"
   fi
 
-  if [ -n "${mixer}" ] && [ "${mixer}" != "pcieport" ]; then
+  # Unbind Audio from host
+  if [ -n "${mixer}" ] && \
+    [ "${mixer}" != "pcieport" ] && \
+    [ "${driver}" != "vfio-pci" ]; then
     debug "Unbinding audio ${3} from host driver: ${mixer}"
     echo "0000:${3}" > "/sys/bus/pci/drivers/${mixer}/unbind"
     echo "${mixer}" > "${VMF}-${1}-gpu-mixer"
   fi
 
+  # Set Resizable BAR on AMD GPU
+  if [ "${driver}" == "amdgpu" ] && [ "${4}" == "resize-bar" ]; then
+    debug "Applying resizable BAR reduction for device ${device}"
+    echo 3 > "${vga}/resource2_resize" # 8MB
+    echo "1" >> "${VMF}-resized-bar"
+  fi
+
   # Bind to VFIO
+  sleep "2"
   debug "Binding GPU ${1} to VFIO"
   virsh nodedev-detach "pci_0000_${2//[:.]/_}"
   virsh nodedev-detach "pci_0000_${3//[:.]/_}"
@@ -180,11 +193,19 @@ function restore_gpu {
   debug "Reataching GPU ${1} to host"
   virsh nodedev-reattach "pci_0000_${2//[:.]/_}"
   virsh nodedev-reattach "pci_0000_${3//[:.]/_}"
+  sleep "2"
 
-  # Check for drivers and bind again if necessary
+  # Extract data to perform restoration
   vga="/sys/bus/pci/devices/0000:${2}"
   audio="/sys/bus/pci/devices/0000:${3}"
 
+  # Restore Resizable BAR on AMD GPU
+  if [ -f "${VMF}-${1}-resized-bar" ]; then
+    debug "Restoring Resizable BAR values to ${2}"
+    echo 8 > "${vga}/resource2_resize"  # 256MB
+  fi
+
+  # Check for drivers and bind again if necessary
   if [ -f "${VMF}-${1}-gpu-driver" ] && [ ! -d "${vga}/driver" ]; then
     driver=$(cat ${VMF}-${1}-gpu-driver)
     debug "Binding VGA driver to ${2}: ${driver}"

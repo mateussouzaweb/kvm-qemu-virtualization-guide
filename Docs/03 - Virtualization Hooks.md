@@ -18,7 +18,7 @@ The current list of available feature options is:
 
 GPU:
 
-- ``--gpu-passthrough=$ID,$VGA,$AUDIO``: Enables **GPU passthrough** support in KVM/QEMU virtual machines, by automatically attach/detach the GPU from the host and dynamically attach it to the VM and vice versa. This is all in one solution that works for **single GPU passthrough setups** or more. To passthrough the main GPU that is being used at your system, set ID as ``main``, otherwise you can set any ID for identification for example: ``nvidia``, ``amd``, ``secondary``... Please notice that if you set ID as ``main``, the hook will end the current host display session to free the GPU and you will be required to login again after VM has been stopped. Additionally, if your GPU needs vendor reset, append the additional fourth parameter as ``reset`` on this option. To passthrough multiple GPUs, just use this option again with the additional GPU details. 
+- ``--gpu-passthrough=$ID,$VGA,$AUDIO``: Enables **GPU passthrough** support in KVM/QEMU virtual machines, by automatically attach/detach the GPU from the host and dynamically attach it to the VM and vice versa. This is all in one solution that works for **single GPU passthrough setups** or more. To passthrough the main GPU that is being used at your system, set ID as ``main``, otherwise you can set any ID for identification for example: ``nvidia``, ``amd``, ``secondary``... Please notice that if you set ID as ``main``, the hook will end the current host display session to free the GPU and you will be required to login again after VM has been stopped. Additionally, if your GPU needs vendor reset, append the additional fourth parameter as ``reset`` on this option. If you need to reduce your AMD GPU Resizable BAR before starting the VM, append the additional fourth parameter as ``resize-bar`` on this option. To passthrough multiple GPUs, just use this option again with the additional GPU details. 
 
 CPU:
 
@@ -63,6 +63,7 @@ Done! Configure the VM with the desired options and you are good to go.
 If you are interested in knowing what is going on when these hooks are executed, just watch for the logs. This also can be useful to detect issues with your setup:
 
 ```bash
+sudo dmesg -w
 sudo tail -f /var/log/libvirt/qemu/${NAME}.log
 ```
 
