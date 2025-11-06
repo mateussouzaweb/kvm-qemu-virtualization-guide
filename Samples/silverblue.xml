@@ -181,10 +181,6 @@
       <target type='virtio' name='org.qemu.guest_agent.0'/>
       <address type='virtio-serial' controller='0' bus='0' port='1'/>
     </channel>
-    <channel type='spicevmc'>
-      <target type='virtio' name='com.redhat.spice.0'/>
-      <address type='virtio-serial' controller='0' bus='0' port='2'/>
-    </channel>
     <input type='mouse' bus='virtio'>
       <address type='pci' domain='0x0000' bus='0x0a' slot='0x00' function='0x0'/>
     </input>
@@ -204,14 +200,9 @@
         <profile name='default-v1'/>
       </backend>
     </tpm>
-    <graphics type='spice'>
-      <listen type='none'/>
-      <image compression='off'/>
-      <gl enable='no'/>
-    </graphics>
     <audio id='1' type='none'/>
     <video>
-      <model type='virtio' heads='1' primary='yes'/>
+      <model type='none'/>
     </video>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
