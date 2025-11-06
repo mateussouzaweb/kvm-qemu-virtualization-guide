@@ -39,11 +39,11 @@ function stop_display_manager {
         debug "Stopping ${manager} display service"
         echo "${manager}" >> "${VMF}-display-manager"
         systemctl stop "${manager}.service"
-        sleep "2"
+        sleep "1"
       fi
       while systemctl is-active --quiet "${manager}.service"; do
         debug "Waiting for ${manager} display service to stop"
-        sleep "2"
+        sleep "1"
       done
     fi
 
@@ -57,9 +57,9 @@ function restore_display_manager {
   if [ -f "${VMF}-display-manager" ]; then
     while read -r manager; do
       if [ -x "$(command -v systemctl)" ]; then
-        sleep "2"
         debug "Starting ${manager} display service again"
         systemctl start "${manager}.service"
+        sleep "1"
       fi
     done < "${VMF}-display-manager"
   fi
@@ -139,6 +139,7 @@ function release_gpu {
   [ "${1}" == "main" ] && stop_display_manager
   [ "${1}" == "main" ] && unbind_consoles
   [ "${1}" == "main" ] && unbind_framebuffer
+  [ "${1}" == "main" ] && sleep "1"
 
   # Extract data and set config info
   vga="/sys/bus/pci/devices/0000:${2}"
@@ -151,6 +152,7 @@ function release_gpu {
     debug "Applying device_specific reset method for AMD GPUs"
     echo "device_specific" > "${vga}/reset_method"
     echo "device_specific" > "${audio}/reset_method"
+    sleep "1"
   fi
 
   # Unbind VGA from host
@@ -160,6 +162,7 @@ function release_gpu {
     debug "Unbinding VGA ${2} from host driver: ${driver}"
     echo "0000:${2}" > "/sys/bus/pci/drivers/${driver}/unbind"
     echo "${driver}" > "${VMF}-${1}-gpu-driver"
+    sleep "1"
   fi
 
   # Unbind Audio from host
@@ -169,6 +172,7 @@ function release_gpu {
     debug "Unbinding audio ${3} from host driver: ${mixer}"
     echo "0000:${3}" > "/sys/bus/pci/drivers/${mixer}/unbind"
     echo "${mixer}" > "${VMF}-${1}-gpu-mixer"
+    sleep "1"
   fi
 
   # Set Resizable BAR on AMD GPU
@@ -176,13 +180,14 @@ function release_gpu {
     debug "Applying resizable BAR reduction for device ${device}"
     echo 3 > "${vga}/resource2_resize" # 8MB
     echo "1" >> "${VMF}-resized-bar"
+    sleep "1"
   fi
 
   # Bind to VFIO
-  sleep "2"
   debug "Binding GPU ${1} to VFIO"
   virsh nodedev-detach "pci_0000_${2//[:.]/_}"
   virsh nodedev-detach "pci_0000_${3//[:.]/_}"
+  sleep "1"
 
 }
 
@@ -193,7 +198,7 @@ function restore_gpu {
   debug "Reataching GPU ${1} to host"
   virsh nodedev-reattach "pci_0000_${2//[:.]/_}"
   virsh nodedev-reattach "pci_0000_${3//[:.]/_}"
-  sleep "2"
+  sleep "1"
 
   # Extract data to perform restoration
   vga="/sys/bus/pci/devices/0000:${2}"
@@ -203,6 +208,7 @@ function restore_gpu {
   if [ -f "${VMF}-${1}-resized-bar" ]; then
     debug "Restoring Resizable BAR values to ${2}"
     echo 8 > "${vga}/resource2_resize"  # 256MB
+    sleep "1"
   fi
 
   # Check for drivers and bind again if necessary
@@ -210,18 +216,21 @@ function restore_gpu {
     driver=$(cat ${VMF}-${1}-gpu-driver)
     debug "Binding VGA driver to ${2}: ${driver}"
     echo "0000:${2}" > "/sys/bus/pci/drivers/${driver}/bind"
+    sleep "1"
   fi
 
   if [ -f "${VMF}-${1}-gpu-mixer" ] && [ ! -d "${audio}/driver" ]; then
     mixer=$(cat ${VMF}-${1}-gpu-mixer)
     debug "Binding audio driver to ${3}: ${mixer}"
     echo "0000:${3}" > "/sys/bus/pci/drivers/${mixer}/bind"
+    sleep "1"
   fi
 
   # Special case for main GPU
   [ "${1}" == "main" ] && restore_display_manager
   [ "${1}" == "main" ] && rebind_consoles
   [ "${1}" == "main" ] && rebind_framebuffer
+  [ "${1}" == "main" ] && sleep "1"
 
 }
 
@@ -378,3 +387,5 @@ if [ -n "$(command -v "on_${OPERATION}_${ACTION}")" ]; then
   debug "Hook options: ${OPTIONS}"
   eval "on_${OPERATION}_${ACTION}" "${OPTIONS}"
 fi
+
+debug "Hook finished: ${OPERATION} ${ACTION}"
