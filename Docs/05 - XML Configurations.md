@@ -519,9 +519,12 @@ sudo systemctl start qemu-guest-agent
 The SPICE project adds support for remote access to virtual machines in a seamless way. With SPICE, you can copy and paste between the host and the virtual machine, play videos, record audio, share USB devices and folders without complications. Use the following settings inside the VM to enable the communication channel:
 
 ```xml
-<channel type='spicevmc'>
-   <target type='virtio' name='com.redhat.spice.0'/>
-</channel>
+<devices>
+  <channel type='spicevmc'>
+    <target type='virtio' name='com.redhat.spice.0'/>
+    <address type='virtio-serial' controller='0' bus='0' port='2'/>
+  </channel>
+</devices>
 ```
 
 After VM is running, you must install the SPICE guest agent. The VirtIO ISO already includes it on Windows. On Linux, install the ``spice-vdagent`` package. MacOS does not have a compatible package yet.
