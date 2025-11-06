@@ -1,7 +1,7 @@
 <domain type='kvm'>
   <name>bazzite</name>
   <uuid>32286eab-e37a-4a26-b769-1aafed6b9653</uuid>
-  <description>--cpu-scaling-mode=schedutil --preserve-cores=0,1,8,9 --gpu-passthrough=main,0d:00.0,0d:00.1 --usb-passthrough=all</description>
+  <description>--cpu-scaling-mode=schedutil --preserve-cores=0,1,8,9 --gpu-passthrough=main,0d:00.0,0d:00.1,resize-bar --usb-passthrough=all</description>
   <memory unit='KiB'>25165824</memory>
   <currentMemory unit='KiB'>25165824</currentMemory>
   <vcpu placement='static' cpuset='2-7,10-15'>12</vcpu>
