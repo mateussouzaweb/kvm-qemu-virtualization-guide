@@ -1,9 +1,9 @@
 <domain type='kvm'>
   <name>popos</name>
   <uuid>004490b9-1b45-4eab-8045-f785fbee08c5</uuid>
-  <description>--cpu-scaling-mode=schedutil --preserve-cores=0,1,8,9 --gpu-passthrough=secondary,0e:00.0,0e:00.1 --usb-passthrough=all</description>
-  <memory unit='KiB'>16777216</memory>
-  <currentMemory unit='KiB'>16777216</currentMemory>
+  <description>--cpu-scaling-mode=schedutil --preserve-cores=0,1,8,9 --gpu-passthrough=main,0d:00.0,0d:00.1 --usb-passthrough=all</description>
+  <memory unit='KiB'>25165824</memory>
+  <currentMemory unit='KiB'>25165824</currentMemory>
   <vcpu placement='static' cpuset='2-7,10-15'>12</vcpu>
   <cputune>
     <vcpupin vcpu='0' cpuset='2'/>
@@ -25,8 +25,6 @@
       <feature enabled='no' name='enrolled-keys'/>
       <feature enabled='no' name='secure-boot'/>
     </firmware>
-    <loader readonly='yes' type='pflash' format='qcow2'>/usr/share/edk2/ovmf/OVMF_CODE_4M.qcow2</loader>
-    <nvram template='/usr/share/edk2/ovmf/OVMF_VARS_4M.qcow2' templateFormat='qcow2' format='qcow2'>/var/lib/libvirt/qemu/nvram/popos_VARS.qcow2</nvram>
     <boot dev='hd'/>
     <boot dev='cdrom'/>
     <bootmenu enable='yes'/>
@@ -213,19 +211,31 @@
     </graphics>
     <audio id='1' type='none'/>
     <video>
-      <model type='virtio' heads='1' primary='yes'>
+      <model type='virtio' heads='1' primary='yes'/>
     </video>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x0e' slot='0x00' function='0x0'/>
+        <address domain='0x0000' bus='0x0d' slot='0x00' function='0x0'/>
       </source>
       <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0' multifunction='on'/>
     </hostdev>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x0e' slot='0x00' function='0x1'/>
+        <address domain='0x0000' bus='0x0d' slot='0x00' function='0x1'/>
       </source>
       <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x1'/>
+    </hostdev>
+    <hostdev mode='subsystem' type='usb' managed='yes'>
+      <source startupPolicy='optional'>
+        <vendor id='0x046d'/>
+        <product id='0xc548'/>
+      </source>
+    </hostdev>
+    <hostdev mode='subsystem' type='usb' managed='yes'>
+      <source startupPolicy='optional'>
+        <vendor id='0x620a'/>
+        <product id='0x0407'/>
+      </source>
     </hostdev>
     <watchdog model='itco' action='reset'/>
     <memballoon model='virtio'>
