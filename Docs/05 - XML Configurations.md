@@ -521,10 +521,9 @@ The QEMU guest agent adds many cool features to the VM, including more precise V
 
 After VM is running, you must install the QEMU guest agent to increase performance and get more precise metrics. On Windows, download and use the [VirtIO ISO](https://github.com/virtio-win/virtio-win-pkg-scripts). On Linux, install the ``qemu-guest-agent`` package. MacOS does not have a compatible package yet.
 
-![Ubuntu](../Images/ubuntu.png)
-**UBUNTU - VIRTUAL MACHINE:**
-
 ```bash
+# For Debian / Ubuntu virtual machines
+# Install and start agent on virtual machine
 sudo apt install -y qemu-guest-agent
 sudo systemctl start qemu-guest-agent
 ```
