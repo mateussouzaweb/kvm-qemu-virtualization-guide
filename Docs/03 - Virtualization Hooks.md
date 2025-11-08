@@ -6,6 +6,10 @@ Differently of others hook scripts for QEMU that you can see around the web, eac
 
 To activate these features on a specific VM, you must edit the VMs details and add the desired options on the ``<description>`` entry (create the entry if not exist):
 
+![Fedora](../Images/fedora.png)
+![Ubuntu](../Images/ubuntu.png)
+**FEDORA / UBUNTU:**
+
 ```bash
 virsh edit ${NAME}
 ```
@@ -18,7 +22,8 @@ The current list of available feature options is:
 
 GPU:
 
-- ``--gpu-passthrough=$ID,$VGA,$AUDIO``: Enables **GPU passthrough** support in KVM/QEMU virtual machines, by automatically attach/detach the GPU from the host and dynamically attach it to the VM and vice versa. This is all in one solution that works for **single GPU passthrough setups** or more. To passthrough the main GPU that is being used at your system, set ID as ``main``, otherwise you can set any ID for identification for example: ``nvidia``, ``amd``, ``secondary``... Please notice that if you set ID as ``main``, the hook will end the current host display session to free the GPU and you will be required to login again after VM has been stopped. Additionally, if your GPU needs vendor reset, append the additional fourth parameter as ``reset`` on this option. If you need to reduce your AMD GPU Resizable BAR before starting the VM, append the additional fourth parameter as ``resize-bar`` on this option. To passthrough multiple GPUs, just use this option again with the additional GPU details. 
+- ``--gpu-passthrough=$ID,$VGA,$AUDIO``: Enables **GPU passthrough** support in KVM/QEMU virtual machines, by automatically attach/detach the GPU from the host and dynamically attach it to the VM and vice versa. This is all in one solution that works for **single GPU passthrough setups** or more. To passthrough the main GPU that is being used at your system, set ID as ``main``, otherwise you can set any ID for identification for example: ``nvidia``, ``amd``, ``secondary``...
+- Please notice that if you set ID as ``main``, the hook will end the current host display session to free the GPU and you will be required to login again after VM has been stopped. Additionally, if your GPU needs vendor reset, append the additional fourth parameter as ``reset`` on this option. If you need to reduce your AMD GPU Resizable BAR before starting the VM, append the additional fourth parameter as ``resize-bar`` on this option. To passthrough multiple GPUs, just use this option again with the additional GPU details.
 
 CPU:
 
@@ -29,24 +34,33 @@ USB:
 
 - ``--usb-passthrough=$DEVICE``: Allow live USB passthrough of any USB device to the VM. This also reduce the need of declare USB devices on the VM XML file. This option can be used multiple times to specify custom devices. Valid device values are ``all``, ``BUS:$NUMBER`` for specific bus, ``DEV:$BUS:$NUMBER`` for specific device number on bus or `ID:$ID` for specific device ID.
 
-## Installation
+## Hooks Installation
 
-Use the process below to create and install the QEMU hooks (you can study the code to learn more if you are a programmer or sysadmin):
+The installation of hooks is very easy. Use the process below to create and install the QEMU hooks based on the script provided in this guide (you can study the code to learn more if you are a programmer or sysadmin):
+
+![Fedora](../Images/fedora.png)
+![Ubuntu](../Images/ubuntu.png)
+**FEDORA / UBUNTU:**
 
 ```bash
 REPOSITORY="https://mateussouzaweb.github.io/kvm-qemu-virtualization-guide/Scripts/hooks"
 DESTINATION="/etc/libvirt/hooks"
 
+# Download script files
 sudo mkdir -p ${DESTINATION} ${DESTINATION}/udev
 sudo curl -L ${REPOSITORY}/qemu --output ${DESTINATION}/qemu
 sudo curl -L ${REPOSITORY}/udev/usb --output ${DESTINATION}/udev/usb
 
+# Set scripts as executable
 sudo chmod +x ${DESTINATION}/qemu
 sudo chmod +x ${DESTINATION}/udev/usb
-sudo restorecon -R -vF ${DESTINATION}
 ```
 
 We also need to attach USB rules to passthrough USB devices:
+
+![Fedora](../Images/fedora.png)
+![Ubuntu](../Images/ubuntu.png)
+**FEDORA / UBUNTU:**
 
 ```bash
 # Add rule
@@ -56,11 +70,24 @@ sudo sh -c "echo 'SUBSYSTEM==\"usb\",RUN+=\"'${DESTINATION}'/udev/usb\"' > /etc/
 sudo udevadm control --reload-rules
 ```
 
-Done! Configure the VM with the desired options and you are good to go.
+![Fedora](../Images/fedora.png)
+**FEDORA - DESKTOP / SERVER / ATOMIC:**
+
+```bash
+# Fedora ONLY
+# Make sure SElinux permissions are correct
+sudo restorecon -R -vF ${DESTINATION}
+```
+
+Done! Configure the VM with the desired options in the description entry and you are good to go.
 
 ## Debugging
 
 If you are interested in knowing what is going on when these hooks are executed, just watch for the logs. This also can be useful to detect issues with your setup:
+
+![Fedora](../Images/fedora.png)
+![Ubuntu](../Images/ubuntu.png)
+**FEDORA / UBUNTU:**
 
 ```bash
 sudo dmesg -w

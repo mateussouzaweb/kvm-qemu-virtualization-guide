@@ -7,16 +7,16 @@ PCI-e passthrough is a feature that allows the redirection of hardware devices t
 - ``SR-IOV Support`` - Enabled
 - ``ACS Enable`` or ``ACS Override`` - Auto or Disabled
 - ``Above 4G Decoding`` - Enabled or Disabled
-- ``Resizable BAR`` or ``Smart Access Memory`` - Disabled 
+- ``Resizable BAR`` or ``Smart Access Memory`` - Disabled
 - ``PCIe ARI Support`` - Auto or Enabled
 - ``Enable AER Cap`` - Auto or Enabled
 - ``CSM Support`` - Disabled, must use UEFI
 
 Consult the motherboard manual if you have doubts about how to find these settings, but be aware that some of them may not be visible depending on your hardware.
 
-## Boot Parameters
+## Knowing Boot Parameters
 
-Boot parameters are responsible to set additional configurations in the system when kernel is initiating and should be used in conjunction with the BIOS settings. Any Linux distribution can be tweaked with boot parameters but they must match your current hardware specs to properly enable PCI-e passthrough. 
+Boot parameters are responsible to set additional configurations in the system when kernel is initiating and should be used in conjunction with the BIOS settings. Any Linux distribution can be tweaked with boot parameters but they must match your current hardware specs to properly enable PCI-e passthrough.
 
 We will list the most important options here and you should take note for the most appropriate parameters for your case:
 
@@ -39,9 +39,9 @@ The options below are dedicated to GPU passthrough:
 Finally, the options below are related to drivers and PCI-e:
 
 - **ANY:** Makes VFIO loads first on Linux boot: ``rd.driver.pre=vfio-pci``
-- **ANY:** Enables extra PCI-e group separation: ``pcie_acs_override=downstream,multifunction``
+- **ANY:** Enables extra PCI-e group separation on patched kernel implementation: ``pcie_acs_override=downstream,multifunction``
 
-If you want to make any specific PCI-e device (like a network card or a secondary GPU) to be exclusively eligible and controlled by VFIO, you can also declare such devices in the boot parameters. Use the command ``lspci -nn`` to get the vendor and device code of the device (for example: ``15b3:1003``) and declare it with the format below:
+If you want to make any specific PCI-e device like a network card or a secondary GPU to be exclusively eligible and controlled by VFIO, you can also declare such devices in the boot parameters. Use the command ``lspci -nn`` to get the vendor and device code of the device (for example: ``15b3:1003``) and declare it with the format below:
 
 - **ANY:** Declarares PCI-e devices managed by VFIO: ``vfio_pci.ids=${DEVICE},...``
 
@@ -51,8 +51,11 @@ Please take note for the most appropriate parameters for your case, they will be
 
 Now that you know the available boot parameters, follow the steps below to enable the support for PCI-e passthrough on traditional systems:
 
+![Fedora](../Images/fedora.png)
+**FEDORA - DESKTOP / SERVER:**
+
 ```bash
-# Traditional OS ONLY
+# Fedora ONLY
 # Enable VFIO modules on system load
 sudo sh -c "echo 'add_drivers+=\" vfio vfio_iommu_type1 vfio_pci \"' > /etc/dracut.conf.d/vfio.conf"
 
@@ -71,10 +74,36 @@ sudo dracut -f
 sudo reboot
 ```
 
-If you are running an immutable system, the process is different and you should append every boot parameter in OSTree on ``kargs`` with the ``--append-if-missing="$PARAMETER"`` option. I will provide a two samples here, but you should tweak it based on our needs:
+![Ubuntu](../Images/ubuntu.png)
+**UBUNTU - DESKTOP / SERVER:**
 
 ```bash
-# Immutable OS ONLY
+# Ubuntu ONLY
+# Enable VFIO modules on system load
+sudo sh -c "echo 'add_drivers+=\" vfio vfio_iommu_type1 vfio_pci \"' > /etc/dracut.conf.d/vfio.conf"
+
+# Edit GRUB options
+# Search for the line containing ``GRUB_CMDLINE_LINUX``
+# Update this line by appending the appropriate parameters for your case
+# GRUB_CMDLINE_LINUX="... $PARAMETERS"
+# Save the file once done
+sudo vim /etc/default/grub
+
+# After tweak rebuild boot details
+sudo update-grub
+sudo dracut -f
+
+# Restart the system
+sudo reboot
+```
+
+If you are running an immutable system, the process is different and you should append every boot parameter in OSTree on ``kargs`` with the ``--append-if-missing="$PARAMETER"`` option. I will provide a two samples here, but you should tweak it based on our needs:
+
+![Fedora](../Images/fedora.png)
+**FEDORA - ATOMIC:**
+
+```bash
+# Fedora Immutable ONLY
 # Enable VFIO modules on system load
 rpm-ostree initramfs --enable --arg="--add-drivers" --arg="vfio-pci"
 
@@ -104,9 +133,13 @@ systemctl reboot
 
 After restart, you can check if PCI-e passthrough is working with the instructions on the next topic.
 
-## Checking Passthrough Support 
+## Checking Passthrough Support
 
 You can check if everything is working as expected with the below commands:
+
+![Fedora](../Images/fedora.png)
+![Ubuntu](../Images/ubuntu.png)
+**FEDORA / UBUNTU:**
 
 ```bash
 # Boot parameters
@@ -143,11 +176,15 @@ For IOMMU groups output, you should have your graphics card in a separate group.
 
 ## Overriding ACS Implementation
 
-NOTE: I don't have a guide yet for overriding ACS implementation on immutable systems, the steps below will work only on traditional systems.
+**NOTE:** I don't have a guide yet for overriding ACS implementation on Fedora immutable systems, the steps below will work only on Fedora traditional systems.
 
-If you are running traditional system and need to separate IOMMU groups, go to <https://github.com/some-natalie/fedora-acs-override/actions> and download the latest kernel version available (you must log in on GitHub first to download files). After completing the download, if necessary, transfer the file to the host and run the following commands to install the patched kernel with alternative ACS implementation. You probably already added the boot flag ``pcie_acs_override`` so now just need to install the patched kernel:
+If you are running Fedora system and need to separate IOMMU groups, go to <https://github.com/some-natalie/fedora-acs-override/actions> and download the latest kernel version available (you must log in on GitHub first to download files). After completing the download, if necessary, transfer the file to the host and run the following commands to install the patched kernel with alternative ACS implementation. You probably already added the boot flag ``pcie_acs_override`` so now just need to install the patched kernel:
+
+![Fedora](../Images/fedora.png)
+**FEDORA - DESKTOP / SERVER:**
 
 ```bash
+# Fedora ONLY
 # Install the new kernel
 sudo unzip kernel-*-acs-override-rpms.zip -d kernel-acs-override
 sudo dnf install --allowerasing kernel-acs-override/*.rpm
@@ -163,6 +200,8 @@ Check the IOMMU groups again to make sure it is working. You now should be able 
 
 ## Vendor Reset for AMD GPUs
 
+**NOTE:** I don't have a guide yet for vendor reset on immutable systems, the steps below will work only on traditional systems.
+
 If you are using an AMD GPU, chances are that your device has the vendor reset bug. This bug will always result in a complete black screen or even system freezes when you try to attach or detach the GPU on virtual machines. If you are lucky like me and have a GPU from the series listed below, you need to install the vendor reset package to fix this issue:
 
 - **Polaris 10, 11 and 12**
@@ -171,10 +210,11 @@ If you are using an AMD GPU, chances are that your device has the vendor reset b
 
 If your AMD GPU is not in that list, then your GPU definitely does not have the vendor reset bug. To install the vendor reset package in traditional systems, the steps are pretty simple, just run the following commands to install the package and fix the issue:
 
-NOTE: I don't have a guide yet for vendor reset on immutable systems, the steps below will work only on traditional systems.
+![Fedora](../Images/fedora.png)
+**FEDORA - DESKTOP / SERVER:**
 
 ```bash
-# Traditional OS ONLY 
+# Fedora ONLY
 # Update and instal kernel packages
 sudo dnf distro-sync
 sudo dnf install -y dkms kernel-devel kernel-headers

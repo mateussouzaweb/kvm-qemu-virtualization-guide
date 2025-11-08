@@ -76,6 +76,10 @@ See: <https://github.com/kholia/OSX-KVM>
 
 This guide uses the OSX-KVM project as base system. We grab just the necessary files to run it on QEMU. Start by downloading files and fetching the desired MacOS version:
 
+![Fedora](../Images/fedora.png)
+![Ubuntu](../Images/ubuntu.png)
+**FEDORA / UBUNTU:**
+
 ```bash
 # Go to target directory
 cd /var/lib/libvirt/images
@@ -93,15 +97,13 @@ sudo ./fetch-macOS-v2.py
 VERSION="sequoia"
 sudo qemu-img convert BaseSystem.dmg -O raw macos-${VERSION}.img
 sudo rm -f BaseSystem.dmg BaseSystem.chunklist fetch-macOS-v2.py
-
-# Fix permissions
-sudo chmod +rwx ${PWD}
-sudo chmod -R 660 ${PWD}/*
-sudo chown -R qemu:qemu ${PWD}
-sudo restorecon -R -vF ${PWD}
 ```
 
 Now, download the sample XML configuration and tweak to run on your system devices:
+
+![Fedora](../Images/fedora.png)
+![Ubuntu](../Images/ubuntu.png)
+**FEDORA / UBUNTU:**
 
 ```bash
 # Download sample
@@ -116,6 +118,10 @@ Here, you can also tweak the OpenCore partition before starting the VM (see the 
 
 Finally define the VM and start it:
 
+![Fedora](../Images/fedora.png)
+![Ubuntu](../Images/ubuntu.png)
+**FEDORA / UBUNTU:**
+
 ```bash
 virsh define macos.xml
 virsh start macos
@@ -126,6 +132,10 @@ Done!
 ## Editing OpenCore EFI
 
 If you need to mount the OpenCore partition outside the MacOS VM to tweak configurations, use the process as described here to mount the EFI partition directly from the Hypervisor via terminal:
+
+![Fedora](../Images/fedora.png)
+![Ubuntu](../Images/ubuntu.png)
+**FEDORA / UBUNTU:**
 
 ```bash
 # Mount the disk

@@ -4,6 +4,10 @@ This is an extensive list of relevant configurations that you can do in your VM.
 
 Just as a reminder, you can edit the XML file or the VM configurations for an already created VM using the following commands:
 
+![Fedora](../Images/fedora.png)
+![Ubuntu](../Images/ubuntu.png)
+**FEDORA / UBUNTU:**
+
 ```bash
 # XML configuration
 vim ${NAME}.xml
@@ -31,6 +35,10 @@ To set as full hardware virtualization mode, allow snapshots on UEFI (only to ``
 
 Please be aware that these settings enable NVRAM and if you edit the machine details, Secure Boot can return error when starting the machine. To fix that issue, disable Secure Boot or start the VM with the reset NVRAM option:
 
+![Fedora](../Images/fedora.png)
+![Ubuntu](../Images/ubuntu.png)
+**FEDORA / UBUNTU:**
+
 ```bash
 virsh start ${NAME} --reset-nvram
 ```
@@ -53,6 +61,10 @@ If you don't want to deal with Secure Boot or it is not supported on the virtual
 ## CPU Optimizations
 
 For a good CPU optimization, we first need to know how the CPU set cores and threads. Use the following command to understand how it works in your case. We need that information to configure the CPU pinning correctly:
+
+![Fedora](../Images/fedora.png)
+![Ubuntu](../Images/ubuntu.png)
+**FEDORA / UBUNTU:**
 
 ```bash
 # Look for <topology> section
@@ -509,6 +521,9 @@ The QEMU guest agent adds many cool features to the VM, including more precise V
 
 After VM is running, you must install the QEMU guest agent to increase performance and get more precise metrics. On Windows, download and use the [VirtIO ISO](https://github.com/virtio-win/virtio-win-pkg-scripts). On Linux, install the ``qemu-guest-agent`` package. MacOS does not have a compatible package yet.
 
+![Ubuntu](../Images/ubuntu.png)
+**UBUNTU - VIRTUAL MACHINE:**
+
 ```bash
 sudo apt install -y qemu-guest-agent
 sudo systemctl start qemu-guest-agent
@@ -530,7 +545,16 @@ The SPICE project adds support for remote access to virtual machines in a seamle
 After VM is running, you must install the SPICE guest agent. The VirtIO ISO already includes it on Windows. On Linux, install the ``spice-vdagent`` package. MacOS does not have a compatible package yet.
 
 ```bash
+# For Debian / Ubuntu virtual machines
+# Install and start agent on virtual machine
 sudo apt install -y install spice-vdagent
+sudo systemctl start spice-vdagent
+```
+
+```bash
+# For Fedora virtual machines
+# Install and start agent on virtual machine
+sudo dnf install -y install spice-vdagent
 sudo systemctl start spice-vdagent
 ```
 
@@ -552,10 +576,16 @@ You can make the command ``virsh console`` result in directly access to the seri
 To enable such a feature on the VM, you need to enable the serial service **INSIDE** the VM (not in the host) once the VM has been installed. For example:
 
 ```bash
+# Any Linux
+# Start console service on virtual machine
 sudo systemctl enable --now serial-getty@ttyS0.service
 ```
 
 Once the service is running inside the VM use the console command to access the terminal from host terminal:
+
+![Fedora](../Images/fedora.png)
+![Ubuntu](../Images/ubuntu.png)
+**FEDORA / UBUNTU:**
 
 ```bash
 # Press ENTER once its show the connected message
