@@ -53,7 +53,7 @@ sudo dnf install -y \
 # Fedora Immutable ONLY
 # Update system and reboot
 rpm-ostree update
-systemctl reboot
+sudo reboot
 
 # Install basic packages in OSTree layer
 rpm-ostree install -y \
@@ -165,7 +165,7 @@ Finally, reboot the system to complete the virtualization packages installation.
 **FEDORA / UBUNTU:**
 
 ```bash
-# Fedora / Ubuntu
+# Reboot hypervisor
 sudo reboot
 ```
 
@@ -246,7 +246,6 @@ For setups with other users that are not the **root** user, you also need to mak
 **FEDORA / UBUNTU:**
 
 ```bash
-# Fedora / Ubuntu
 # Update with correct username
 USERNAME="mateussouzaweb"
 

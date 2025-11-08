@@ -75,11 +75,13 @@ Reboot the system and the bridge is completed.
 **FEDORA / UBUNTU:**
 
 ```bash
+# Reboot hypervisor
+sudo reboot
+
 # WARNING:
 # - Once you reboot, IP address will be changed!
 # - Make sure router is not forcing static IP on these machines..
 # - You may need to configure DNS IPs again...
-sudo reboot
 sudo ip link show
 ```
 
@@ -131,6 +133,7 @@ Once everything has been completed, restart the system and your network is ready
 **FEDORA / UBUNTU:**
 
 ```bash
+# Reboot hypervisor
 sudo reboot
 ```
 

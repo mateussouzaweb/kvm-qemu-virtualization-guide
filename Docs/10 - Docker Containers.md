@@ -20,6 +20,9 @@ sudo dnf install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 # Fedora Immutable ONLY
 # Install packages in OSTree layer
 rpm-ostree install -y docker
+
+# Reboot hypervisor
+sudo reboot
 ```
 
 ![Ubuntu](../Images/ubuntu.png)

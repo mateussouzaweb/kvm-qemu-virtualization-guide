@@ -70,7 +70,7 @@ sudo vim /etc/default/grub
 sudo grub2-mkconfig -o /boot/grub2/grub.cfg
 sudo dracut -f
 
-# Restart the system
+# Reboot hypervisor
 sudo reboot
 ```
 
@@ -93,7 +93,7 @@ sudo vim /etc/default/grub
 sudo update-grub
 sudo dracut -f
 
-# Restart the system
+# Reboot hypervisor
 sudo reboot
 ```
 
@@ -127,8 +127,8 @@ rpm-ostree kargs \
     --append-if-missing="video=vesafb:off,efifb:off,simplefb:off" \
     --append-if-missing="rd.driver.pre=vfio_pci"
 
-# Reboot system
-systemctl reboot
+# Reboot hypervisor
+sudo reboot
 ```
 
 After restart, you can check if PCI-e passthrough is working with the instructions on the next topic.
@@ -192,7 +192,7 @@ sudo dnf install --allowerasing kernel-acs-override/*.rpm
 # Clean artifacts
 sudo rm -fr kernel-acs-override/ kernel-*-acs-override-rpms.zip
 
-# Reboot
+# Reboot hypervisor
 sudo reboot
 ```
 
@@ -227,7 +227,7 @@ sudo dkms install .
 # Load module on system boot
 sudo echo 'vendor-reset' > /etc/modules-load.d/vendor-reset.conf
 
-# Reboot
+# Reboot hypervisor
 sudo reboot
 ```
 

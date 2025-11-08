@@ -101,6 +101,9 @@ sudo firewall-cmd --reload
 # Install packages in OSTree layer
 rpm-ostree install -y samba
 
+# Reboot hypervisor
+sudo reboot
+
 # Enable the service
 sudo systemctl enable smb --now
 
