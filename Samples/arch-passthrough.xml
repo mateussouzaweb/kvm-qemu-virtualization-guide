@@ -1,6 +1,6 @@
 <domain type='kvm'>
-  <name>bazzite</name>
-  <uuid>32286eab-e37a-4a26-b769-1aafed6b9653</uuid>
+  <name>arch-passthrough</name>
+  <uuid>8a43a148-99dc-488a-9db2-abd84c344573</uuid>
   <description>--cpu-scaling-mode=schedutil --preserve-cores=0,1,8,9 --gpu-passthrough=main,0d:00.0,0d:00.1,resize-bar --usb-passthrough=all</description>
   <memory unit='KiB'>25165824</memory>
   <currentMemory unit='KiB'>25165824</currentMemory>
@@ -68,13 +68,13 @@
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
     <disk type='volume' device='disk'>
       <driver name='qemu' type='qcow2' cache='writeback' io='io_uring' discard='unmap'/>
-      <source pool='default' volume='bazzite.qcow2'/>
+      <source pool='default' volume='arch.qcow2'/>
       <target dev='sda' bus='virtio'/>
       <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
     </disk>
     <disk type='volume' device='cdrom'>
       <driver name='qemu' type='raw' discard='unmap'/>
-      <source pool='default' volume='bazzite.iso'/>
+      <source pool='default' volume='arch-linux.iso'/>
       <target dev='sdb' bus='sata'/>
       <readonly/>
       <address type='drive' controller='0' bus='0' target='0' unit='1'/>
@@ -163,7 +163,7 @@
       <address type='pci' domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
     </controller>
     <interface type='bridge'>
-      <mac address='52:54:00:3e:4d:1a'/>
+      <mac address='52:54:00:35:6f:2d'/>
       <source bridge='virbr0'/>
       <model type='virtio'/>
       <link state='up'/>
@@ -182,10 +182,10 @@
       <address type='virtio-serial' controller='0' bus='0' port='1'/>
     </channel>
     <input type='mouse' bus='virtio'>
-      <address type='pci' domain='0x0000' bus='0x0a' slot='0x00' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x08' slot='0x00' function='0x0'/>
     </input>
     <input type='keyboard' bus='virtio'>
-      <address type='pci' domain='0x0000' bus='0x0b' slot='0x00' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x0a' slot='0x00' function='0x0'/>
     </input>
     <input type='mouse' bus='usb'>
       <address type='usb' bus='0' port='2'/>

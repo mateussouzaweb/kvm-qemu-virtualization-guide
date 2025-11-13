@@ -1,5 +1,5 @@
 <domain type='kvm'>
-  <name>solus</name>
+  <name>solus-passthrough</name>
   <uuid>e4f6fb70-da51-4279-8b0a-8e99f0e221d8</uuid>
   <description>--cpu-scaling-mode=schedutil --preserve-cores=0,1,8,9 --gpu-passthrough=main,0d:00.0,0d:00.1,resize-bar --usb-passthrough=all</description>
   <memory unit='KiB'>25165824</memory>

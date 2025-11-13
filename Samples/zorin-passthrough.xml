@@ -1,6 +1,6 @@
 <domain type='kvm'>
-  <name>popos</name>
-  <uuid>004490b9-1b45-4eab-8045-f785fbee08c5</uuid>
+  <name>zorin-passthrough</name>
+  <uuid>466624b8-aec5-48cb-8362-921d45b3925b</uuid>
   <description>--cpu-scaling-mode=schedutil --preserve-cores=0,1,8,9 --gpu-passthrough=main,0d:00.0,0d:00.1,resize-bar --usb-passthrough=all</description>
   <memory unit='KiB'>25165824</memory>
   <currentMemory unit='KiB'>25165824</currentMemory>
@@ -22,8 +22,8 @@
   <os firmware='efi'>
     <type arch='x86_64' machine='pc-q35-10.1'>hvm</type>
     <firmware>
-      <feature enabled='no' name='enrolled-keys'/>
-      <feature enabled='no' name='secure-boot'/>
+      <feature enabled='yes' name='enrolled-keys'/>
+      <feature enabled='yes' name='secure-boot'/>
     </firmware>
     <boot dev='hd'/>
     <boot dev='cdrom'/>
@@ -68,13 +68,13 @@
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
     <disk type='volume' device='disk'>
       <driver name='qemu' type='qcow2' cache='writeback' io='io_uring' discard='unmap'/>
-      <source pool='default' volume='popos.qcow2'/>
+      <source pool='default' volume='zorin.qcow2'/>
       <target dev='sda' bus='virtio'/>
       <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
     </disk>
     <disk type='volume' device='cdrom'>
       <driver name='qemu' type='raw' discard='unmap'/>
-      <source pool='default' volume='popos-24.04.iso'/>
+      <source pool='default' volume='zorin-os-18.iso'/>
       <target dev='sdb' bus='sata'/>
       <readonly/>
       <address type='drive' controller='0' bus='0' target='0' unit='1'/>
@@ -163,7 +163,7 @@
       <address type='pci' domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
     </controller>
     <interface type='bridge'>
-      <mac address='52:54:00:32:1b:f1'/>
+      <mac address='52:54:00:5d:56:64'/>
       <source bridge='virbr0'/>
       <model type='virtio'/>
       <link state='up'/>

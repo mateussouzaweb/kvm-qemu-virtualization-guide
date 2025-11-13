@@ -1,5 +1,5 @@
 <domain type='kvm' xmlns:qemu='http://libvirt.org/schemas/domain/qemu/1.0'>
-  <name>macos</name>
+  <name>macos-passthrough</name>
   <uuid>71dc6d4f-1796-4145-9ec0-4872357c39d8</uuid>
   <description>--cpu-scaling-mode=schedutil --preserve-cores=0,1,8,9 --gpu-passthrough=main,0d:00.0,0d:00.1,resize-bar</description>
   <memory unit='KiB'>25165824</memory>

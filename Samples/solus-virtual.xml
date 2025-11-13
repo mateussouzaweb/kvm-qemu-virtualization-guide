@@ -1,7 +1,7 @@
 <domain type='kvm'>
-  <name>mint</name>
-  <uuid>e2d09b75-0bea-4456-b79c-7c93e6442cfa</uuid>
-  <description>--cpu-scaling-mode=schedutil --preserve-cores=0,1,8,9 --gpu-passthrough=main,0d:00.0,0d:00.1,resize-bar --usb-passthrough=all</description>
+  <name>solus-virtual</name>
+  <uuid>0010637c-4da1-4e7b-9dfb-205babff8535</uuid>
+  <description>--cpu-scaling-mode=schedutil --preserve-cores=0,1,8,9</description>
   <memory unit='KiB'>25165824</memory>
   <currentMemory unit='KiB'>25165824</currentMemory>
   <vcpu placement='static' cpuset='2-7,10-15'>12</vcpu>
@@ -68,13 +68,13 @@
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
     <disk type='volume' device='disk'>
       <driver name='qemu' type='qcow2' cache='writeback' io='io_uring' discard='unmap'/>
-      <source pool='default' volume='mint.qcow2'/>
+      <source pool='default' volume='solus.qcow2'/>
       <target dev='sda' bus='virtio'/>
       <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
     </disk>
     <disk type='volume' device='cdrom'>
       <driver name='qemu' type='raw' discard='unmap'/>
-      <source pool='default' volume='mint-22.iso'/>
+      <source pool='default' volume='solus-4.7.iso'/>
       <target dev='sdb' bus='sata'/>
       <readonly/>
       <address type='drive' controller='0' bus='0' target='0' unit='1'/>
@@ -163,7 +163,7 @@
       <address type='pci' domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
     </controller>
     <interface type='bridge'>
-      <mac address='52:54:00:2c:1d:b4'/>
+      <mac address='52:54:00:4b:3d:a2'/>
       <source bridge='virbr0'/>
       <model type='virtio'/>
       <link state='up'/>
@@ -180,6 +180,10 @@
     <channel type='unix'>
       <target type='virtio' name='org.qemu.guest_agent.0'/>
       <address type='virtio-serial' controller='0' bus='0' port='1'/>
+    </channel>
+    <channel type='spicevmc'>
+      <target type='virtio' name='com.redhat.spice.0'/>
+      <address type='virtio-serial' controller='0' bus='0' port='2'/>
     </channel>
     <input type='mouse' bus='virtio'>
       <address type='pci' domain='0x0000' bus='0x0a' slot='0x00' function='0x0'/>
@@ -200,34 +204,20 @@
         <profile name='default-v1'/>
       </backend>
     </tpm>
-    <audio id='1' type='none'/>
+    <graphics type='spice'>
+      <listen type='none'/>
+      <image compression='off'/>
+      <gl enable='yes'/>
+    </graphics>
+    <sound model='virtio' streams='2'>
+      <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0'/>
+    </sound>
+    <audio id='1' type='spice'/>
     <video>
-      <model type='none'/>
+      <model type="virtio" heads="1" primary="yes">
+        <acceleration accel3d="yes"/>
+      </model>
     </video>
-    <hostdev mode='subsystem' type='pci' managed='yes'>
-      <source>
-        <address domain='0x0000' bus='0x0d' slot='0x00' function='0x0'/>
-      </source>
-      <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0' multifunction='on'/>
-    </hostdev>
-    <hostdev mode='subsystem' type='pci' managed='yes'>
-      <source>
-        <address domain='0x0000' bus='0x0d' slot='0x00' function='0x1'/>
-      </source>
-      <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x1'/>
-    </hostdev>
-    <hostdev mode='subsystem' type='usb' managed='yes'>
-      <source startupPolicy='optional'>
-        <vendor id='0x046d'/>
-        <product id='0xc548'/>
-      </source>
-    </hostdev>
-    <hostdev mode='subsystem' type='usb' managed='yes'>
-      <source startupPolicy='optional'>
-        <vendor id='0x620a'/>
-        <product id='0x0407'/>
-      </source>
-    </hostdev>
     <watchdog model='itco' action='reset'/>
     <memballoon model='virtio'>
       <address type='pci' domain='0x0000' bus='0x05' slot='0x00' function='0x0'/>

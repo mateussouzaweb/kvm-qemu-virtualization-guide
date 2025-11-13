@@ -1,6 +1,6 @@
 <domain type='kvm'>
-  <name>kinoite</name>
-  <uuid>50dfef88-09e4-4969-b564-368b5f39f087</uuid>
+  <name>silverblue-passthrough</name>
+  <uuid>170a774a-e823-4a1d-bf3a-7e9b5b22b745</uuid>
   <description>--cpu-scaling-mode=schedutil --preserve-cores=0,1,8,9 --gpu-passthrough=main,0d:00.0,0d:00.1,resize-bar --usb-passthrough=all</description>
   <memory unit='KiB'>25165824</memory>
   <currentMemory unit='KiB'>25165824</currentMemory>
@@ -68,13 +68,13 @@
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
     <disk type='volume' device='disk'>
       <driver name='qemu' type='qcow2' cache='writeback' io='io_uring' discard='unmap'/>
-      <source pool='default' volume='kinoite.qcow2'/>
+      <source pool='default' volume='silverblue.qcow2'/>
       <target dev='sda' bus='virtio'/>
       <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
     </disk>
     <disk type='volume' device='cdrom'>
       <driver name='qemu' type='raw' discard='unmap'/>
-      <source pool='default' volume='fedora-kinoite-43.iso'/>
+      <source pool='default' volume='fedora-silverblue-43.iso'/>
       <target dev='sdb' bus='sata'/>
       <readonly/>
       <address type='drive' controller='0' bus='0' target='0' unit='1'/>
@@ -163,7 +163,7 @@
       <address type='pci' domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
     </controller>
     <interface type='bridge'>
-      <mac address='52:54:00:1b:2c:64'/>
+      <mac address='52:54:00:3d:5b:6a'/>
       <source bridge='virbr0'/>
       <model type='virtio'/>
       <link state='up'/>

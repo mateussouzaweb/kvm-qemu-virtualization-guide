@@ -1,14 +1,23 @@
 <domain type='kvm'>
-  <name>server</name>
-  <uuid>de984348-42d6-404f-923c-6889e53f22e0</uuid>
-  <memory unit='KiB'>8388608</memory>
-  <currentMemory unit='KiB'>8388608</currentMemory>
-  <vcpu placement='static' cpuset='2-3,10-11'>4</vcpu>
+  <name>windows-virtual</name>
+  <uuid>1e246c5c-469c-4681-a1a9-2f8a0813b3bc</uuid>
+  <description>--cpu-scaling-mode=schedutil --preserve-cores=0,1,8,9</description>
+  <memory unit='KiB'>25165824</memory>
+  <currentMemory unit='KiB'>25165824</currentMemory>
+  <vcpu placement='static' cpuset='2-7,10-15'>12</vcpu>
   <cputune>
     <vcpupin vcpu='0' cpuset='2'/>
     <vcpupin vcpu='1' cpuset='3'/>
-    <vcpupin vcpu='2' cpuset='10'/>
-    <vcpupin vcpu='3' cpuset='11'/>
+    <vcpupin vcpu='2' cpuset='4'/>
+    <vcpupin vcpu='3' cpuset='5'/>
+    <vcpupin vcpu='4' cpuset='6'/>
+    <vcpupin vcpu='5' cpuset='7'/>
+    <vcpupin vcpu='6' cpuset='10'/>
+    <vcpupin vcpu='7' cpuset='11'/>
+    <vcpupin vcpu='8' cpuset='12'/>
+    <vcpupin vcpu='9' cpuset='13'/>
+    <vcpupin vcpu='10' cpuset='14'/>
+    <vcpupin vcpu='11' cpuset='15'/>
   </cputune>
   <os firmware='efi'>
     <type arch='x86_64' machine='pc-q35-10.1'>hvm</type>
@@ -23,10 +32,15 @@
   <features>
     <acpi/>
     <apic/>
+    <pae/>
     <hyperv mode='custom'>
       <relaxed state='on'/>
       <vapic state='on'/>
       <spinlocks state='on' retries='8191'/>
+      <vpindex state='on'/>
+      <synic state='on'/>
+      <stimer state='on'/>
+      <reset state='on'/>
       <vendor_id state='on' value='1234567890ab'/>
     </hyperv>
     <kvm>
@@ -37,15 +51,17 @@
     <ioapic driver='kvm'/>
   </features>
   <cpu mode='host-passthrough' check='none' migratable='off'>
-    <topology sockets='1' dies='1' clusters='1' cores='2' threads='2'/>
+    <topology sockets='1' dies='1' clusters='1' cores='6' threads='2'/>
     <cache mode='passthrough'/>
     <feature policy='require' name='invtsc'/>
     <feature policy='require' name='topoext'/>
+    <feature policy='disable' name='hypervisor'/>
   </cpu>
-  <clock offset='utc'>
+  <clock offset='localtime'>
     <timer name='rtc' tickpolicy='catchup'/>
     <timer name='pit' tickpolicy='delay'/>
     <timer name='hpet' present='no'/>
+    <timer name='hypervclock' present='yes'/>
     <timer name='tsc' present='yes' mode='native'/>
   </clock>
   <on_poweroff>destroy</on_poweroff>
@@ -59,16 +75,23 @@
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
     <disk type='volume' device='disk'>
       <driver name='qemu' type='qcow2' cache='writeback' io='io_uring' discard='unmap'/>
-      <source pool='default' volume='server.qcow2'/>
+      <source pool='default' volume='windows.qcow2'/>
       <target dev='sda' bus='virtio'/>
-      <address type='pci' domain='0x0000' bus='0x08' slot='0x00' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x05' slot='0x00' function='0x0'/>
     </disk>
     <disk type='volume' device='cdrom'>
-      <driver name='qemu' type='raw'/>
-      <source pool='default' volume='ubuntu-server-24.04.iso'/>
+      <driver name='qemu' type='raw' discard='unmap'/>
+      <source pool='default' volume='windows-11.iso'/>
       <target dev='sdb' bus='sata'/>
       <readonly/>
       <address type='drive' controller='0' bus='0' target='0' unit='1'/>
+    </disk>
+    <disk type='volume' device='cdrom'>
+      <driver name='qemu' type='raw' discard='unmap'/>
+      <source pool='default' volume='virtio-win.iso'/>
+      <target dev='sdc' bus='sata'/>
+      <readonly/>
+      <address type='drive' controller='0' bus='0' target='0' unit='2'/>
     </disk>
     <controller type='usb' index='0' model='qemu-xhci' ports='15'>
       <address type='pci' domain='0x0000' bus='0x02' slot='0x00' function='0x0'/>
@@ -123,7 +146,7 @@
     <controller type='pci' index='9' model='pcie-root-port'>
       <model name='pcie-root-port'/>
       <target chassis='9' port='0x18'/>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0' multifunction='on'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
     </controller>
     <controller type='pci' index='10' model='pcie-root-port'>
       <model name='pcie-root-port'/>
@@ -154,11 +177,11 @@
       <address type='pci' domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
     </controller>
     <interface type='bridge'>
-      <mac address='52:54:00:fb:aa:f9'/>
+      <mac address='52:54:00:fb:41:81'/>
       <source bridge='virbr0'/>
-      <model type='virtio'/>
+      <model type='igb'/>
       <link state='up'/>
-      <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x06' slot='0x00' function='0x0'/>
     </interface>
     <serial type='pty'>
       <target type='isa-serial' port='0'>
@@ -177,16 +200,16 @@
       <address type='virtio-serial' controller='0' bus='0' port='2'/>
     </channel>
     <input type='mouse' bus='virtio'>
-      <address type='pci' domain='0x0000' bus='0x06' slot='0x00' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
     </input>
     <input type='keyboard' bus='virtio'>
-      <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x08' slot='0x00' function='0x0'/>
     </input>
     <input type='mouse' bus='usb'>
-      <address type='usb' bus='0' port='1'/>
+      <address type='usb' bus='0' port='2'/>
     </input>
     <input type='keyboard' bus='usb'>
-      <address type='usb' bus='0' port='2'/>
+      <address type='usb' bus='0' port='3'/>
     </input>
     <input type='mouse' bus='ps2'/>
     <input type='keyboard' bus='ps2'/>
@@ -198,19 +221,20 @@
     <graphics type='spice'>
       <listen type='none'/>
       <image compression='off'/>
-      <gl enable='no'/>
+      <gl enable='yes'/>
     </graphics>
-    <audio id='1' type='none'/>
+    <sound model='virtio' streams='2'>
+      <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0'/>
+    </sound>
+    <audio id='1' type='spice'/>
     <video>
-      <model type='virtio' heads='1' primary='yes'/>
+      <model type="virtio" heads="1" primary="yes">
+        <acceleration accel3d="yes"/>
+      </model>
     </video>
     <watchdog model='itco' action='reset'/>
     <memballoon model='virtio'>
       <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
     </memballoon>
-    <rng model='virtio'>
-      <backend model='random'>/dev/urandom</backend>
-      <address type='pci' domain='0x0000' bus='0x05' slot='0x00' function='0x0'/>
-    </rng>
   </devices>
 </domain>
