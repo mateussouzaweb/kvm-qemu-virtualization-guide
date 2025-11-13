@@ -108,7 +108,7 @@ Now, download the sample XML configuration and tweak to run on your system devic
 ```bash
 # Download sample
 REPOSITORY="https://mateussouzaweb.github.io/kvm-qemu-virtualization-guide/Samples"
-sudo curl -L ${REPOSITORY}/macos.xml --output macos.xml
+sudo curl -L ${REPOSITORY}/macos-virtual.xml --output macos.xml
 
 # Edit settings
 sudo vim macos.xml
