@@ -8,7 +8,10 @@ Our object is just one: have a **full working virtualization platform with QEMU 
 
 ## What to Expect
 
-- Virtualization solution with Fedora or Ubuntu as hypervisor.
+![Fedora](./Images/fedora.png)
+![Ubuntu](./Images/ubuntu.png)
+
+- Virtualization solution with **Fedora** or **Ubuntu** as hypervisor.
 - Instructions for traditional and immutable systems.
 - Easy guide if you already have KVM / QEMU knowledge.
 - Virtualization that just works.
