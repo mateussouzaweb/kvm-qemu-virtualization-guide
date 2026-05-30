@@ -154,22 +154,14 @@ virt-host-validate | grep "QEMU"
 # Dmesg check
 sudo dmesg | grep -i -e DMAR -e IOMMU
 
-# PCI-e IOMMU groups and USB bus check
-# First download the helper command
-REPOSITORY="https://mateussouzaweb.github.io/kvm-qemu-virtualization-guide/Scripts/bin"
-sudo curl -L ${REPOSITORY}/lspci-groups --output /usr/local/bin/lspci-groups
-sudo chmod +x /usr/local/bin/lspci-groups
-
-# Now run it
-lspci-groups
-
-# You can also run it when need detailed information for a specific hardware type
-lspci-groups | grep "USB"
-lspci-groups | grep "VGA"
-lspci-groups | grep "Audio"
-lspci-groups | grep "Network"
-lspci-groups | grep "NVMe"
-lspci-groups | grep "SSD"
+# Basic PCI-e IOMMU groups checking
+for group in `find /sys/kernel/iommu_groups/* -maxdepth 0 -type d | sort -V`; do
+  for device in ${group}/devices/*; do
+    info=$(lspci -nns ${device##*/})
+    group=${group##*/}
+    echo "Group ${group} - ${info}"
+  done
+done
 ```
 
 For IOMMU groups output, you should have your graphics card in a separate group. This will probably be ok with your main GPU, but for secondary GPUs (if your motherboard supports it) or other devices, you may need to change the ACS implementation to allow more isolated groups when your motherboard does not do that for you - **if that is not your case and everything is ok, you can go to the next step**, otherwise, follow the next topic to override ACS implementation.

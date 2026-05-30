@@ -1,6 +1,8 @@
 # KVM / QEMU XML Configuration Tips
 
-This is an extensive list of relevant configurations that you can do in your VM. It's a must read if you want to setup hooks and configure your VM to work well. Please remember that they are just samples, you must replace the hardware parts to match yours and to match the specs of your VM. You can also check the ``Samples/`` folder to see some final examples.
+This is an extensive list of relevant configurations that you can do in your VM. It's a must read if you want to configure your VM to work well. 
+
+Please remember that they are just samples, you must replace the hardware parts to match yours and to match the specs of your VM. You can also check the ``Samples/`` folder to see some final examples.
 
 Just as a reminder, you can edit the XML file or the VM configurations for an already created VM using the following commands:
 
@@ -113,11 +115,7 @@ In the case of running a another VM in parallel, you could use a 2-core and 4-th
 </cpu>
 ```
 
-Notice that the cores 0, 1, 8 and 9 (the first 4 threads) were not declared on such XMLs because they will be reserved to the host. We also should use the virtualization hooks to declare such cores as preserved to fully isolate CPUs from the host and scale CPU to performance mode on host to increase responsiveness on running VMs:
-
-```xml
-<description>--cpu-scaling-mode=performance --preserve-cores=0,1,8,9</description>
-```
+Notice that the cores 0, 1, 8 and 9 (the first 4 threads) were not declared on such XMLs because they will be reserved to the host.
 
 ## Linux Enhancements
 
@@ -347,16 +345,6 @@ Once you have the ROM file configured on the hypervisor system, edit the VM conf
 </devices>
 ```
 
-Since we are attaching the GPU to the VM, we must set the virtualization hook options with such reference:
-
-```xml
-<!-- If you have only one GPU or is attaching the main GPU -->
-<description>--gpu-passthrough=main,0d:00.0,0d:00.1</description>
-
-<!-- If you are attaching other secondary GPU -->
-<description>--gpu-passthrough=secondary,04:00.0,04:00.1</description>
-```
-
 Don't forget also to remove any line related to ``<graphics>``, ``<video>`` and other unnecessary devices from your VM config in the XML (SPLICE or VNC related) - this step can solve a lot of problems with GPU passthrough because these declarations may prevent the GPU passthrough from running properly!
 
 If you are having problems with the black screen in your VM after GPU passthrough and can't detect what is it, use the VNC display to check the issue. You can attach a VNC display with the following XML and it can work as a boot display to manage the boot options:
@@ -441,11 +429,7 @@ For others cases, you should configure USB devices like mouse and keyboard to di
 </devices>
 ```
 
-For other devices like USB drivers, gamepads, headphones, and many more that are often connected to the host or can be switched between VMs, I recommend setting it to be plugged in live with the virtualization hook option. That way, any USB device attached to any USB port will be automatically redirected to the VM:
-
-```xml
-<description>--usb-passthrough=all</description>
-```
+For other devices like USB drivers, gamepads, headphones, and many more that are often connected to the host or can be switched between VMs, I recommend setting it to be plugged in live with the virtualization hooks automation. That way, any USB device attached to any USB port will be automatically redirected to the VM.
 
 Please keep in mind that the virtualization hook method may not work in some specific machines and you must only plug in the device after VM has been started to trigger the hook. If the device should start connected on the VM, then you must setup its XML like described before (USB mouse and keyboard on Windows and MacOS VMs need this).
 
