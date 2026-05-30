@@ -2,12 +2,12 @@
 
 PCI-e passthrough is a feature that allows the redirection of hardware devices to virtual machines. If you want to use your GPU in a VM for example, you need to enable such feature in the BIOS. Start by checking if the following BIOS settings are correctly configured in your motherboard:
 
-- ``IOMMU`` - Enabled
-- ``SVM`` or ``VD-t`` - Enabled
-- ``SR-IOV Support`` - Enabled
-- ``ACS Enable`` or ``ACS Override`` - Auto or Disabled
-- ``Above 4G Decoding`` - Enabled or Disabled
-- ``Resizable BAR`` or ``Smart Access Memory`` - Disabled
+- ``IOMMU`` - Auto or Enabled
+- ``SVM`` or ``VD-t`` - Auto or Enabled
+- ``SR-IOV Support`` - Auto or Enabled
+- ``ACS Enable`` or ``ACS Override`` - Auto or Enabled
+- ``Above 4G Decoding`` - Auto or Enabled
+- ``Resizable BAR`` or ``Smart Access Memory`` - Enabled
 - ``PCIe ARI Support`` - Auto or Enabled
 - ``Enable AER Cap`` - Auto or Enabled
 - ``CSM Support`` - Disabled, must use UEFI
