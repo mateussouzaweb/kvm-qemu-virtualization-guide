@@ -63,5 +63,6 @@ Follow the guides inside the ```Docs``` folder or use the links below for a spec
 - **[Linux Virtualization](Docs/06%20-%20Linux%20Virtualization.md)**
 - **[Windows Virtualization](Docs/07%20-%20Windows%20Virtualization.md)**
 - **[MacOS Virtualization](Docs/08%20-%20MacOS%20Virtualization.md)**
-- **[File Sharing](Docs/09%20-%20File%20Sharing.md)**
-- **[Docker Containers](Docs/10%20-%20Docker%20Containers.md)**
+- **[SteamOS Virtualization](Docs/09%20-%20SteamOS%20Virtualization.md)**
+- **[File Sharing](Docs/10%20-%20File%20Sharing.md)**
+- **[Docker Containers](Docs/11%20-%20Docker%20Containers.md)**

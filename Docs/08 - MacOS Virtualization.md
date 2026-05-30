@@ -161,3 +161,4 @@ Others tips and tricks:
 
 - **[Linux Virtualization](06%20-%20Linux%20Virtualization.md)**
 - **[Windows Virtualization](07%20-%20Windows%20Virtualization.md)**
+- **[SteamOS Virtualization](09%20-%20SteamOS%20Virtualization.md)**

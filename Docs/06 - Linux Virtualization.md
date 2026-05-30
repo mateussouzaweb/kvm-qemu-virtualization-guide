@@ -22,3 +22,4 @@ Others tips and tricks:
 
 - **[Windows Virtualization](07%20-%20Windows%20Virtualization.md)**
 - **[MacOS Virtualization](08%20-%20MacOS%20Virtualization.md)**
+- **[SteamOS Virtualization](09%20-%20SteamOS%20Virtualization.md)**
