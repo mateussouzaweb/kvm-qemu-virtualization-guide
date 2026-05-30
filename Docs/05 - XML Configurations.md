@@ -586,3 +586,4 @@ I will update this configuration guide once I learn more relevant details in the
 - **[Linux Virtualization](06%20-%20Linux%20Virtualization.md)**
 - **[Windows Virtualization](07%20-%20Windows%20Virtualization.md)**
 - **[MacOS Virtualization](08%20-%20MacOS%20Virtualization.md)**
+- **[SteamOS Virtualization](09%20-%20SteamOS%20Virtualization.md)**
