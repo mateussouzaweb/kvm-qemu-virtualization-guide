@@ -1,9 +1,9 @@
 <domain type='kvm'>
-  <name>solus-virtual</name>
-  <uuid>0010637c-4da1-4e7b-9dfb-205babff8535</uuid>
+  <name>steam-os-virtual</name>
+  <uuid>038b8c0a-e617-4951-9c33-c3ee4f9e6d9a</uuid>
   <metadata>
     <libosinfo:libosinfo xmlns:libosinfo="http://libosinfo.org/xmlns/libvirt/domain/1.0">
-      <libosinfo:os id="http://getsol.us/solus/rolling"/>
+      <libosinfo:os id="http://archlinux.org/archlinux/rolling"/>
     </libosinfo:libosinfo>
   </metadata>
   <memory unit='KiB'>25165824</memory>
@@ -26,8 +26,8 @@
   <os firmware='efi'>
     <type arch='x86_64' machine='pc-q35-10.2'>hvm</type>
     <firmware>
-      <feature enabled='yes' name='enrolled-keys'/>
-      <feature enabled='yes' name='secure-boot'/>
+      <feature enabled='no' name='enrolled-keys'/>
+      <feature enabled='no' name='secure-boot'/>
     </firmware>
     <boot dev='hd'/>
     <boot dev='cdrom'/>
@@ -72,16 +72,15 @@
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
     <disk type='volume' device='disk'>
       <driver name='qemu' type='qcow2' cache='writeback' io='io_uring' discard='unmap'/>
-      <source pool='default' volume='solus.qcow2'/>
-      <target dev='sda' bus='virtio'/>
+      <source pool='default' volume='steam-os.qcow2'/>
+      <target dev='nvme0n1' bus='virtio'/>
       <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
     </disk>
-    <disk type='volume' device='cdrom'>
+    <disk type='volume' device='disk'>
       <driver name='qemu' type='raw' discard='unmap'/>
-      <source pool='default' volume='solus-4.9.iso'/>
-      <target dev='sdb' bus='sata'/>
-      <readonly/>
-      <address type='drive' controller='0' bus='0' target='0' unit='1'/>
+      <source pool='default' volume='steam-os.img'/>
+      <target dev='sda' bus='virtio'/>
+      <address type='pci' domain='0x0000' bus='0x08' slot='0x00' function='0x0'/>
     </disk>
     <controller type='usb' index='0' model='qemu-xhci' ports='15'>
       <address type='pci' domain='0x0000' bus='0x02' slot='0x00' function='0x0'/>
@@ -167,7 +166,7 @@
       <address type='pci' domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
     </controller>
     <interface type='bridge'>
-      <mac address='52:54:00:4b:3d:a2'/>
+      <mac address='52:54:00:3a:2d:1a'/>
       <source bridge='virbr0'/>
       <model type='virtio'/>
       <link state='up'/>

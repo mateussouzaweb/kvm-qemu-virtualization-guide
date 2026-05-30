@@ -1,9 +1,9 @@
 <domain type='kvm'>
-  <name>solus-virtual</name>
-  <uuid>0010637c-4da1-4e7b-9dfb-205babff8535</uuid>
+  <name>nobara-passthrough</name>
+  <uuid>1ed10b18-a6b8-4d1f-aeb6-1a400ef40f5b</uuid>
   <metadata>
     <libosinfo:libosinfo xmlns:libosinfo="http://libosinfo.org/xmlns/libvirt/domain/1.0">
-      <libosinfo:os id="http://getsol.us/solus/rolling"/>
+      <libosinfo:os id="http://fedoraproject.org/fedora/43"/>
     </libosinfo:libosinfo>
   </metadata>
   <memory unit='KiB'>25165824</memory>
@@ -26,8 +26,8 @@
   <os firmware='efi'>
     <type arch='x86_64' machine='pc-q35-10.2'>hvm</type>
     <firmware>
-      <feature enabled='yes' name='enrolled-keys'/>
-      <feature enabled='yes' name='secure-boot'/>
+      <feature enabled='no' name='enrolled-keys'/>
+      <feature enabled='no' name='secure-boot'/>
     </firmware>
     <boot dev='hd'/>
     <boot dev='cdrom'/>
@@ -72,13 +72,13 @@
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
     <disk type='volume' device='disk'>
       <driver name='qemu' type='qcow2' cache='writeback' io='io_uring' discard='unmap'/>
-      <source pool='default' volume='solus.qcow2'/>
+      <source pool='default' volume='nobara.qcow2'/>
       <target dev='sda' bus='virtio'/>
       <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
     </disk>
     <disk type='volume' device='cdrom'>
       <driver name='qemu' type='raw' discard='unmap'/>
-      <source pool='default' volume='solus-4.9.iso'/>
+      <source pool='default' volume='nobara-43.iso'/>
       <target dev='sdb' bus='sata'/>
       <readonly/>
       <address type='drive' controller='0' bus='0' target='0' unit='1'/>
@@ -167,7 +167,7 @@
       <address type='pci' domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
     </controller>
     <interface type='bridge'>
-      <mac address='52:54:00:4b:3d:a2'/>
+      <mac address='52:54:00:7d:28:28'/>
       <source bridge='virbr0'/>
       <model type='virtio'/>
       <link state='up'/>
@@ -184,10 +184,6 @@
     <channel type='unix'>
       <target type='virtio' name='org.qemu.guest_agent.0'/>
       <address type='virtio-serial' controller='0' bus='0' port='1'/>
-    </channel>
-    <channel type='spicevmc'>
-      <target type='virtio' name='com.redhat.spice.0'/>
-      <address type='virtio-serial' controller='0' bus='0' port='2'/>
     </channel>
     <input type='mouse' bus='virtio'>
       <address type='pci' domain='0x0000' bus='0x0a' slot='0x00' function='0x0'/>
@@ -208,21 +204,36 @@
         <profile name='default-v1'/>
       </backend>
     </tpm>
-    <graphics type='spice'>
-      <listen type='none'/>
-      <image compression='off'/>
-      <gl enable='yes'/>
-    </graphics>
-    <sound model='virtio' streams='2'>
-      <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0'/>
-    </sound>
-    <audio id='1' type='spice'/>
+    <audio id='1' type='none'/>
     <video>
-      <model type='virtio' heads='1' primary='yes'>
-        <acceleration accel3d='yes'/>
-      </model>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x0'/>
+      <model type='none'/>
     </video>
+    <hostdev mode='subsystem' type='pci' managed='yes'>
+      <source>
+        <address domain='0x0000' bus='0x0d' slot='0x00' function='0x0'/>
+      </source>
+      <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0' multifunction='on'/>
+    </hostdev>
+    <hostdev mode='subsystem' type='pci' managed='yes'>
+      <source>
+        <address domain='0x0000' bus='0x0d' slot='0x00' function='0x1'/>
+      </source>
+      <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x1'/>
+    </hostdev>
+    <hostdev mode='subsystem' type='usb' managed='yes'>
+      <source startupPolicy='optional'>
+        <vendor id='0x046d'/>
+        <product id='0xc548'/>
+      </source>
+      <address type='usb' bus='0' port='1'/>
+    </hostdev>
+    <hostdev mode='subsystem' type='usb' managed='yes'>
+      <source startupPolicy='optional'>
+        <vendor id='0x620a'/>
+        <product id='0x0407'/>
+      </source>
+      <address type='usb' bus='0' port='4'/>
+    </hostdev>
     <watchdog model='itco' action='reset'/>
     <memballoon model='virtio'>
       <address type='pci' domain='0x0000' bus='0x05' slot='0x00' function='0x0'/>
@@ -232,7 +243,7 @@
       <address type='pci' domain='0x0000' bus='0x06' slot='0x00' function='0x0'/>
     </rng>
     <panic model='pvpanic'>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x0'/>
     </panic>
   </devices>
 </domain>

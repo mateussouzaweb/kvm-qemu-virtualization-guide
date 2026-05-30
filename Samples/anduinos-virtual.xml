@@ -1,9 +1,9 @@
 <domain type='kvm'>
-  <name>solus-virtual</name>
-  <uuid>0010637c-4da1-4e7b-9dfb-205babff8535</uuid>
+  <name>anduinos-virtual</name>
+  <uuid>3f3a7eef-a514-4263-ab1f-592e0797bbe4</uuid>
   <metadata>
     <libosinfo:libosinfo xmlns:libosinfo="http://libosinfo.org/xmlns/libvirt/domain/1.0">
-      <libosinfo:os id="http://getsol.us/solus/rolling"/>
+      <libosinfo:os id="http://ubuntu.com/ubuntu/25.10"/>
     </libosinfo:libosinfo>
   </metadata>
   <memory unit='KiB'>25165824</memory>
@@ -72,13 +72,13 @@
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
     <disk type='volume' device='disk'>
       <driver name='qemu' type='qcow2' cache='writeback' io='io_uring' discard='unmap'/>
-      <source pool='default' volume='solus.qcow2'/>
+      <source pool='default' volume='arduinos.qcow2'/>
       <target dev='sda' bus='virtio'/>
       <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
     </disk>
     <disk type='volume' device='cdrom'>
       <driver name='qemu' type='raw' discard='unmap'/>
-      <source pool='default' volume='solus-4.9.iso'/>
+      <source pool='default' volume='anduinos-1.4.2.iso'/>
       <target dev='sdb' bus='sata'/>
       <readonly/>
       <address type='drive' controller='0' bus='0' target='0' unit='1'/>
@@ -167,7 +167,7 @@
       <address type='pci' domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
     </controller>
     <interface type='bridge'>
-      <mac address='52:54:00:4b:3d:a2'/>
+      <mac address='52:54:00:2e:1e:b8'/>
       <source bridge='virbr0'/>
       <model type='virtio'/>
       <link state='up'/>

@@ -1,7 +1,11 @@
 <domain type='kvm'>
   <name>ubuntu-passthrough</name>
   <uuid>da4ad76a-e1ce-4e05-b68d-0fa33ac9620c</uuid>
-  <description>--cpu-scaling-mode=schedutil --preserve-cores=0,1,8,9 --gpu-passthrough=main,0d:00.0,0d:00.1,resize-bar --usb-passthrough=all</description>
+  <metadata>
+    <libosinfo:libosinfo xmlns:libosinfo="http://libosinfo.org/xmlns/libvirt/domain/1.0">
+      <libosinfo:os id="http://ubuntu.com/ubuntu/24.04"/>
+    </libosinfo:libosinfo>
+  </metadata>
   <memory unit='KiB'>25165824</memory>
   <currentMemory unit='KiB'>25165824</currentMemory>
   <vcpu placement='static' cpuset='2-7,10-15'>12</vcpu>
@@ -20,7 +24,7 @@
     <vcpupin vcpu='11' cpuset='15'/>
   </cputune>
   <os firmware='efi'>
-    <type arch='x86_64' machine='pc-q35-10.1'>hvm</type>
+    <type arch='x86_64' machine='pc-q35-10.2'>hvm</type>
     <firmware>
       <feature enabled='yes' name='enrolled-keys'/>
       <feature enabled='yes' name='secure-boot'/>
@@ -45,7 +49,7 @@
     <smm state='on'/>
     <ioapic driver='kvm'/>
   </features>
-  <cpu mode='host-passthrough' check='none' migratable='off'>
+  <cpu mode='host-passthrough' check='none' migratable='on'>
     <topology sockets='1' dies='1' clusters='1' cores='6' threads='2'/>
     <cache mode='passthrough'/>
     <feature policy='require' name='invtsc'/>
@@ -74,7 +78,7 @@
     </disk>
     <disk type='volume' device='cdrom'>
       <driver name='qemu' type='raw' discard='unmap'/>
-      <source pool='default' volume='ubuntu-desktop-25.10.iso'/>
+      <source pool='default' volume='ubuntu-desktop-26.04.iso'/>
       <target dev='sdb' bus='sata'/>
       <readonly/>
       <address type='drive' controller='0' bus='0' target='0' unit='1'/>
@@ -221,12 +225,14 @@
         <vendor id='0x046d'/>
         <product id='0xc548'/>
       </source>
+      <address type='usb' bus='0' port='1'/>
     </hostdev>
     <hostdev mode='subsystem' type='usb' managed='yes'>
       <source startupPolicy='optional'>
         <vendor id='0x620a'/>
         <product id='0x0407'/>
       </source>
+      <address type='usb' bus='0' port='4'/>
     </hostdev>
     <watchdog model='itco' action='reset'/>
     <memballoon model='virtio'>
@@ -236,5 +242,8 @@
       <backend model='random'>/dev/urandom</backend>
       <address type='pci' domain='0x0000' bus='0x06' slot='0x00' function='0x0'/>
     </rng>
+    <panic model='pvpanic'>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x0'/>
+    </panic>
   </devices>
 </domain>

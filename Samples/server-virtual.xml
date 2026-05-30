@@ -1,7 +1,11 @@
 <domain type='kvm'>
   <name>server-virtual</name>
   <uuid>4547164d-d4a0-4148-9605-ff5b263f547c</uuid>
-  <description>--cpu-scaling-mode=schedutil --preserve-cores=0,1,8,9</description>
+  <metadata>
+    <libosinfo:libosinfo xmlns:libosinfo="http://libosinfo.org/xmlns/libvirt/domain/1.0">
+      <libosinfo:os id="http://ubuntu.com/ubuntu/24.04"/>
+    </libosinfo:libosinfo>
+  </metadata>
   <memory unit='KiB'>8388608</memory>
   <currentMemory unit='KiB'>8388608</currentMemory>
   <vcpu placement='static' cpuset='2-3,10-11'>4</vcpu>
@@ -12,7 +16,7 @@
     <vcpupin vcpu='3' cpuset='11'/>
   </cputune>
   <os firmware='efi'>
-    <type arch='x86_64' machine='pc-q35-10.1'>hvm</type>
+    <type arch='x86_64' machine='pc-q35-10.2'>hvm</type>
     <firmware>
       <feature enabled='yes' name='enrolled-keys'/>
       <feature enabled='yes' name='secure-boot'/>
@@ -37,7 +41,7 @@
     <smm state='on'/>
     <ioapic driver='kvm'/>
   </features>
-  <cpu mode='host-passthrough' check='none' migratable='off'>
+  <cpu mode='host-passthrough' check='none' migratable='on'>
     <topology sockets='1' dies='1' clusters='1' cores='2' threads='2'/>
     <cache mode='passthrough'/>
     <feature policy='require' name='invtsc'/>
@@ -66,7 +70,7 @@
     </disk>
     <disk type='volume' device='cdrom'>
       <driver name='qemu' type='raw'/>
-      <source pool='default' volume='ubuntu-server-24.04.iso'/>
+      <source pool='default' volume='ubuntu-server-26.04.iso'/>
       <target dev='sdb' bus='sata'/>
       <readonly/>
       <address type='drive' controller='0' bus='0' target='0' unit='1'/>
@@ -209,6 +213,7 @@
       <model type='virtio' heads='1' primary='yes'>
         <acceleration accel3d='yes'/>
       </model>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x0'/>
     </video>
     <watchdog model='itco' action='reset'/>
     <memballoon model='virtio'>
@@ -218,5 +223,8 @@
       <backend model='random'>/dev/urandom</backend>
       <address type='pci' domain='0x0000' bus='0x06' slot='0x00' function='0x0'/>
     </rng>
+    <panic model='pvpanic'>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>
+    </panic>
   </devices>
 </domain>
