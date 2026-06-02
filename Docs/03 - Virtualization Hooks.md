@@ -13,14 +13,13 @@ The installation of hooks is very easy. Use the process below to install the scr
 **FEDORA / UBUNTU:**
 
 ```bash
-# Set repository, version and destination
+# Set repository and destination
 REPOSITORY="https://github.com/mateussouzaweb/libvirt-hooks/"
-VERSION="v1.0.2"
 DESTINATION="/etc/libvirt/hooks"
 
 # Download binary file
 sudo mkdir -p ${DESTINATION}
-sudo curl -L ${REPOSITORY}/releases/download/${VERSION}/qemu-amd64 \
+sudo curl -L ${REPOSITORY}/releases/latest/download/qemu-amd64 \
     --output ${DESTINATION}/qemu
 
 # Set scripts as executable
