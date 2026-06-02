@@ -14,7 +14,7 @@ The installation of hooks is very easy. Use the process below to install the scr
 
 ```bash
 # Set repository and destination
-REPOSITORY="https://github.com/mateussouzaweb/libvirt-hooks/"
+REPOSITORY="https://github.com/mateussouzaweb/libvirt-hooks"
 DESTINATION="/etc/libvirt/hooks"
 
 # Download binary file
