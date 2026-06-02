@@ -38,6 +38,11 @@ MacOS has a few tricks to virtualize. Once running with their limitations, it wo
 
 - If you will passthrough onboard audio, make sure you put it in bus ``0x00`` and slot ``0x0y`` (y is numeric) as this is necessary to make ``AppleALC`` recognize its audio device.
 
+**Mouse and Keyboard:**
+
+- Don't include ``virtio`` mouse and keyboard for MacOS virtualization because they can cause incompatibility issues.
+- The best approach is to configure ``ps2`` for boot menu and ``usb`` mouse and keyboard for MacOS usage.
+
 **USB:**
 
 - Live USB passthrough is not possible. You need to attach the USB device and then restart the VM to work.

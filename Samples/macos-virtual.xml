@@ -171,12 +171,6 @@
       <target type='virtio' name='com.redhat.spice.0'/>
       <address type='virtio-serial' controller='0' bus='0' port='2'/>
     </channel>
-    <input type='mouse' bus='virtio'>
-      <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0'/>
-    </input>
-    <input type='keyboard' bus='virtio'>
-      <address type='pci' domain='0x0000' bus='0x08' slot='0x00' function='0x0'/>
-    </input>
     <input type='tablet' bus='usb'>
       <address type='usb' bus='0' port='1'/>
     </input>
