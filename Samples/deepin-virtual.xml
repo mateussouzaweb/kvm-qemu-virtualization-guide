@@ -1,6 +1,6 @@
 <domain type='kvm'>
   <name>deepin-virtual</name>
-  <uuid>3f3a7eef-a514-4263-ab1f-592e0797bbe4</uuid>
+  <uuid>4b8e43e1-cba2-4188-8273-db873ac953a9</uuid>
   <metadata>
     <libosinfo:libosinfo xmlns:libosinfo="http://libosinfo.org/xmlns/libvirt/domain/1.0">
       <libosinfo:os id="http://debian.org/debian/13"/>

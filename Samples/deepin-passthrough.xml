@@ -1,6 +1,6 @@
 <domain type='kvm'>
   <name>deepin-passthrough</name>
-  <uuid>2febab5d-1bc7-498f-9864-1af78efa5665</uuid>
+  <uuid>709b768d-906b-4e99-96fc-2083ce073670</uuid>
   <metadata>
     <libosinfo:libosinfo xmlns:libosinfo="http://libosinfo.org/xmlns/libvirt/domain/1.0">
       <libosinfo:os id="http://debian.org/debian/13"/>
