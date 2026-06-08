@@ -37,8 +37,7 @@ sudo dnf update -y
 
 # Install the basic packages
 sudo dnf install -y \
-    vim wget curl openssl zip htop lm_sensors git \
-    terminus-fonts-console python3 python3-pip
+    vim wget curl openssl zip git htop lm_sensors python3 python3-pip
 
 # Install virtualization packages
 sudo dnf install -y \
@@ -57,7 +56,7 @@ sudo reboot
 
 # Install basic packages in OSTree layer
 rpm-ostree install -y \
-    vim htop lm_sensors git python3-pip terminus-fonts-console
+    vim git htop lm_sensors python3-pip
 
 # Install virtualization packages in OSTree layer
 rpm-ostree install -y \
@@ -77,14 +76,12 @@ sudo apt autoremove
 
 # Install the basic packages
 sudo apt install -y \
-    vim wget curl openssl libssl-dev zip htop git \
-    lm-sensors python3 python3-pip
+    vim wget curl openssl zip git htop lm-sensors python3 python3-pip
 
 # Install virtualization packages
 sudo apt install -y \
     qemu-kvm libvirt-clients-qemu libvirt-daemon-system \
-    virtinst guestfs-tools libguestfs-tools \
-    bridge-utils ovmf
+    virtinst guestfs-tools libguestfs-tools bridge-utils ovmf
 ```
 
 ## Virtualization Desktop Interface
