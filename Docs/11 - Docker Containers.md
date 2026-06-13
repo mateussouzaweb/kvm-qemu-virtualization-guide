@@ -38,11 +38,20 @@ sudo sh get-docker.sh
 To run docker container without issues, your user need permissions to manipulate containers. You can add your user to the docker group by running the following commands:
 
 ![Fedora](../Images/fedora.png)
+**FEDORA - ATOMIC:**
+
+```bash
+# Fedora Immutable ONLY
+# Add docker group to persistent file
+grep -E '^docker:' /usr/lib/group | sudo tee -a /etc/group
+```
+
+![Fedora](../Images/fedora.png)
 ![Ubuntu](../Images/ubuntu.png)
 **FEDORA / UBUNTU:**
 
 ```bash
-# Add user permission
+# Set user permission
 USERNAME="mateussouzaweb"
 sudo usermod -aG docker ${USERNAME}
 newgrp docker
