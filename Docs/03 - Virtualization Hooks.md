@@ -51,6 +51,10 @@ If you are interested in knowing what is going on when these hooks are executed,
 **FEDORA / UBUNTU:**
 
 ```bash
+# State details
+sudo /etc/libvirt/hooks/qemu state
+
+# System messages
 sudo dmesg -w
 ```
 
