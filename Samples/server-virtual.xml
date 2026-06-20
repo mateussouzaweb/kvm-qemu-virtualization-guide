@@ -18,8 +18,8 @@
   <os firmware='efi'>
     <type arch='x86_64' machine='pc-q35-10.2'>hvm</type>
     <firmware>
-      <feature enabled='yes' name='enrolled-keys'/>
-      <feature enabled='yes' name='secure-boot'/>
+      <feature enabled='no' name='enrolled-keys'/>
+      <feature enabled='no' name='secure-boot'/>
     </firmware>
     <boot dev='hd'/>
     <boot dev='cdrom'/>

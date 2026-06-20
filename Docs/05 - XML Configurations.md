@@ -45,7 +45,7 @@ Please be aware that these settings enable NVRAM and if you edit the machine det
 virsh start ${NAME} --reset-nvram
 ```
 
-If you don't want to deal with Secure Boot or it is not supported on the virtual machine that you are trying to run, here is a sample with the feature disabled:
+Please note that disabling Secure Boot can significantly increase the success rate of single GPU passthrough because the virtualized system don't need to read the secure keys of the GPU again. I strongly recommend disabling Secure Boot on Linux machines - Windows 11 requires Secure Boot. If you don't want to deal with Secure Boot or it is not supported on the virtual machine that you are trying to run, here is a sample specification with the feature disabled:
 
 ```xml
 <os firmware="efi">
