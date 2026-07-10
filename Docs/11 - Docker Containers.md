@@ -10,7 +10,7 @@ Besides virtual machines, you can also use the hypervisor to run containers. Fol
 # Add repository and install Docker
 sudo dnf -y install dnf-plugins-core
 sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
-sudo dnf install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+sudo dnf install -y containerd.io docker-ce docker-ce-cli docker-compose-plugin docker-buildx-plugin 
 ```
 
 ![Fedora](../Images/fedora.png)
@@ -19,7 +19,7 @@ sudo dnf install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 ```bash
 # Fedora Immutable ONLY
 # Install packages in OSTree layer
-rpm-ostree install -y docker
+rpm-ostree install -y docker docker-cli docker-compose docker-buildx docker-buildkit
 
 # Reboot hypervisor
 sudo reboot
