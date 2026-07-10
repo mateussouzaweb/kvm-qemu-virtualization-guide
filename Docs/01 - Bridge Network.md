@@ -23,8 +23,8 @@ Now that you know the details about your network, let's modify the connection mo
 
 ```bash
 # Update with correct values
-CONNECTION_NAME="enp7s0"
-NETWORK_INTERFACE="enp7s0"
+CONNECTION_NAME="enp8s0"
+NETWORK_INTERFACE="enp8s0"
 
 # Create the bridge network
 sudo nmcli connection delete virbr0
@@ -111,6 +111,33 @@ virsh net-start default
 virsh net-list
 ```
 
+## Bridge Network Boot Optimization
+
+Systemd has a bottleneck where virtualization bridges can cause `NetworkManager-wait-online.service` to hang for 60 seconds or more during system startup. We can tweak this behavior to significantly reduce the boot check process by tying it exclusively to your physical ethernet interface with a lower 10 seconds timeout:
+
+![Fedora](../Images/fedora.png)
+![Ubuntu](../Images/ubuntu.png)
+**FEDORA / UBUNTU:**
+
+```bash
+# Tweak wait-online service
+sudo systemctl edit --stdin NetworkManager-wait-online.service << EOF
+[Service]
+ExecStart=
+ExecStart=/usr/bin/nm-online -s -q -i $NETWORK_INTERFACE --timeout=10
+EOF
+
+# Reboot hypervisor
+sudo reboot
+```
+
+After reboot, you can check for boot result with the command:
+
+```bash
+# Check boot time for wait-online service
+systemd-analyze blame | grep NetworkManager-wait-online
+```
+
 If your motherboard also has WiFi and you want to completely disable it, just run the command below to disable it. By disabling WiFi (a service not used at this case), you can avoid some bugs along the way reducing the need of system maintenance:
 
 ![Fedora](../Images/fedora.png)
@@ -137,7 +164,7 @@ Once everything has been completed, restart the system and your network is ready
 sudo reboot
 ```
 
-Once the network is working nicely, we can start tweaking the PCI-e passthrough for better yet virtual machines.
+With the network working nicely, we can start tweaking the PCI-e passthrough for better yet virtual machines.
 
 ----
 
