@@ -139,7 +139,7 @@ rpm-ostree install -y cockpit cockpit-files cockpit-machines cockpit-podman cock
 
 ```bash
 # Ubuntu - Remote access ONLY
-sudo apt install -y cockpit cockpit-machines python3-pcp
+sudo apt install -y cockpit cockpit-files cockpit-machines python3-pcp
 
 # Fix cockpit connection issues
 # https://cockpit-project.org/faq#error-message-about-being-offline
