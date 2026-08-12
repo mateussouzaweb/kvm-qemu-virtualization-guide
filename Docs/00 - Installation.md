@@ -80,7 +80,7 @@ sudo apt install -y \
 
 # Install virtualization packages
 sudo apt install -y \
-    qemu-kvm libvirt-clients-qemu libvirt-daemon-system \
+    qemu-system libvirt-clients-qemu libvirt-daemon-system \
     virtinst guestfs-tools libguestfs-tools bridge-utils ovmf
 ```
 
