@@ -71,3 +71,4 @@ Follow the guides inside the ```Docs``` folder or use the links below for a spec
 - **[SteamOS Virtualization](Docs/09%20-%20SteamOS%20Virtualization.md)**
 - **[File Sharing](Docs/10%20-%20File%20Sharing.md)**
 - **[Docker Containers](Docs/11%20-%20Docker%20Containers.md)**
+- **[Troubleshooting](Docs/12%20-%20Troubleshooting.md)**

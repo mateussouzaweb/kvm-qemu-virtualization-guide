@@ -190,39 +190,6 @@ sudo reboot
 
 Check the IOMMU groups again to make sure it is working. You now should be able to create VMs and attach PCI-e devices to it.
 
-## Vendor Reset for AMD GPUs
-
-**NOTE:** I don't have a guide yet for vendor reset on immutable systems, the steps below will work only on traditional systems.
-
-If you are using an AMD GPU, chances are that your device has the vendor reset bug. This bug will always result in a complete black screen or even system freezes when you try to attach or detach the GPU on virtual machines. If you are lucky like me and have a GPU from the series listed below, you need to install the vendor reset package to fix this issue:
-
-- **Polaris 10, 11 and 12**
-- **Vega 10 and 20**
-- **Navi 10, 12 and 14**
-
-If your AMD GPU is not in that list, then your GPU definitely does not have the vendor reset bug. To install the vendor reset package in traditional systems, the steps are pretty simple, just run the following commands to install the package and fix the issue:
-
-![Fedora](../Images/fedora.png)
-**FEDORA - DESKTOP / SERVER:**
-
-```bash
-# Fedora ONLY
-# Update and instal kernel packages
-sudo dnf distro-sync
-sudo dnf install -y dkms kernel-devel kernel-headers
-
-# Install module
-sudo git clone https://github.com/gnif/vendor-reset.git /usr/share/vendor-reset;
-cd /usr/share/vendor-reset
-sudo dkms install .
-
-# Load module on system boot
-sudo echo 'vendor-reset' > /etc/modules-load.d/vendor-reset.conf
-
-# Reboot hypervisor
-sudo reboot
-```
-
 ----
 
 Next step: **[Setting up Virtualization Hooks](03%20-%20Virtualization%20Hooks.md)**
