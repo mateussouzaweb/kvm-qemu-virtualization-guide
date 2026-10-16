@@ -210,7 +210,7 @@
     <graphics type='spice'>
       <listen type='none'/>
       <image compression='off'/>
-      <gl enable='yes'/>
+      <gl enable='yes' rendernode='/dev/dri/renderD128'/>
     </graphics>
     <sound model='virtio' streams='2'>
       <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0'/>
