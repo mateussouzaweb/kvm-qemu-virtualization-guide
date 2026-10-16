@@ -330,14 +330,14 @@ Once you have the ROM file configured on the hypervisor system, edit the VM conf
 <devices>
   <hostdev mode="subsystem" type="pci" managed="yes">
     <source>
-      <address domain="0x0000" bus="0x0d" slot="0x00" function="0x0"/>
+      <address domain="0x0000" bus="0x03" slot="0x00" function="0x0"/>
     </source>
     <rom file="/var/lib/libvirt/vbios/NAVI48.rom"/>
     <address type="pci" domain="0x0000" bus="0x07" slot="0x00" function="0x0"/>
   </hostdev>
   <hostdev mode="subsystem" type="pci" managed="yes">
     <source>
-      <address domain="0x0000" bus="0x0d" slot="0x00" function="0x1"/>
+      <address domain="0x0000" bus="0x03" slot="0x00" function="0x1"/>
     </source>
     <rom file="/var/lib/libvirt/vbios/NAVI48.rom"/>
     <address type="pci" domain="0x0000" bus="0x07" slot="0x00" function="0x1"/>

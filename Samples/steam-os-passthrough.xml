@@ -8,20 +8,20 @@
   </metadata>
   <memory unit='KiB'>25165824</memory>
   <currentMemory unit='KiB'>25165824</currentMemory>
-  <vcpu placement='static' cpuset='2-7,10-15'>12</vcpu>
+  <vcpu placement='static' cpuset='6-11,18-23'>12</vcpu>
   <cputune>
-    <vcpupin vcpu='0' cpuset='2'/>
-    <vcpupin vcpu='1' cpuset='3'/>
-    <vcpupin vcpu='2' cpuset='4'/>
-    <vcpupin vcpu='3' cpuset='5'/>
-    <vcpupin vcpu='4' cpuset='6'/>
-    <vcpupin vcpu='5' cpuset='7'/>
-    <vcpupin vcpu='6' cpuset='10'/>
-    <vcpupin vcpu='7' cpuset='11'/>
-    <vcpupin vcpu='8' cpuset='12'/>
-    <vcpupin vcpu='9' cpuset='13'/>
-    <vcpupin vcpu='10' cpuset='14'/>
-    <vcpupin vcpu='11' cpuset='15'/>
+    <vcpupin vcpu='0' cpuset='6'/>
+    <vcpupin vcpu='1' cpuset='7'/>
+    <vcpupin vcpu='2' cpuset='8'/>
+    <vcpupin vcpu='3' cpuset='9'/>
+    <vcpupin vcpu='4' cpuset='10'/>
+    <vcpupin vcpu='5' cpuset='11'/>
+    <vcpupin vcpu='6' cpuset='18'/>
+    <vcpupin vcpu='7' cpuset='19'/>
+    <vcpupin vcpu='8' cpuset='20'/>
+    <vcpupin vcpu='9' cpuset='21'/>
+    <vcpupin vcpu='10' cpuset='22'/>
+    <vcpupin vcpu='11' cpuset='23'/>
   </cputune>
   <os firmware='efi'>
     <type arch='x86_64' machine='pc-q35-10.2'>hvm</type>
@@ -223,33 +223,21 @@
     </video>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x0d' slot='0x00' function='0x0'/>
+        <address domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
       </source>
       <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0' multifunction='on'/>
     </hostdev>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x0d' slot='0x00' function='0x1'/>
+        <address domain='0x0000' bus='0x03' slot='0x00' function='0x1'/>
       </source>
       <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x1'/>
     </hostdev>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x07' slot='0x00' function='0x1'/>
+        <address domain='0x0000' bus='0x0d' slot='0x00' function='0x0'/>
       </source>
       <address type='pci' domain='0x0000' bus='0x0c' slot='0x00' function='0x0'/>
-    </hostdev>
-    <hostdev mode='subsystem' type='pci' managed='yes'>
-      <source>
-        <address domain='0x0000' bus='0x07' slot='0x00' function='0x3'/>
-      </source>
-      <address type='pci' domain='0x0000' bus='0x0d' slot='0x00' function='0x0'/>
-    </hostdev>
-    <hostdev mode='subsystem' type='pci' managed='yes'>
-      <source>
-        <address domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
-      </source>
-      <address type='pci' domain='0x0000' bus='0x0e' slot='0x00' function='0x0'/>
     </hostdev>
     <watchdog model='itco' action='reset'/>
     <memballoon model='virtio'>

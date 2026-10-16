@@ -3,16 +3,16 @@
   <uuid>5afcd8e5-d916-4548-b0e2-163a339bac61</uuid>
   <memory unit='KiB'>25165824</memory>
   <currentMemory unit='KiB'>25165824</currentMemory>
-  <vcpu placement='static' cpuset='4-7,12-15'>8</vcpu>
+  <vcpu placement='static' cpuset='6-9,18-21'>8</vcpu>
   <cputune>
-    <vcpupin vcpu='0' cpuset='4'/>
-    <vcpupin vcpu='1' cpuset='5'/>
-    <vcpupin vcpu='2' cpuset='6'/>
-    <vcpupin vcpu='3' cpuset='7'/>
-    <vcpupin vcpu='4' cpuset='12'/>
-    <vcpupin vcpu='5' cpuset='13'/>
-    <vcpupin vcpu='6' cpuset='14'/>
-    <vcpupin vcpu='7' cpuset='15'/>
+    <vcpupin vcpu='0' cpuset='6'/>
+    <vcpupin vcpu='1' cpuset='7'/>
+    <vcpupin vcpu='2' cpuset='8'/>
+    <vcpupin vcpu='3' cpuset='9'/>
+    <vcpupin vcpu='4' cpuset='18'/>
+    <vcpupin vcpu='5' cpuset='19'/>
+    <vcpupin vcpu='6' cpuset='20'/>
+    <vcpupin vcpu='7' cpuset='21'/>
   </cputune>
   <os firmware='efi'>
     <type arch='x86_64' machine='pc-q35-10.2'>hvm</type>

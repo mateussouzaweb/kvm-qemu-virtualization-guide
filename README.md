@@ -34,18 +34,23 @@ Our object is just one: have a **full working virtualization platform with QEMU 
 
 Just to provide additional context, here is my current hardware configuration:
 
-- Motherboard: ASRock X570 Phantom Gaming 4
-- Memory: Corsair Vengeance 32GB 2666MHz DDR4
-- CPU: AMD Ryzen 5700X
-- GPU: AMD RX 9700 XT Sapphire PULSE 16GB
+- Motherboard: ASRock B850M Pro RS
+- Memory: Teamgroup T-Force Vulcan 32GB 6000Mhz DDR5
+- CPU: AMD Ryzen 9 9900X
+- GPU: AMD RX 9700 XT ASRock Steel Legend 16GB
 - GPU: Nvidia RTX 5060 Gigabyte LP 8GB
 - SSD: Crucial SSD P2 2TB NVMe PCIe M.2
 
 This guide also was previously tested with the following hardware:
 
+- Motherboard: ASRock X570 Phantom Gaming 4
 - Motherboard: Gigabyte B450 Aorus Pro WiFi
-- Memory: Corsair Vengeance 16GB 2133MHz DDR4
-- CPU: AMD Ryzen 1700X
+- Memory: Corsair Vengeance 32GB 2666Mhz DDR4
+- Memory: Corsair Vengeance 16GB 2133Mhz DDR4
+- CPU: AMD Ryzen 7 5700X
+- CPU: AMD Ryzen 7 1700X
+- GPU: AMD RX 9700 XT Sapphire PULSE 16GB
+- GPU: Nvidia RTX 5060 Gigabyte LP 8GB
 - GPU: AMD RX 5500 XT Gigabyte Gaming OC 4G
 - GPU: AMD RX 6700 XT XFX QICK 319 12GB
 - GPU: Nvidia GTX 1070 Gigabyte G1 Gaming 8GB

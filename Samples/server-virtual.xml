@@ -8,12 +8,12 @@
   </metadata>
   <memory unit='KiB'>8388608</memory>
   <currentMemory unit='KiB'>8388608</currentMemory>
-  <vcpu placement='static' cpuset='2-3,10-11'>4</vcpu>
+  <vcpu placement='static' cpuset='6-7,18-19'>4</vcpu>
   <cputune>
-    <vcpupin vcpu='0' cpuset='2'/>
-    <vcpupin vcpu='1' cpuset='3'/>
-    <vcpupin vcpu='2' cpuset='10'/>
-    <vcpupin vcpu='3' cpuset='11'/>
+    <vcpupin vcpu='0' cpuset='6'/>
+    <vcpupin vcpu='1' cpuset='7'/>
+    <vcpupin vcpu='2' cpuset='18'/>
+    <vcpupin vcpu='3' cpuset='19'/>
   </cputune>
   <os firmware='efi'>
     <type arch='x86_64' machine='pc-q35-10.2'>hvm</type>
