@@ -54,6 +54,11 @@ for i in `virsh list --all --name`; do
   virsh edit $i
 done
 
+# Dump VMs specs as XML 
+for i in `virsh list --all --name`; do
+  virsh dumpxml $i > $i.xml
+done
+
 # Define multiple VMs from XML specs
 for XML in ./*.xml; do
   virsh define $XML
