@@ -73,8 +73,9 @@
     <disk type='volume' device='disk'>
       <driver name='qemu' type='qcow2' cache='writeback' io='io_uring' discard='unmap'/>
       <source pool='default' volume='steam-os.qcow2'/>
-      <target dev='nvme0n1' bus='virtio'/>
-      <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
+      <target dev='nvme0n1' bus='nvme'/>
+      <serial>SO2242E696E0D5</serial>
+      <address type='drive' controller='0' bus='0' target='0' unit='0'/>
     </disk>
     <disk type='volume' device='disk'>
       <driver name='qemu' type='raw' discard='unmap'/>
@@ -162,8 +163,21 @@
       <target chassis='14' port='0x1d'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x5'/>
     </controller>
+    <controller type='pci' index='15' model='pcie-root-port'>
+      <model name='pcie-root-port'/>
+      <target chassis='15' port='0x1e'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x6'/>
+    </controller>
+    <controller type='pci' index='16' model='pcie-to-pci-bridge'>
+      <model name='pcie-pci-bridge'/>
+      <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
+    </controller>
     <controller type='virtio-serial' index='0'>
       <address type='pci' domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
+    </controller>
+    <controller type='nvme' index='0'>
+      <serial>SO2242E696E0D5</serial>
+      <address type='pci' domain='0x0000' bus='0x10' slot='0x01' function='0x0'/>
     </controller>
     <interface type='bridge'>
       <mac address='52:54:00:3a:2d:1a'/>
